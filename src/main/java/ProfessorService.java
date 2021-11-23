@@ -173,7 +173,27 @@ public class ProfessorService {
     }
 
     private static void timeTableLookup() {
-        //시간표 출력
+        String[] day = {"MON", "TUE", "WED", "THU", "FRI"};
+        for (int i = 0; i < 8; i++) {
+            if (i != 0)
+                System.out.print(i + " |");
+            else
+                System.out.print("\\ |");
+            for (int j = 0; j < 5; j++) {
+                if (i == 0) {
+                    System.out.printf("%10s%10s", day[j], " |");
+                } else {
+                    if(/*해당 시간, 요일에 과목 있을 시*/) {
+                        System.out.printf("%10s%8s",/*과목명*/, " ");
+                    }else {
+                        //해당 시간, 요일에 과목 없을 시
+                        System.out.printf("%10s%10s","","");
+                    }
+                }
+            }
+            System.out.println();
+            System.out.println("--|-------------------|-------------------|-------------------|-------------------|-------------------|");
+        }
     }
 
 }
