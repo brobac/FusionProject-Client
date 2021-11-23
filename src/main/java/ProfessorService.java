@@ -75,7 +75,7 @@ public class ProfessorService {
             if (menu == 1) {
                 //조건부 조회
                 while (menu != 4) {
-                    System.out.println(Message.LECTURE_LOOKUP_MENU2);
+                    System.out.println(Message.PROFESSOR_LECTURE_LOOKUP_MENU2);
                     System.out.print(Message.INPUT);
                     menu = scanner.nextInt();
                     if (menu == 1) {

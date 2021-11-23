@@ -63,7 +63,7 @@ public class Message {
     public static final String CHANGE_PASSWORD_INPUT = "새 비밀번호 : ";
 
 
-    //ProfessorService > lectureLookup회
+    //ProfessorService > lectureLookup
     public static final String PROFESSOR_LECTURE_LOOKUP_MENU1 = "[1]조건부 조회 [2]나가기";
     public static final String PROFESSOR_LECTURE_LOOKUP_MENU2 = "[1]학년별 조회 [2]담당 교수별 조회 [3]학년별 담당 교수별 조회 [4]나가기";
 
