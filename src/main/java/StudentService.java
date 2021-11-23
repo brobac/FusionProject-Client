@@ -62,15 +62,55 @@ public class StudentService {
     }
 
     private static void registering() {
+        int menu = 0;
+        while (menu != 4) {
+            System.out.print(Message.REGISTERING_MENU);
+            System.out.print(Message.INPUT);
+            menu = scanner.nextInt();
+
+            if (menu == 1) {
+                System.out.print(Message.COURSE_CODE_INPUT);
+                string lectureCode = scanner.nextLine();
+                //수강 신청
+            } else if (menu == 2) {
+                System.out.print(Message.COURSE_CODE_INPUT);
+                string lectureCode = scanner.nextLine();
+                //수강 취소
+            } else if (menu == 3) {
+                //수강 신청 현황 조회
+            } else if (menu == 4) {
+
+            } else {
+                System.out.println(Message.WRONG_INPUT_NOTICE);
+            }
+        }
     }
 
     private static void lectureLookup() {
+        //개설교과목 전체 목록 출력
     }
 
     private static void lecturePlannerLookup() {
+        int menu = 0;
+        while (menu != 2) {
+            System.out.print(Message.LECTURE_PLANNER_LOOKUP_MENU);
+            System.out.print(Message.INPUT);
+            menu = scanner.nextInt();
+
+            if (menu == 1) {
+                System.out.print(Message.COURSE_CODE_INPUT);
+                String lectureCode = scanner.nextLine();
+                //선택 교과목 강의 계획서 조회
+            } else if (menu == 2) {
+
+            } else {
+                System.out.println(Message.WRONG_INPUT_NOTICE);
+            }
+        }
     }
 
     private static void timeTableLookup() {
+        //시간표 출력
     }
 
 }
