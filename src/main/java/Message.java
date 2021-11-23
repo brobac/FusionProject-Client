@@ -9,13 +9,12 @@ public class Message {
     public static final String ENROLLMENT_MENU = "";
 
 
-
     //AdminService
     public static final String ADMIN_SERVICE_MENU = "[1] 계정 생성  [2]교과목 관리  [3]개설 교과목 관리  [4]강의계획서 입력기간 설정\n[5] 수강신청 기간 설정  [6]교수 / 학생 조회  [7]개설 교과목 조회  [8] 종료";
     public static final String COURSE_CODE_INPUT = "과목코드 : ";
     public static final String COURSE_NAME_INPUT = "과목명 : ";
     public static final String DEPARTMENT_INPUT = "학과 : ";
-    public static final String TARGET_GRADE_INPUT ="대상 학년 : ";
+    public static final String TARGET_GRADE_INPUT = "대상 학년 : ";
     public static final String CREDIT_INPUT = "학점 : ";
 
 
@@ -54,9 +53,6 @@ public class Message {
     public static final String LECTURE_LOOKUP_MENU = "[1]전체 조회  [2]조건부 조회  [3]나가기";
 
 
-
-
-
     //ProfessorService
     public static final String PROFESSOR_SERVICE_MENU = "[1]개인정보 수정  [2]개설 교과목 조회  [3]강의 계획서 관리  [4]개설 교과목 강의 계획서 조회\n [5]교과목 수강 신청 학생 목록 조회  [6]교과목 시간표 조회  [7]종료";
 
@@ -67,23 +63,23 @@ public class Message {
     public static final String CHANGE_PASSWORD_INPUT = "새 비밀번호 : ";
 
 
-    //ProfessorService > lectureLookup
-
+    //ProfessorService > lectureLookup회
+    public static final String PROFESSOR_LECTURE_LOOKUP_MENU1 = "[1]조건부 조회 [2]나가기";
+    public static final String PROFESSOR_LECTURE_LOOKUP_MENU2 = "[1]학년별 조회 [2]담당 교수별 조회 [3]학년별 담당 교수별 조회 [4]나가기";
 
     //ProfessorService > lecturePlannerSettings
     public static final String LECTURE_PLANNER_SETTINGS_MENU = "[1]강의 계획서 등록 [2]강의 계획서 수정 [3]나가기";
     public static final String LECTURE_PLANNER_INSERT_INPUT = "강의 계획서를 등록할 개설 교과목 코드를 입력해주세요 : ";
     public static final String LECTURE_PLANNER_UPDATE_INPUT = "강의 계획서를 등록할 개설 교과목 코드를 입력해주세요 : ";
     public static final String MISMATCH_LECTURE_CODE = "담당 교과목이 아닙니다.";
-    //ProfessorService > LecturePlannerLookup
 
+    //ProfessorService > LecturePlannerLookup
+    public static final String LECTURE_PLANNER_LOOKUP_MENU = "[1]강의 계획서 조회 [2]나가기";
 
     //ProfessorService > studentListLookup
-
+    public static final String STUDENT_LIST_LOOKUP_MENU = "[1]교과목 수강 신청 학생 목록 조회 [2]나가기";
 
     //ProfessorService > timeTableLookup
-
-
 
 
     //StudentService
@@ -93,6 +89,8 @@ public class Message {
 
 
     //StudentService > registeringManage
+    public static final String REGISTERING_MENU = "[1]수강 신청 [2]수강 취소 [3]수강 신청 현황 조회 [4]나가기";
+
 
 
     //StudentService > lectureLookup
