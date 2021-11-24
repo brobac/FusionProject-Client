@@ -1,9 +1,19 @@
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Scanner;
 
-public class ProfessorService {
-    public static Scanner scanner = new Scanner(System.in);
+public class ProfessorService implements EnrollmentService {
+    private InputStream is;
+    private OutputStream os;
 
-    public static void run() {
+    public ProfessorService(InputStream is, OutputStream os) {
+        this.is = is;
+        this.os = os;
+    }
+
+    public Scanner scanner = new Scanner(System.in);
+
+    public void run() {
         int menu = 0;
         while (menu != 7) {
             System.out.println(Message.PROFESSOR_SERVICE_MENU);
@@ -38,7 +48,7 @@ public class ProfessorService {
         }
     }
 
-    private static void updatePersonalInformation() {
+    private void updatePersonalInformation() {
         int menu = 0;
         //TODO 개인정보 조회하여 출력
         while (menu != 4) {
@@ -64,39 +74,39 @@ public class ProfessorService {
         }
     }
 
-    private static void lectureLookup() {
+    private void lectureLookup() {
         int menu = 0;
-        //전체 목록 출력
         while (menu != 2) {
+            //TODO 전체 목록 출력
             System.out.println(Message.PROFESSOR_LECTURE_LOOKUP_MENU1);
             System.out.print(Message.INPUT);
             menu = scanner.nextInt();
-
             if (menu == 1) {
-                //조건부 조회
-                while (menu != 4) {
-                    System.out.println(Message.PROFESSOR_LECTURE_LOOKUP_MENU2);
-                    System.out.print(Message.INPUT);
-                    menu = scanner.nextInt();
-                    if (menu == 1) {
-                        System.out.println(Message.TARGET_GRADE_INPUT);
-                        int targetGrade = scanner.nextInt();
-                        //학년별 조회
-                    } else if (menu == 2) {
-                        System.out.println(Message.PROFESSOR_CODE_INPUT);
-                        String professorId = scanner.nextLine();
-                        //담당 교수별 조회
-                    } else if (menu == 3) {
-                        System.out.println(Message.TARGET_GRADE_INPUT);
-                        int targetGrade = scanner.nextInt();
-                        System.out.println(Message.PROFESSOR_CODE_INPUT);
-                        String professorId = scanner.nextLine();
-                        //학년별 담당 교수별 조회
-                    } else if (menu == 4) {
-                    } else {
-                        System.out.println(Message.WRONG_INPUT_NOTICE);
-                    }
-                }
+                //TODO 조건입력받고 서버에 전송 후 결과 받아서 프린트
+                //방법2
+//                while (menu != 4) {
+//                    System.out.println(Message.PROFESSOR_LECTURE_LOOKUP_MENU2);
+//                    System.out.print(Message.INPUT);
+//                    menu = scanner.nextInt();
+//                    if (menu == 1) {
+//                        System.out.println(Message.TARGET_GRADE_INPUT);
+//                        int targetGrade = scanner.nextInt();
+//                        //학년별 조회
+//                    } else if (menu == 2) {
+//                        System.out.println(Message.PROFESSOR_CODE_INPUT);
+//                        String professorId = scanner.nextLine();
+//                        //담당 교수별 조회
+//                    } else if (menu == 3) {
+//                        System.out.println(Message.TARGET_GRADE_INPUT);
+//                        int targetGrade = scanner.nextInt();
+//                        System.out.println(Message.PROFESSOR_CODE_INPUT);
+//                        String professorId = scanner.nextLine();
+//                        //학년별 담당 교수별 조회
+//                    } else if (menu == 4) {
+//                    } else {
+//                        System.out.println(Message.WRONG_INPUT_NOTICE);
+//                    }
+//                }
             } else if (menu == 2) {
 
             } else {
@@ -105,7 +115,7 @@ public class ProfessorService {
         }
     }
 
-    private static void lecturePlannerSettings() {
+    private void lecturePlannerSettings() {
         int menu = 0;
         //TODO
         System.out.print(Message.LECTURE_PLANNER_SETTINGS_MENU);
@@ -138,7 +148,7 @@ public class ProfessorService {
         menu = scanner.nextInt();
     }
 
-    private static void lecturePlannerLookup() {
+    private void lecturePlannerLookup() {
         int menu = 0;
 
         while (menu != 2) {
@@ -154,7 +164,7 @@ public class ProfessorService {
         }
     }
 
-    private static void studentListLookup() {
+    private void studentListLookup() {
         int menu = 0;
 
         while (menu != 2) {
@@ -172,7 +182,7 @@ public class ProfessorService {
         }
     }
 
-    private static void timeTableLookup() {
+    private void timeTableLookup() {
         String[] day = {"MON", "TUE", "WED", "THU", "FRI"};
         for (int i = 0; i < 8; i++) {
             if (i != 0)
@@ -183,11 +193,11 @@ public class ProfessorService {
                 if (i == 0) {
                     System.out.printf("%10s%10s", day[j], " |");
                 } else {
-                    if(/*해당 시간, 요일에 과목 있을 시*/) {
-                        System.out.printf("%10s%8s",/*과목명*/, " ");
-                    }else {
+                    if (/*해당 시간, 요일에 과목 있을 시*/) {
+                        System.out.printf("%10s%8s", /*과목명*/, " ");
+                    } else {
                         //해당 시간, 요일에 과목 없을 시
-                        System.out.printf("%10s%10s","","");
+                        System.out.printf("%10s%10s", "", "");
                     }
                 }
             }

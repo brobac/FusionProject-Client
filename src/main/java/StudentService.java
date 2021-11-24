@@ -1,9 +1,18 @@
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Scanner;
 
-public class StudentService {
-    public static Scanner scanner = new Scanner(System.in);
+public class StudentService implements EnrollmentService {
+    private InputStream is;
+    private OutputStream os;
+    public StudentService(InputStream is, OutputStream os){
+        this.is = is;
+        this.os = os;
+    }
 
-    public static void run() {
+    public Scanner scanner = new Scanner(System.in);
+
+    public void run() {
         int menu = 0;
         while (menu != 8) {
             System.out.println(Message.PROFESSOR_SERVICE_MENU);
@@ -35,7 +44,7 @@ public class StudentService {
         }
     }
 
-    private static void updatePersonalInformation() {
+    private void updatePersonalInformation() {
         int menu = 0;
         //TODO 개인정보 조회하여 출력
         System.out.println(Message.UPDATE_PERSONAL_INFORMATION_MENU);
@@ -61,7 +70,7 @@ public class StudentService {
         }
     }
 
-    private static void registering() {
+    private void registering() {
         int menu = 0;
         while (menu != 4) {
             System.out.print(Message.REGISTERING_MENU);
@@ -70,11 +79,11 @@ public class StudentService {
 
             if (menu == 1) {
                 System.out.print(Message.COURSE_CODE_INPUT);
-                string lectureCode = scanner.nextLine();
+                String lectureCode = scanner.nextLine();
                 //수강 신청
             } else if (menu == 2) {
                 System.out.print(Message.COURSE_CODE_INPUT);
-                string lectureCode = scanner.nextLine();
+                String lectureCode = scanner.nextLine();
                 //수강 취소
             } else if (menu == 3) {
                 //수강 신청 현황 조회
@@ -86,11 +95,11 @@ public class StudentService {
         }
     }
 
-    private static void lectureLookup() {
+    private void lectureLookup() {
         //개설교과목 전체 목록 출력
     }
 
-    private static void lecturePlannerLookup() {
+    private void lecturePlannerLookup() {
         int menu = 0;
         while (menu != 2) {
             System.out.print(Message.LECTURE_PLANNER_LOOKUP_MENU);
@@ -109,7 +118,7 @@ public class StudentService {
         }
     }
 
-    private static void timeTableLookup() {
+    private void timeTableLookup() {
         //시간표 출력
         String[] day = {"MON", "TUE", "WED", "THU", "FRI"};
         for (int i = 0; i < 8; i++) {

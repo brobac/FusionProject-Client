@@ -1,11 +1,23 @@
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
-public class AdminService {
+public class AdminService implements EnrollmentService {
     public static Scanner scanner = new Scanner(System.in);
 
-    public static void run() {
+    private InputStream is;
+    private OutputStream os;
+
+
+    public AdminService(InputStream is, OutputStream os){
+        this.is = is;
+        this.os = os;
+    }
+
+
+    public  void run() {
         int menu = 0;
         while (menu != 8) {
             System.out.println(Message.ADMIN_SERVICE_MENU);
@@ -43,7 +55,7 @@ public class AdminService {
         }
     }
 
-    private static void createAccount() {
+    private void createAccount() {
         int menu = 0;
         String memberCode;
         while (menu != 3) {
@@ -66,7 +78,7 @@ public class AdminService {
         }
     }
 
-    private static void courseManage() {
+    private void courseManage() {
         int menu = 0;
         String courseCode;
         while (menu != 4) {
@@ -95,7 +107,7 @@ public class AdminService {
         }
     }
 
-    private static void lectureManage() {
+    private void lectureManage() {
         int menu = 0;
         while (menu != 4) {
             System.out.println(Message.COURSE_MANAGE_MENU);
@@ -122,7 +134,7 @@ public class AdminService {
         }
     }
 
-    private static void plannerInputPeriodSettings() {
+    private void plannerInputPeriodSettings() {
         int menu = 0;
         while (menu != 3) {
             System.out.println(Message.PLANNER_INPUT_PERIOD_MENU);
@@ -146,7 +158,7 @@ public class AdminService {
         }
     }
 
-    private static void registeringPeriodSettings() {
+    private void registeringPeriodSettings() {
         int menu = 0;
         while (menu != 3) {
             System.out.println(Message.REGISTERING_PERIOD_MENU);
@@ -173,7 +185,7 @@ public class AdminService {
         }
     }
 
-    private static void memberLookup() {
+    private void memberLookup() {
         int menu = 0;
         while (menu != 3) {
             System.out.println(Message.MEMBER_LOOKUP_MENU);
@@ -191,7 +203,7 @@ public class AdminService {
         }
     }
 
-    private static void lectureLookup() {
+    private void lectureLookup() {
         int menu = 0;
         while (menu != 3) {
             System.out.println(Message.LECTURE_LOOKUP_MENU);
