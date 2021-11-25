@@ -1,5 +1,7 @@
 import dto.AccountDTO;
+import network.Serializer;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.time.LocalDateTime;
@@ -55,9 +57,8 @@ public class AdminService implements EnrollmentService {
         }
     }
 
-    private void createAccount() {
+    private void createAccount() throws IllegalAccessException, IOException {
         int menu = 0;
-        String memberCode;
         while (menu != 3) {
             System.out.println(Message.CREATE_ACCOUNT_MENU);
             System.out.print(Message.INPUT);
@@ -65,12 +66,16 @@ public class AdminService implements EnrollmentService {
             scanner.nextLine();
             if (menu == 1) {
                 System.out.print(Message.STUDENT_CODE_INPUT);
-                memberCode = scanner.nextLine();
-                AccountDTO accountDTO
+                String studentCode = scanner.nextLine();
                 //TODO 서버로 memberCode 전송해 계정 생성을 요청한다.
+                AccountDTO accountDTO = AccountDTO.builder()
+                        .id(studentCode)
+                        .build();
+                byte[] bytes = Serializer.objectToBytes(accountDTO);
+                os.write(bytes);
             } else if (menu == 2) {
                 System.out.print(Message.PROFESSOR_CODE_INPUT);
-                memberCode = scanner.nextLine();
+                String professorCode = scanner.nextLine();
                 //TODO 서버로 memberCode 전송해 계정 생성을 요청한다.
             } else if (menu == 3) {
             } else {
