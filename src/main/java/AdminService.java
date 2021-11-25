@@ -1,3 +1,5 @@
+import dto.AccountDTO;
+
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.time.LocalDateTime;
@@ -11,13 +13,12 @@ public class AdminService implements EnrollmentService {
     private OutputStream os;
 
 
-    public AdminService(InputStream is, OutputStream os){
+    public AdminService(InputStream is, OutputStream os) {
         this.is = is;
         this.os = os;
     }
 
-
-    public  void run() {
+    public void run() {
         int menu = 0;
         while (menu != 8) {
             System.out.println(Message.ADMIN_SERVICE_MENU);
@@ -50,7 +51,6 @@ public class AdminService implements EnrollmentService {
                 default:
                     System.out.println(Message.WRONG_INPUT_NOTICE);
                     break;
-
             }
         }
     }
@@ -66,6 +66,7 @@ public class AdminService implements EnrollmentService {
             if (menu == 1) {
                 System.out.print(Message.STUDENT_CODE_INPUT);
                 memberCode = scanner.nextLine();
+                AccountDTO accountDTO
                 //TODO 서버로 memberCode 전송해 계정 생성을 요청한다.
             } else if (menu == 2) {
                 System.out.print(Message.PROFESSOR_CODE_INPUT);

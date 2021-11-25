@@ -3,6 +3,8 @@ import java.io.OutputStream;
 import java.util.Scanner;
 
 public class ProfessorService implements EnrollmentService {
+    public static Scanner scanner = new Scanner(System.in);
+
     private InputStream is;
     private OutputStream os;
 
@@ -11,7 +13,6 @@ public class ProfessorService implements EnrollmentService {
         this.os = os;
     }
 
-    public Scanner scanner = new Scanner(System.in);
 
     public void run() {
         int menu = 0;
@@ -83,6 +84,7 @@ public class ProfessorService implements EnrollmentService {
             menu = scanner.nextInt();
             if (menu == 1) {
                 //TODO 조건입력받고 서버에 전송 후 결과 받아서 프린트
+                //TODO *서버 프로그램에 있는 Option파일 필요(파일가져와야함) 한 번 조회할 때 조건 여려 개 적용 가능해야함
                 //방법2
 //                while (menu != 4) {
 //                    System.out.println(Message.PROFESSOR_LECTURE_LOOKUP_MENU2);

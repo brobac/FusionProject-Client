@@ -3,14 +3,15 @@ import java.io.OutputStream;
 import java.util.Scanner;
 
 public class StudentService implements EnrollmentService {
+    public static Scanner scanner = new Scanner(System.in);
+
     private InputStream is;
     private OutputStream os;
+
     public StudentService(InputStream is, OutputStream os){
         this.is = is;
         this.os = os;
     }
-
-    public Scanner scanner = new Scanner(System.in);
 
     public void run() {
         int menu = 0;
