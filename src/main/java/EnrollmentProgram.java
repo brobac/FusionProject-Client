@@ -35,6 +35,7 @@ public class EnrollmentProgram {
             Protocol protocol = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_CREATE, Protocol.ENTITY_ACCOUNT);
             protocol.setBody(accountDTO);
             os.write(protocol.getPacket());
+
             //TODO 로그인 정보 생성 및 패킷 전송
         }
     }

@@ -1,6 +1,9 @@
 package network;
+import network.Deserializer;
+import network.Serializer;
 
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.ByteBuffer;
 
 public class Protocol {
@@ -16,6 +19,7 @@ public class Protocol {
     public static final int T1_CODE_DELETE = 4;
     public static final int T1_CODE_LOGIN = 5;
     public static final int T1_CODE_LOGOUT = 6;
+    public static final int T1_CODE_EXIT = 7;
     // TYPE_RESPONSE_CODE
     public static final int T2_CODE_SUCCESS = 1;
     public static final int T2_CODE_FAIL = 2;
@@ -28,7 +32,7 @@ public class Protocol {
     public static final int ENTITY_REGISTRATION = 6;
     public static final int ENTITY_PLANNER = 7;
     public static final int ENTITY_PROF_TIMETABLE = 8;
-    public static final int ENTITY_REGIS_STUD_LIST = 9;
+    public static final int ENTITY_LECTURE_STUD_LIST = 9;
     public static final int ENTITY_STUD_TIMETABLE = 10;
 
     // LENGTH
@@ -52,9 +56,9 @@ public class Protocol {
         this(type, UNDEFINED, UNDEFINED);
     }
 
-//    public Protocol(int type, int entity) {
-//        this(type, UNDEFINED, entity);
-//    }
+    public Protocol(int type, int code) {
+        this(type, code, UNDEFINED);
+    }
 
     public Protocol(int type, int code, int entity) {
         setType(type);
@@ -90,77 +94,65 @@ public class Protocol {
     public int getBodyLength() {
         return bodyLength;
     }
-
+    
     private void setBodyLength(int bodyLength) {
         this.bodyLength = bodyLength;
     }
 
-    public Object getBody() {
-        return deserialize(body);
-    }
-
-    public void setBody(Object body) {
-        byte[] serializedObject = serialize(body);
-        this.body = serializedObject;
-        setBodyLength(serializedObject.length);
-    }
-
-    // 현재 header와 body로 패킷을 생성하여 리턴 - 패킷 전송시 사용
+    // 패킷을 생성하여 리턴 (패킷 전송시 사용)
     public byte[] getPacket() {
-        byte[] packet = new byte[LEN_HEADER + getBodyLength()];
-        packet[0] = getType();          // 타입 지정
-        packet[LEN_TYPE] = getCode();   // 코드 지정
-        packet[LEN_TYPE + LEN_CODE] = getEntity(); // 엔티티 지정
-        // 바디길이의 길이 지정
-        System.arraycopy(intToByte(getBodyLength()), 0, packet, LEN_TYPE + LEN_CODE + LEN_ENTITY, LEN_BODYLENGTH);
-        // 바디 담기
-        if (getBodyLength() > 0) {
-            System.arraycopy(body, 0, packet, LEN_HEADER, getBodyLength());
-        }
+        byte[] packet = new byte[LEN_HEADER + bodyLength];
+        packet[0] = type;          // 타입 담기
+        packet[LEN_TYPE] = code;   // 코드 담기
+        packet[LEN_TYPE + LEN_CODE] = entity; // 엔티티 담기
+        System.arraycopy(intToByte(bodyLength), 0, packet, LEN_TYPE + LEN_CODE + LEN_ENTITY, LEN_BODYLENGTH); // 데이터 길이 담기
+        if (bodyLength > 0)
+            System.arraycopy(body, LEN_BODYLENGTH, packet, LEN_HEADER, getBodyLength());  // 바디 담기
         return packet;
     }
 
-    public void setPacketHeader(byte[] packet) {
-        byte[] data;
-        setType(packet[0]);
-        setCode(packet[LEN_TYPE]);
-        setEntity(packet[LEN_TYPE + LEN_CODE]);
-        data = new byte[LEN_BODYLENGTH];
-        System.arraycopy(packet, LEN_TYPE + LEN_CODE + LEN_ENTITY, data, 0, LEN_BODYLENGTH);
-        setBodyLength(byteToInt(data));
+    // 보낼 data - 객체 배열을 직렬화하여 body 초기화
+    public void setObjectArray(Object[] bytes) throws IllegalAccessException {
+        byte[] serializedObject = Serializer.objectArrToBytes(bytes);  // bytes = data length + data
+        this.body = serializedObject;
+        setBodyLength(serializedObject.length - LEN_BODYLENGTH);
     }
 
-    public void setPacketBody(byte[] packet) {
-        byte[] data;
-        if (getBodyLength() > 0) {
-            data = new byte[getBodyLength()];
-            System.arraycopy(packet, 0, data, 0, getBodyLength());
-            setBody(deserialize(data));
+    // 보낼 data - 객체를 직렬화하여 body 초기화
+    public void setObject(Object bytes) throws IllegalAccessException {
+        byte[] serializedObject = Serializer.objectToBytes(bytes);
+        this.body = serializedObject;
+        setBodyLength(serializedObject.length - LEN_BODYLENGTH);
+    }
+
+    // 받은 패킷 -> 헤더 초기화
+    public void setHeader(byte[] packet) {
+        type = packet[0];
+        code = packet[LEN_TYPE];
+        entity = packet[LEN_TYPE + LEN_CODE];
+        byte[] temp = new byte[LEN_BODYLENGTH];
+        System.arraycopy(packet, LEN_TYPE + LEN_CODE + LEN_ENTITY, temp, 0, LEN_BODYLENGTH);
+        setBodyLength(byteToInt(temp));
+    }
+
+    // 받은 패킷 -> 바디 초기화
+    public void setBody(byte[] packet)
+    {
+        if (bodyLength > 0) {
+            byte[] data = new byte[bodyLength];
+            System.arraycopy(packet, LEN_HEADER, data, 0, bodyLength);
+            body = data;
         }
     }
 
-    private byte[] serialize(Object o) {
-        try {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ObjectOutputStream oos = new ObjectOutputStream(baos);
-            oos.writeObject(o);
-            return baos.toByteArray();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
+    // 받은 data 객체 배열로 역직렬화하여 return
+    public Object getObjectArray() throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
+        return Deserializer.bytesToObjectArr(body);
     }
 
-    private Object deserialize(byte[] b) {
-        try {
-            ByteArrayInputStream bais = new ByteArrayInputStream(b);
-            ObjectInputStream ois = new ObjectInputStream(bais);
-            Object ob = ois.readObject();
-            return ob;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+    // 받은 data 객체로 역직렬화하여 return
+    public Object getObject() throws Exception {
+        return Deserializer.bytesToObject(body);
     }
 
     private byte[] intToByte(int i) {
@@ -170,7 +162,4 @@ public class Protocol {
     private int byteToInt(byte[] b) {
         return ByteBuffer.wrap(b).getInt();
     }
-
-
 }
-
