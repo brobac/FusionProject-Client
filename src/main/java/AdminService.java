@@ -1,5 +1,6 @@
-import dto.AccountDTO;
-import network.Serializer;
+import dto.ProfessorDTO;
+import dto.StudentDTO;
+import network.Protocol;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -67,15 +68,66 @@ public class AdminService implements EnrollmentService {
             if (menu == 1) {
                 System.out.print(Message.STUDENT_CODE_INPUT);
                 String studentCode = scanner.nextLine();
-                //TODO 서버로 memberCode 전송해 계정 생성을 요청한다.
-                AccountDTO accountDTO = AccountDTO.builder()
-                        .id(studentCode)
+
+                System.out.print(Message.NAME_INPUT);
+                String name = scanner.nextLine();
+
+                System.out.print(Message.STUDENT_YEAR_INPUT);
+                int year = Integer.parseInt(scanner.nextLine());
+
+                System.out.print(Message.DEPARTMENT_INPUT);
+                String department = scanner.nextLine();
+
+                System.out.print(Message.BIRTHDAY_INPUT);
+                String birthday = scanner.nextLine();
+
+                //관리자가 입력한 학생정보로 studentDTO 생성
+                StudentDTO studentDTO = StudentDTO.builder()
+                        .studentCode(studentCode)
+                        .name(name)
+                        .year(year)
+                        .department(department)
+                        .birthDate(birthday)
                         .build();
-                byte[] bytes = Serializer.objectToBytes(accountDTO);
-                os.write(bytes);
+
+                //계정생성이 필요한 학생의 정보를 서버에게 전달
+                Protocol sendProtocol = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_CREATE, Protocol.ENTITY_ACCOUNT);
+                sendProtocol.setObject(studentDTO);
+                os.write(sendProtocol.getPacket());
+
+                while(true){
+                    is.read()
+                }
+
             } else if (menu == 2) {
                 System.out.print(Message.PROFESSOR_CODE_INPUT);
                 String professorCode = scanner.nextLine();
+
+                System.out.print(Message.NAME_INPUT);
+                String name = scanner.nextLine();
+
+                System.out.print(Message.DEPARTMENT_INPUT);
+                String department = scanner.nextLine();
+
+                System.out.print(Message.BIRTHDAY_INPUT);
+                String birthday = scanner.nextLine();
+
+                System.out.print(Message.PHONE_NUMBER_INPUT);
+                String phoneNumber = scanner.nextLine();
+
+                ProfessorDTO professorDTO = ProfessorDTO.builder()
+                        .professorCode(professorCode)
+                        .name(name)
+                        .department(department)
+                        .birthDate(birthday)
+                        .telePhone(phoneNumber)
+                        .build();
+
+                Protocol sendProtocol = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_CREATE, Protocol.ENTITY_ACCOUNT);
+                sendProtocol.setObject(professorDTO);
+                os.write(sendProtocol.getPacket());
+
+
                 //TODO 서버로 memberCode 전송해 계정 생성을 요청한다.
             } else if (menu == 3) {
             } else {

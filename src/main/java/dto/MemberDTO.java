@@ -1,6 +1,6 @@
 package dto;
 
-import domain.model.Member;
+
 
 import java.time.LocalDate;
 

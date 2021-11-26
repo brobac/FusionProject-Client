@@ -4,6 +4,7 @@ public class Message {
     public static final String WRONG_INPUT_NOTICE = "잘못된 입력입니다. 다시 입력해주세요.";
     public static final String NAME_INPUT = "이름 : ";
     public static final String PHONE_NUMBER_INPUT = "전화번호 : ";
+    public static final String BIRTHDAY_INPUT = "생년월일 : ";
 
     //EnrollmentProgram
     public static final String ENROLLMENT_MENU = "";
@@ -20,8 +21,10 @@ public class Message {
 
     //AdminService > createAccount
     public static final String CREATE_ACCOUNT_MENU = "[1]학생 계정 생성  [2]교수 계정 생성  [3]나가기";
-    public static final String STUDENT_CODE_INPUT = "학번을 입력해주세요 : ";
-    public static final String PROFESSOR_CODE_INPUT = "교원번호를 입력해주세요 : ";
+    public static final String STUDENT_CODE_INPUT = "학번 : ";
+    public static final String STUDENT_YEAR_INPUT = "학년 : ";
+
+    public static final String PROFESSOR_CODE_INPUT = "교원번호 : ";
 
     //AdminService > courseManage
     public static final String COURSE_MANAGE_MENU = "[1]교과목 생성  [2]교과목 수정  [3]교과목 삭제  [4]나가기";
