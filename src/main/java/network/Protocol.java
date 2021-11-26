@@ -1,4 +1,8 @@
-package infra.network;
+
+package network;
+import network.Deserializer;
+import network.Serializer;
+
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.ByteBuffer;
@@ -90,7 +94,7 @@ public class Protocol {
     public int getBodyLength() {
         return bodyLength;
     }
-
+    
     private void setBodyLength(int bodyLength) {
         this.bodyLength = bodyLength;
     }
@@ -101,7 +105,7 @@ public class Protocol {
         packet[0] = type;          // 타입 담기
         packet[LEN_TYPE] = code;   // 코드 담기
         packet[LEN_TYPE + LEN_CODE] = entity; // 엔티티 담기
-        // 데이터 길이 담기
+
         System.arraycopy(intToByte(bodyLength), 0, packet, LEN_TYPE + LEN_CODE + LEN_ENTITY, LEN_BODYLENGTH);
         if (bodyLength > 0) // 바디 담기
             System.arraycopy(body, LEN_BODYLENGTH, packet, LEN_HEADER, getBodyLength());
@@ -181,4 +185,5 @@ public class Protocol {
         setBody(buf);
         return this;
     }
+
 }
