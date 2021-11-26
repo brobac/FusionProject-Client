@@ -20,7 +20,7 @@ public class Message {
 
     //AdminService > createAccount
     public static final String CREATE_ACCOUNT_MENU = "[1]학생 계정 생성  [2]교수 계정 생성  [3]나가기";
-    public static final String STUDENT_CODE_INPUT = "학번을 입력해주세요 : ";
+    public static final String CODE_INPUT = "학번을 입력해주세요 : ";
     public static final String PROFESSOR_CODE_INPUT = "교원번호를 입력해주세요 : ";
 
     //AdminService > courseManage
@@ -68,17 +68,20 @@ public class Message {
 
     //ProfessorService > lecturePlannerSettings
     public static final String LECTURE_PLANNER_SETTINGS_MENU = "[1]강의 계획서 등록 [2]강의 계획서 수정 [3]나가기";
-    public static final String LECTURE_PLANNER_INSERT_INPUT = "강의 계획서를 등록할 개설 교과목 코드를 입력해주세요 : ";
-    public static final String LECTURE_PLANNER_UPDATE_INPUT = "강의 계획서를 등록할 개설 교과목 코드를 입력해주세요 : ";
+    public static final String LECTURE_PLANNER_INSERT_INPUT = "강의 계획서를 등록할 개설 교과목 번호를 입력해주세요 : ";
+    public static final String LECTURE_PLANNER_UPDATE_INPUT = "강의 계획서를 수정할 개설 교과목 번호를 입력해주세요 : ";
     public static final String MISMATCH_LECTURE_CODE = "담당 교과목이 아닙니다.";
-    public static final String LECTURE_PLANNER__INPUT = "강의 계획서 내용을 입력해주세요 : ";
+    public static final String LECTURE_PLANNER_INPUT = "강의 계획서 내용을 입력해주세요 : ";
+    public static final String LECTURE_PLANNER_INPUT_SUCCESS ="강의 계획서 등록을 성공하였습니다.";
+    public static final String LECTURE_PLANNER_INPUT_FAIL ="강의 계획서 등록을 실패하였습니다.";
+    public static final String LECTURE_PLANNER_UPDATE_SUCCESS ="강의 계획서 수정을 성공하였습니다.";
+    public static final String LECTURE_PLANNER_UPDATE_FAIL ="강의 계획서 수정을 실패하였습니다.";
 
     //ProfessorService > LecturePlannerLookup
-    public static final String LECTURE_PLANNER_LOOKUP_MENU = "[1]강의 계획서 조회 [2]나가기";
 
     //ProfessorService > studentListLookup
-    public static final String STUDENT_LIST_LOOKUP_MENU = "[1]교과목 수강 신청 학생 목록 조회 [2]나가기";
-
+    public static final String STUDENT_LIST_LOOKUP_MENU = "교과목 수강 신청 학생 목록을 조회할 개설 교과목 번호를 입력해주세요 : ";
+    public static final String LOOKUP_STUDENT_LIST_FAIL = "교과목 수강 신청 학생 목록 조회를 실패하였습니다.";
     //ProfessorService > timeTableLookup
 
 
@@ -86,29 +89,31 @@ public class Message {
 
 
     //StudentService > updatePersonalInformation
-    public static final String STUDENT_LOOKUP_PERSONAL_INFORMATION_FAIL = "개인정보 조회를 실패하였습니다.";
-    public static final String STUDENT_UPDATE_NAME_SUCCESS = "이름 수정을 성공하였습니다.";
-    public static final String STUDENT_UPDATE_NAME_FAIL = "이름 수정을 실패하였습니다.";
-    public static final String STUDENT_UPDATE_PHONENUM_SUCCESS = "전화번호 수정을 성공하였습니다.";
-    public static final String STUDENT_UPDATE_PHONENUM_FAIL = "전화번호 수정을 실패하였습니다.";
-    public static final String STUDENT_UPDATE_PASSWORD_SUCCESS = "비밀번호 수정을 성공하였습니다.";
-    public static final String STUDENT_UPDATE_PASSWORD_FAIL = "비밀번호 수정을 실패하였습니다.";
+    public static final String LOOKUP_PERSONAL_INFORMATION_FAIL = "개인정보 조회를 실패하였습니다.";
+    public static final String UPDATE_NAME_SUCCESS = "이름 수정을 성공하였습니다.";
+    public static final String UPDATE_NAME_FAIL = "이름 수정을 실패하였습니다.";
+    public static final String UPDATE_PHONENUM_SUCCESS = "전화번호 수정을 성공하였습니다.";
+    public static final String UPDATE_PHONENUM_FAIL = "전화번호 수정을 실패하였습니다.";
+    public static final String UPDATE_PASSWORD_SUCCESS = "비밀번호 수정을 성공하였습니다.";
+    public static final String UPDATE_PASSWORD_FAIL = "비밀번호 수정을 실패하였습니다.";
 
     //StudentService > registeringManage
     public static final String REGISTERING_MENU = "[1]수강 신청 [2]수강 취소 [3]수강 신청 현황 조회 [4]나가기";
-    public static final String STUDENT_REGISTERING_SUCCESS = "수강신청을 성공하였습니다.";
-    public static final String STUDENT_REGISTERING_FAIL = "수강신청을 실패하였습니다.";
-    public static final String STUDENT_REGISTERING_CANCEL_SUCCESS = "수강신청 취소를 성공하였습니다.";
-    public static final String STUDENT_REGISTERING_CANCEL_FAIL = "수강신청 취소를 실패하였습니다.";
-    public static final String STUDENT_LOOKUP_REGISTERING_FAIL = "수강신청 현황 조회를 실패하였습니다.";
+    public static final String REGISTERING_SUCCESS = "수강신청을 성공하였습니다.";
+    public static final String REGISTERING_FAIL = "수강신청을 실패하였습니다.";
+    public static final String REGISTERING_CANCEL_SUCCESS = "수강신청 취소를 성공하였습니다.";
+    public static final String REGISTERING_CANCEL_FAIL = "수강신청 취소를 실패하였습니다.";
+    public static final String LOOKUP_REGISTERING_FAIL = "수강신청 현황 조회를 실패하였습니다.";
 
     //StudentService > lectureLookup
-    public static final String STUDENT_LOOKUP_LECTURE_FAIL = "전체 개설교과목 조회를 실패하였습니다.";
+    public static final String LOOKUP_LECTURE_FAIL = "전체 개설교과목 조회를 실패하였습니다.";
 
     //StudentService >lecturePlannerLookup
-    public static final String STUDENT_LOOKUP_LECTURE_PLANNER_FAIL = "개설교과목 강의 계획서 조회를 실패하였습니다.";
+    public static final String LECTURE_PLANNER_LOOKUP_MENU = "[1]강의 계획서 조회 [2]나가기";
+
+    public static final String LOOKUP_LECTURE_PLANNER_FAIL = "개설교과목 강의 계획서 조회를 실패하였습니다.";
 
     //StudentService > timeTableLookup
-    public static final String STUDENT_LOOKUP_TIMETABLE_FAIL = "강의시간표 조회를 실패하였습니다.";
+    public static final String LOOKUP_TIMETABLE_FAIL = "강의시간표 조회를 실패하였습니다.";
 
 }
