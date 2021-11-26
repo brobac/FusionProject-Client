@@ -201,6 +201,7 @@ public class ProfessorService implements EnrollmentService {
                     System.out.println(Message.PROFESSOR_LECTURE_LOOKUP_MENU2);
                     System.out.print(Message.INPUT);
                     menu = scanner.nextInt();
+
                     if (menu == 1) {
                         System.out.println(Message.TARGET_GRADE_INPUT);
                         int targetGrade = scanner.nextInt();
