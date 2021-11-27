@@ -1,14 +1,15 @@
 public class Message {
     //공용
-    public static final String INPUT = "입력 : ";
+    public static final String INPUT = "입력 > ";
     public static final String WRONG_INPUT_NOTICE = "잘못된 입력입니다. 다시 입력해주세요.";
     public static final String NAME_INPUT = "이름 : ";
     public static final String PHONE_NUMBER_INPUT = "전화번호 : ";
     public static final String BIRTHDAY_INPUT = "생년월일 : ";
 
     //EnrollmentProgram
-    public static final String ENROLLMENT_MENU = "";
-
+    public static final String ENROLLMENT_MENU = "[1] 로그인 [2] 종료";
+    public static final String ID_INPUT = "아이디 : ";
+    public static final String PW_INPUT = "패스워드 : ";
 
     //AdminService
     public static final String ADMIN_SERVICE_MENU = "[1] 계정 생성  [2]교과목 관리  [3]개설 교과목 관리  [4]강의계획서 입력기간 설정\n[5] 수강신청 기간 설정  [6]교수 / 학생 조회  [7]개설 교과목 조회  [8] 종료";
@@ -25,8 +26,6 @@ public class Message {
     public static final String PROFESSOR_CODE_INPUT = "교원번호를 입력해주세요 : ";
     public static final String STUDENT_CODE_INPUT = "학번 : ";
     public static final String STUDENT_YEAR_INPUT = "학년 : ";
-
-    public static final String PROFESSOR_CODE_INPUT = "교원번호 : ";
 
     //AdminService > courseManage
     public static final String COURSE_MANAGE_MENU = "[1]교과목 생성  [2]교과목 수정  [3]교과목 삭제  [4]나가기";
@@ -63,7 +62,8 @@ public class Message {
     public static final String PROFESSOR_SERVICE_MENU = "[1]개인정보 수정  [2]개설 교과목 조회  [3]강의 계획서 관리  [4]개설 교과목 강의 계획서 조회\n [5]교과목 수강 신청 학생 목록 조회  [6]교과목 시간표 조회  [7]종료";
 
     //ProfessorService > updatePersonalInformation
-    public static final String UPDATE_PERSONAL_INFORMATION_MENU = "[1]이름 변경  [2]전화번호 변경  [3]비밀번호 변경  [4]나기기";
+    // StudentService > personalInformation
+    public static final String UPDATE_PERSONAL_INFORMATION_MENU = "[1] 이름 변경  [2]전화번호 변경  [3]비밀번호 변경  [4]나기기";
     public static final String CHANGE_NAME_INPUT = "새 이름 : ";
     public static final String CHANGE_PHONE_NUMBER_INPUT = "새 전화번호 : ";
     public static final String CHANGE_PASSWORD_INPUT = "새 비밀번호 : ";
@@ -92,10 +92,11 @@ public class Message {
 
 
     //StudentService
-
+//    public static final String STUDENT_SERVICE_MENU = "[1] 개인정보 관리 [2] 수강신청 관리 [3] 개설교과목 조회 [4] 시간표 조회 [5] 로그아웃";
+    public static final String STUDENT_SERVICE_MENU = "[1] 개인정보 관리 [2] 수강신청 관리 [3] 개설교과목 조회 [4] 강의계획서 조회 [5] 시간표 조회 [6] 로그아웃";
 
     //StudentService > updatePersonalInformation
-    public static final String LOOKUP_PERSONAL_INFORMATION_FAIL = "개인정보 조회를 실패하였습니다.";
+    public static final String LOOKUP_PERSONAL_INFORMATION_FAIL = "개인정보 조회를 실패하였습니다."
     public static final String UPDATE_NAME_SUCCESS = "이름 수정을 성공하였습니다.";
     public static final String UPDATE_NAME_FAIL = "이름 수정을 실패하였습니다.";
     public static final String UPDATE_PHONENUM_SUCCESS = "전화번호 수정을 성공하였습니다.";
@@ -104,7 +105,7 @@ public class Message {
     public static final String UPDATE_PASSWORD_FAIL = "비밀번호 수정을 실패하였습니다.";
 
     //StudentService > registeringManage
-    public static final String REGISTERING_MENU = "[1]수강 신청 [2]수강 취소 [3]수강 신청 현황 조회 [4]나가기";
+    public static final String REGISTERING_MENU = "[1] 수강 신청 [2] 수강 취소 [3] 수강 신청 현황 조회 [4]나가기";  //TODO 수강신청 현황 조회 꼭 있어야함?
     public static final String REGISTERING_SUCCESS = "수강신청을 성공하였습니다.";
     public static final String REGISTERING_FAIL = "수강신청을 실패하였습니다.";
     public static final String REGISTERING_CANCEL_SUCCESS = "수강신청 취소를 성공하였습니다.";
