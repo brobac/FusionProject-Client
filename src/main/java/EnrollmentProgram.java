@@ -10,7 +10,7 @@ public class EnrollmentProgram {
     private static InputStream is;
     private static OutputStream os;
 
-    public static void run(String address, int portNumber) throws IOException {
+    public static void run(String address, int portNumber) throws IOException, IllegalAccessException, NoSuchMethodException, InstantiationException {
         socket = new Socket(address, portNumber);
         is = socket.getInputStream();
         os = socket.getOutputStream();

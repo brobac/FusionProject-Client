@@ -461,7 +461,7 @@ public class AdminService implements EnrollmentService {
         }
     }
 
-    private void memberLookup() {
+    private void memberLookup() throws IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
         int menu = 0;
         while (menu != 3) {
             System.out.println(Message.MEMBER_LOOKUP_MENU);
@@ -470,8 +470,50 @@ public class AdminService implements EnrollmentService {
             scanner.nextLine();
             if (menu == 1) {
                 //TODO 학생 조회
+                Protocol sendProtocol = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_READ, Protocol.ENTITY_STUD_LIST);
+                sendProtocol.send(os);
+                Protocol receiveProtocol = new Protocol();
+                while (receiveProtocol.getType() == Protocol.UNDEFINED) {
+                    receiveProtocol.read(is);
+                    int result = receiveProtocol.getType();
+                    if (result == Protocol.T2_CODE_SUCCESS) {
+                        StudentDTO[] studentList = (StudentDTO[]) receiveProtocol.getObjectArray();
+                        for (int i = 0; i < studentList.length; i++) {
+                            System.out.printf("[ %d ] ", i + 1);
+                            System.out.print("학과 : " + studentList[i].getDepartment());
+                            System.out.print("학년 : " + studentList[i].getYear());
+                            System.out.print("이름 : " + studentList[i].getName());
+                            System.out.print("학번 : " + studentList[i].getStudentCode());
+                            System.out.print("생년월일 : " + studentList[i].getBirthDate());
+                        }
+                    } else {
+                        System.out.println("조회 실패");
+                        return;
+                    }
+                }
             } else if (menu == 2) {
                 //TODO 교수 조회
+                Protocol sendProtocol = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_READ, Protocol.ENTITY_PROF_LIST);
+                sendProtocol.send(os);
+                Protocol receiveProtocol = new Protocol();
+                while (receiveProtocol.getType() == Protocol.UNDEFINED) {
+                    receiveProtocol.read(is);
+                    int result = receiveProtocol.getType();
+                    if (result == Protocol.T2_CODE_SUCCESS) {
+                        ProfessorDTO[] professorList = (ProfessorDTO[]) receiveProtocol.getObjectArray();
+                        for (int i = 0; i < professorList.length; i++) {
+                            System.out.printf("[ %d ] ", i + 1);
+                            System.out.print("학과 : " + professorList[i].getDepartment());
+                            System.out.print("이름 : " + professorList[i].getName());
+                            System.out.print("학번 : " + professorList[i].getProfessorCode());
+                            System.out.print("전화번호 : " + professorList[i].getTelePhone());
+                            System.out.print("생년월일 : " + professorList[i].getBirthDate());
+                        }
+                    } else {
+                        System.out.println("조회 실패");
+                        return;
+                    }
+                }
             } else if (menu == 3) {
             } else {
                 System.out.println(Message.WRONG_INPUT_NOTICE);
@@ -497,6 +539,7 @@ public class AdminService implements EnrollmentService {
         }
     }
 }
+
 //    public enum Menu {
 //        CREATE_ACCOUNT(1),
 //        COURSE_MANAGE(2),
