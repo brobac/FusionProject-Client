@@ -35,6 +35,7 @@ public class Message {
     //AdminService > lectureManage
     public static final String LECTURE_MANAGE_MENU = "[1]교과목 생성  [2]교과목 수정  [3]교과목 삭제  [4]나가기";
     public static final String CREATE_LECTURE = "생성할 교과목의 정보를 입력해주세요.";
+
     public static final String UPDATE_LECTURE_INPUT = "수정할 개설 교과목 코드를 입력해주세요 : ";
     public static final String DELETE_LECTURE_INPUT = "삭제할 개설 교과목 코드를 입력해주세요 : ";
 

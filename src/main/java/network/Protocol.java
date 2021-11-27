@@ -166,7 +166,7 @@ public class Protocol {
 
     public void send(OutputStream os) throws IOException {
         os.write(getPacket());
-        System.out.println("Send to Client");
+        System.out.println("Send to Server");
     }
 
     public Protocol read(InputStream is) throws IOException {
