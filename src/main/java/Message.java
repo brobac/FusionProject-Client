@@ -42,7 +42,7 @@ public class Message {
 
     //AdminService > plannerInputPeriodSettings
     public static final String PLANNER_INPUT_PERIOD_MENU = "[1]강의계획서 입력 기간 설정  [2]등록된 입력 기간 조회  [3]나가기";
-    public static final String BEGIN_PERIOD_INPUT = "시작 날짜 및 시간 : ";
+    public static final String BEGIN_PERIOD_INPUT = "시작 날짜 및 시간(yyyy-MM-dd HH:mm) : ";
     public static final String END_PERIOD_INPUT = "종료 날짜 및 시간 : ";
 
     //AdminService > registeringPeriodSettings

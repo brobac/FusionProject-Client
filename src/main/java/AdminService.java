@@ -1,4 +1,5 @@
 import dto.CourseDTO;
+import dto.PeriodDTO;
 import dto.ProfessorDTO;
 import dto.StudentDTO;
 import network.Protocol;
@@ -6,6 +7,7 @@ import network.Protocol;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
@@ -336,7 +338,7 @@ public class AdminService implements EnrollmentService {
         }
     }
 
-    private void plannerInputPeriodSettings() {
+    private void plannerInputPeriodSettings() throws IllegalAccessException, IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException {
         int menu = 0;
         while (menu != 3) {
             System.out.println(Message.PLANNER_INPUT_PERIOD_MENU);
@@ -345,13 +347,50 @@ public class AdminService implements EnrollmentService {
             scanner.nextLine();
             if (menu == 1) {
                 System.out.print(Message.BEGIN_PERIOD_INPUT);
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일 hh시 mm분");
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
                 LocalDateTime begin = LocalDateTime.parse(scanner.nextLine(), formatter); // format이랑 일치하지 않으면 오류 발생
                 System.out.print(Message.END_PERIOD_INPUT);
                 LocalDateTime end = LocalDateTime.parse(scanner.nextLine(), formatter);  // format이랑 일치하지 않으면 오류 발생
+                PeriodDTO periodDTO = PeriodDTO.builder()
+                        .beginTime(begin)
+                        .endTime(end)
+                        .build();
+                Protocol sendProtocol = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_CREATE, Protocol.ENTITY_PLANNER_PERIOD);
+                sendProtocol.setObject(periodDTO);
+                sendProtocol.send(os);
+                Protocol receiveProtocol = new Protocol();
+                while (receiveProtocol.getType() == Protocol.UNDEFINED) {
+                    receiveProtocol.read(is);
+                    int result = receiveProtocol.getType();
+                    if (result == Protocol.T2_CODE_SUCCESS) {
+                        System.out.println("강의 계획서 입력기간 등록 성공");
+                    } else {
+                        System.out.println("강의 계획서 입력기간 등록 실패");
+                        return;
+                    }
+                }
+
+
                 //TODO 사용자로부터 입력받은 기간을 서버에게 등록 요청한다.
 
             } else if (menu == 2) {
+                Protocol sendProtocol = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_READ, Protocol.ENTITY_PLANNER_PERIOD);
+                sendProtocol.send(os);
+                Protocol receiveProtocol = new Protocol();
+                while (receiveProtocol.getType() == Protocol.UNDEFINED) {
+                    receiveProtocol.read(is);
+                    int result = receiveProtocol.getType();
+                    if (result == Protocol.T2_CODE_SUCCESS) {
+                        PeriodDTO[] periodDTOS = (PeriodDTO[]) receiveProtocol.getObjectArray();
+                        for (PeriodDTO dto : periodDTOS) {
+                            System.out.print("시작 : " + dto.getBeginTime() + " ~ ");
+                            System.out.print("종료 : " + dto.getEndTime());
+                        }
+                    } else {
+                        System.out.println("조회 실패");
+                        return;
+                    }
+                }
                 //TODO 서버에게 현재 등록되어있는 강의계획서 등록 기간 정보를 받아와서 출력한다.
             } else if (menu == 3) {
             } else {
