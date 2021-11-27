@@ -1,9 +1,10 @@
-import dto.AccountDTO;
-import network.Serializer;
+import dto.*;
+import network.Protocol;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
@@ -20,7 +21,7 @@ public class AdminService implements EnrollmentService {
         this.os = os;
     }
 
-    public void run() {
+    public void run() throws IOException, IllegalAccessException {
         int menu = 0;
         while (menu != 8) {
             System.out.println(Message.ADMIN_SERVICE_MENU);
@@ -67,15 +68,83 @@ public class AdminService implements EnrollmentService {
             if (menu == 1) {
                 System.out.print(Message.STUDENT_CODE_INPUT);
                 String studentCode = scanner.nextLine();
-                //TODO 서버로 memberCode 전송해 계정 생성을 요청한다.
-                AccountDTO accountDTO = AccountDTO.builder()
-                        .id(studentCode)
+
+                System.out.print(Message.NAME_INPUT);
+                String name = scanner.nextLine();
+
+                System.out.print(Message.STUDENT_YEAR_INPUT);
+                int year = Integer.parseInt(scanner.nextLine());
+
+                System.out.print(Message.DEPARTMENT_INPUT);
+                String department = scanner.nextLine();
+
+                System.out.print(Message.BIRTHDAY_INPUT);
+                String birthday = scanner.nextLine();
+
+                //관리자가 입력한 학생정보로 studentDTO 생성
+                StudentDTO studentDTO = StudentDTO.builder()
+                        .studentCode(studentCode)
+                        .name(name)
+                        .year(year)
+                        .department(department)
+                        .birthDate(birthday)
                         .build();
-                byte[] bytes = Serializer.objectToBytes(accountDTO);
-                os.write(bytes);
+
+                //계정생성이 필요한 학생의 정보를 서버에게 전달
+                Protocol sendProtocol = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_CREATE, Protocol.ENTITY_ACCOUNT);
+                sendProtocol.setObject(studentDTO);
+                sendProtocol.send(os);
+
+                Protocol receiveProtocol = new Protocol();
+                while (receiveProtocol.getType() == Protocol.UNDEFINED) {
+                    receiveProtocol.read(is);
+                    int result = receiveProtocol.getType();
+                    if (result == Protocol.T2_CODE_SUCCESS) {
+                        System.out.println("계정생성 성공");
+                    } else {
+                        System.out.println("계정생성 실패");
+                    }
+                }
+
             } else if (menu == 2) {
                 System.out.print(Message.PROFESSOR_CODE_INPUT);
                 String professorCode = scanner.nextLine();
+
+                System.out.print(Message.NAME_INPUT);
+                String name = scanner.nextLine();
+
+                System.out.print(Message.DEPARTMENT_INPUT);
+                String department = scanner.nextLine();
+
+                System.out.print(Message.BIRTHDAY_INPUT);
+                String birthday = scanner.nextLine();
+
+                System.out.print(Message.PHONE_NUMBER_INPUT);
+                String phoneNumber = scanner.nextLine();
+
+                ProfessorDTO professorDTO = ProfessorDTO.builder()
+                        .professorCode(professorCode)
+                        .name(name)
+                        .department(department)
+                        .birthDate(birthday)
+                        .telePhone(phoneNumber)
+                        .build();
+
+                Protocol sendProtocol = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_CREATE, Protocol.ENTITY_ACCOUNT);
+                sendProtocol.setObject(professorDTO);
+                sendProtocol.send(os);
+
+                Protocol receiveProtocol = new Protocol();
+                while (receiveProtocol.getType() == Protocol.UNDEFINED) {
+                    receiveProtocol.read(is);
+                    int result = receiveProtocol.getType();
+                    if (result == Protocol.T2_CODE_SUCCESS) {
+                        System.out.println("계정생성 성공");
+                    } else {
+                        System.out.println("계정생성 실패");
+                    }
+                }
+
                 //TODO 서버로 memberCode 전송해 계정 생성을 요청한다.
             } else if (menu == 3) {
             } else {
@@ -84,9 +153,8 @@ public class AdminService implements EnrollmentService {
         }
     }
 
-    private void courseManage() {
+    private void courseManage() throws Exception {
         int menu = 0;
-        String courseCode;
         while (menu != 4) {
             System.out.println(Message.COURSE_MANAGE_MENU);
             System.out.print(Message.INPUT);
@@ -94,18 +162,145 @@ public class AdminService implements EnrollmentService {
             scanner.nextLine();
             if (menu == 1) {
                 System.out.println(Message.CREATE_COURSE);
-                //TODO 사용자로 부터 과목 정보를 입력받고 서버에게 교과목 생성을 요청한다.
+                System.out.println(Message.COURSE_CODE_INPUT);
+                String courseCode = scanner.nextLine();
+                System.out.println(Message.COURSE_NAME_INPUT);
+                String courseName = scanner.nextLine();
+                System.out.println(Message.DEPARTMENT_INPUT);
+                String department = scanner.nextLine();
+                System.out.println(Message.TARGET_GRADE_INPUT);
+                int targetGrade = Integer.parseInt(scanner.nextLine());
+                System.out.println(Message.CREDIT_INPUT);
+                int credit = Integer.parseInt(scanner.nextLine());
+
+                CourseDTO courseDTO = CourseDTO.builder()
+                        .courseCode(courseCode)
+                        .courseName(courseName)
+                        .department(department)
+                        .targetYear(targetGrade)
+                        .credit(credit)
+                        .build();
+
+                Protocol sendProtocol = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_CREATE, Protocol.ENTITY_COURSE);
+                sendProtocol.setObject(courseDTO);
+                sendProtocol.send(os);
+
+                Protocol receiveProtocol = new Protocol();
+                while (receiveProtocol.getType() == Protocol.UNDEFINED) {
+                    receiveProtocol.read(is);
+                    int result = receiveProtocol.getType();
+                    if (result == Protocol.T2_CODE_SUCCESS) {
+                        System.out.println("과목 생성 성공");
+                    } else {
+                        System.out.println("과목 생성 실패");
+                        //잘못된 입력? 이미존재하는 과목?
+                    }
+                }
 
             } else if (menu == 2) {
                 System.out.print(Message.UPDATE_COURSE_INPUT);
-                courseCode = scanner.nextLine();
+                String courseCode = scanner.nextLine();
+                Protocol sendProtocol = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_READ, Protocol.ENTITY_COURSE);
+                CourseDTO courseDTO = CourseDTO.builder()
+                        .courseCode(courseCode)
+                        .build();
+                sendProtocol.setObject(courseDTO);
+                sendProtocol.send(os);
+
+                //해당과목 정보조회
+                Protocol receiveProtocol = new Protocol();
+                while (receiveProtocol.getType() == Protocol.UNDEFINED) {
+                    receiveProtocol.read(is);
+                    int result = receiveProtocol.getType();
+                    if (result == Protocol.T2_CODE_SUCCESS) {
+                        System.out.println("조회성공");
+                        courseDTO = (CourseDTO) receiveProtocol.getObject();
+                    } else {
+                        System.out.println("과목 생성 실패");
+                        return;
+                    }
+                }
+                System.out.println("현재 정보");
+                System.out.println("과목코드 : " + courseDTO.getCourseCode());
+                System.out.println("과목명 : " + courseDTO.getCourseName());
+                System.out.println("학과 : " + courseDTO.getDepartment());
+                System.out.println("대상학년 : " + courseDTO.getTargetYear());
+                System.out.println("학점 : " + courseDTO.getCredit());
+                int updateMenu = 0;
+                while (updateMenu != 7) {
+                    System.out.println("[1] 과목코드 변경 [2] 과목명 변경 [3]학과 변경 [4]대상학년 변경 [5]학점 변경 [6]제출하기");
+                    System.out.print(Message.INPUT);
+                    switch (updateMenu) {
+                        case 1:
+                            System.out.print(Message.COURSE_CODE_INPUT);
+                            courseDTO.setCourseCode(scanner.nextLine());
+                            break;
+                        case 2:
+                            System.out.print(Message.COURSE_NAME_INPUT);
+                            courseDTO.setCourseName(scanner.nextLine());
+                            break;
+                        case 3:
+                            System.out.print(Message.DEPARTMENT_INPUT);
+                            courseDTO.setDepartment(scanner.nextLine());
+                            break;
+                        case 4:
+                            System.out.print(Message.TARGET_GRADE_INPUT);
+                            courseDTO.setTargetYear(Integer.parseInt(scanner.nextLine()));
+                            break;
+                        case 5:
+                            System.out.print(Message.CREDIT_INPUT);
+                            courseDTO.setCredit(Integer.parseInt(scanner.nextLine()));
+                            break;
+                        case 6:
+                            sendProtocol = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_UPDATE, Protocol.ENTITY_COURSE);
+                            sendProtocol.setObject(courseDTO);
+                            sendProtocol.send(os);
+                            receiveProtocol = new Protocol();
+                            while (receiveProtocol.getType() == Protocol.UNDEFINED) {
+                                receiveProtocol.read(is);
+                                int result = receiveProtocol.getType();
+                                if (result == Protocol.T2_CODE_SUCCESS) {
+                                    System.out.println("업데이트 되었습니다.");
+                                } else {
+                                    System.out.println("업데이트 실패");
+                                    return;
+                                }
+                            }
+                            break;
+                        case 7:
+                            break;
+                        default:
+                            System.out.println(Message.WRONG_INPUT_NOTICE);
+                            break;
+                    }
+                }
+
+//findByOption 제외 다 DTO에 담아서 보낸다.
+
+
                 //TODO 서버에서 현재 정보를 받아와서 print 해주고 새로운 입력을 받는다.
 
             } else if (menu == 3) {
                 System.out.print(Message.DELETE_COURSE_INPUT);
-                courseCode = scanner.nextLine();
-                //TODO 사용자로부터 입력받은 과목코드에 해당하는 과목을 서버에게 삭제 요청한다.
+                String courseCode = scanner.nextLine();
+                Protocol sendProtocol = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_DELETE, Protocol.ENTITY_COURSE);
+                CourseDTO courseDTO = CourseDTO.builder()
+                        .courseCode(courseCode)
+                        .build();
+                sendProtocol.setObject(courseDTO);
+                sendProtocol.send(os);
 
+                Protocol receiveProtocol = new Protocol();
+                while (receiveProtocol.getType() == Protocol.UNDEFINED) {
+                    receiveProtocol.read(is);
+                    int result = receiveProtocol.getType();
+                    if (result == Protocol.T2_CODE_SUCCESS) {
+                        System.out.println("삭제 성공");
+                    } else {
+                        System.out.println("삭제 실패");
+                        return;
+                    }
+                }
             } else if (menu == 4) {
             } else {
                 System.out.println(Message.WRONG_INPUT_NOTICE);
@@ -140,7 +335,7 @@ public class AdminService implements EnrollmentService {
         }
     }
 
-    private void plannerInputPeriodSettings() {
+    private void plannerInputPeriodSettings() throws IllegalAccessException, IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException {
         int menu = 0;
         while (menu != 3) {
             System.out.println(Message.PLANNER_INPUT_PERIOD_MENU);
@@ -149,13 +344,50 @@ public class AdminService implements EnrollmentService {
             scanner.nextLine();
             if (menu == 1) {
                 System.out.print(Message.BEGIN_PERIOD_INPUT);
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일 hh시 mm분");
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
                 LocalDateTime begin = LocalDateTime.parse(scanner.nextLine(), formatter); // format이랑 일치하지 않으면 오류 발생
                 System.out.print(Message.END_PERIOD_INPUT);
                 LocalDateTime end = LocalDateTime.parse(scanner.nextLine(), formatter);  // format이랑 일치하지 않으면 오류 발생
+                PeriodDTO periodDTO = PeriodDTO.builder()
+                        .beginTime(begin)
+                        .endTime(end)
+                        .build();
+                Protocol sendProtocol = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_CREATE, Protocol.ENTITY_PLANNER_PERIOD);
+                sendProtocol.setObject(periodDTO);
+                sendProtocol.send(os);
+                Protocol receiveProtocol = new Protocol();
+                while (receiveProtocol.getType() == Protocol.UNDEFINED) {
+                    receiveProtocol.read(is);
+                    int result = receiveProtocol.getType();
+                    if (result == Protocol.T2_CODE_SUCCESS) {
+                        System.out.println("강의 계획서 입력기간 등록 성공");
+                    } else {
+                        System.out.println("강의 계획서 입력기간 등록 실패");
+                        return;
+                    }
+                }
+
+
                 //TODO 사용자로부터 입력받은 기간을 서버에게 등록 요청한다.
 
             } else if (menu == 2) {
+                Protocol sendProtocol = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_READ, Protocol.ENTITY_PLANNER_PERIOD);
+                sendProtocol.send(os);
+                Protocol receiveProtocol = new Protocol();
+                while (receiveProtocol.getType() == Protocol.UNDEFINED) {
+                    receiveProtocol.read(is);
+                    int result = receiveProtocol.getType();
+                    if (result == Protocol.T2_CODE_SUCCESS) {
+                        PeriodDTO[] periodDTOS = (PeriodDTO[]) receiveProtocol.getObjectArray();
+                        for (PeriodDTO dto : periodDTOS) {
+                            System.out.print("시작 : " + dto.getBeginTime() + " ~ ");
+                            System.out.print("종료 : " + dto.getEndTime());
+                        }
+                    } else {
+                        System.out.println("조회 실패");
+                        return;
+                    }
+                }
                 //TODO 서버에게 현재 등록되어있는 강의계획서 등록 기간 정보를 받아와서 출력한다.
             } else if (menu == 3) {
             } else {
@@ -164,7 +396,7 @@ public class AdminService implements EnrollmentService {
         }
     }
 
-    private void registeringPeriodSettings() {
+    private void registeringPeriodSettings() throws IllegalAccessException, IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException {
         int menu = 0;
         while (menu != 3) {
             System.out.println(Message.REGISTERING_PERIOD_MENU);
@@ -173,17 +405,55 @@ public class AdminService implements EnrollmentService {
             scanner.nextLine();
             if (menu == 1) {
                 System.out.print(Message.BEGIN_PERIOD_INPUT);
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일 hh시 mm분");
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
                 LocalDateTime begin = LocalDateTime.parse(scanner.nextLine(), formatter);
                 System.out.print(Message.END_PERIOD_INPUT);
                 LocalDateTime end = LocalDateTime.parse(scanner.nextLine(), formatter);
                 System.out.println(Message.TARGET_GRADE_INPUT);
                 int grade = scanner.nextInt();
-                //TODO 사용자로부터 입력받은 기간을 서버에게 등록 요청한다.
+                PeriodDTO periodDTO = PeriodDTO.builder()
+                        .beginTime(begin)
+                        .endTime(end)
+                        .build();
+                RegisteringPeriodDTO registeringPeriodDTO = RegisteringPeriodDTO.builder()
+                        .period(periodDTO)
+                        .allowedYear(grade)
+                        .build();
+                Protocol sendProtocol = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_CREATE, Protocol.ENTITY_REGIS_PERIOD);
+                sendProtocol.setObject(registeringPeriodDTO);
+                sendProtocol.send(os);
 
+                Protocol receiveProtocol = new Protocol();
+                while (receiveProtocol.getType() == Protocol.UNDEFINED) {
+                    receiveProtocol.read(is);
+                    int result = receiveProtocol.getType();
+                    if (result == Protocol.T2_CODE_SUCCESS) {
+                        System.out.println("수강신청 기간 등록 성공");
+                    } else {
+                        System.out.println("수강신청 기간 등록 성공");
+                        return;
+                    }
+                }
             } else if (menu == 2) {
                 //TODO 서버에게 현재 등록되어있는 수강신청 기간 정보를 받아와서 출력한다.
-
+                Protocol sendProtocol = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_READ, Protocol.ENTITY_REGIS_PERIOD);
+                sendProtocol.send(os);
+                Protocol receiveProtocol = new Protocol();
+                while (receiveProtocol.getType() == Protocol.UNDEFINED) {
+                    receiveProtocol.read(is);
+                    int result = receiveProtocol.getType();
+                    if (result == Protocol.T2_CODE_SUCCESS) {
+                        RegisteringPeriodDTO[] registeringPeriodDTOS = (RegisteringPeriodDTO[]) receiveProtocol.getObjectArray();
+                        for (RegisteringPeriodDTO dto : registeringPeriodDTOS) {
+                            System.out.print("대상 학년 : " + dto.getAllowedYear() + " ");
+                            System.out.print("시작 : " + dto.getPeriodDTO().getBeginTime() + " ~ ");
+                            System.out.print("종료 : " + dto.getPeriodDTO().getEndTime());
+                        }
+                    } else {
+                        System.out.println("조회 실패");
+                        return;
+                    }
+                }
             } else if (menu == 3) {
             } else {
                 System.out.println(Message.WRONG_INPUT_NOTICE);

@@ -1,3 +1,4 @@
+import domain.model.Account;
 import dto.AccountDTO;
 import network.Protocol;
 
@@ -20,8 +21,7 @@ public class EnrollmentProgram {
         }
         //직책에 따라 다른 서비스 실행
     }
-
-    private static boolean login() throws IOException {
+    private static AccountDTO login() throws IOException, IllegalAccessException {
         while (true) {
             BufferedReader userIn = new BufferedReader(new InputStreamReader(System.in));
             System.out.print("아이디 : ");
@@ -33,8 +33,9 @@ public class EnrollmentProgram {
                     .password(pw)
                     .build();
             Protocol protocol = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_CREATE, Protocol.ENTITY_ACCOUNT);
-            protocol.setBod
+            protocol.setObject(accountDTO);
             os.write(protocol.getPacket());
+
 
             //TODO 로그인 정보 생성 및 패킷 전송
         }

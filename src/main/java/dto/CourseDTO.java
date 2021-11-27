@@ -1,7 +1,6 @@
 package dto;
 
 
-import domain.model.Course;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

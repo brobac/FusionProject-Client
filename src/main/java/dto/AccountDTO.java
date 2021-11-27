@@ -5,40 +5,48 @@ public class AccountDTO {
     private String id;
     private String password;
     private long memberID;
+    private String position;
 
 
-    public static class Builder{
+    public static class Builder {
         private long pk;
         private String id;
         private String password;
         private long memberID;
+        private String position;
 
-        public Builder pk(long value){
+
+        public Builder pk(long value) {
             pk = value;
             return this;
         }
 
-        public Builder memberID(long value){
+        public Builder memberID(long value) {
             memberID = value;
             return this;
         }
 
-        public Builder id(String value){
+        public Builder id(String value) {
             id = value;
             return this;
         }
 
-        public Builder password(String value){
+        public Builder password(String value) {
             password = value;
             return this;
         }
 
-        public AccountDTO build(){
+        public Builder position(String value) {
+            position = value;
+            return this;
+        }
+
+        public AccountDTO build() {
             return new AccountDTO(this);
         }
     }
 
-    public static Builder builder(){
+    public static Builder builder() {
         return new Builder();
     }
 
@@ -47,6 +55,7 @@ public class AccountDTO {
         id = builder.id;
         password = builder.password;
         memberID = builder.memberID;
+        position = builder.position;
     }
 
     public long getPk() {
@@ -63,5 +72,9 @@ public class AccountDTO {
 
     public long getMemberID() {
         return memberID;
+    }
+
+    public String getPosition() {
+        return position;
     }
 }

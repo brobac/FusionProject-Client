@@ -1,11 +1,10 @@
-package dto;
+package domain.model;
 
-
-public class AdminDTO extends MemberDTO {
+public class Admin extends Member {
     private String adminCode;
 
     public static class Builder{
-        private long id=-1;
+        private long id=-1L;
         private String name;
         private String department;
         private String birthDate;
@@ -36,8 +35,8 @@ public class AdminDTO extends MemberDTO {
             return this;
         }
 
-        public AdminDTO build(){
-            return new AdminDTO(this);
+        public Admin build(){
+            return new Admin(this);
         }
     }
 
@@ -45,25 +44,24 @@ public class AdminDTO extends MemberDTO {
         return new Builder();
     }
 
-    private AdminDTO(Builder builder) {
+    private Admin(Builder builder){
         super(builder.id, builder.name, builder.department, builder.birthDate);
-        adminCode = builder.adminCode;
+        adminCode=builder.adminCode;
     }
-
-    public String getAdminCode() {
-        return adminCode;
-    }
-
-    //TODO : 테스트용
 
     @Override
-    public String toString() {
-        return "AdminDTO{" +
-                "adminCode='" + adminCode + '\'' +
-                ", id=" + id +
-                ", name='" + name + '\'' +
-                ", department='" + department + '\'' +
-                ", birthDate='" + birthDate + '\'' +
-                '}';
+    public boolean isAdminPermission() {
+        return true;
     }
+
+    @Override
+    public boolean isProfessorPermission() {
+        return false;
+    }
+
+    @Override
+    public boolean isStudentPermission() {
+        return false;
+    }
+
 }
