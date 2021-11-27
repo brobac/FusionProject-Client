@@ -26,18 +26,18 @@ public class StudentService implements EnrollmentService {
         int readSize;
 
         is.read(header, 0, Protocol.LEN_HEADER);
-        pt.setPacketHeader(header);
+        pt.setHeader(header);
 
         byte[] buf = new byte[pt.getBodyLength()];
         while (totalReceived < pt.getBodyLength()) {
             readSize = is.read(buf, totalReceived, pt.getBodyLength() - totalReceived);
             totalReceived += readSize;
         }
-        pt.setPacketBody(buf);
+        pt.setBody(buf);
         return pt;
     }
 
-    public void run() throws NoSuchMethodException, InstantiationException, IOException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+    public void run() throws Exception {
         int menu = 0;
         while (menu != 8) {
             System.out.println(Message.PROFESSOR_SERVICE_MENU);
@@ -69,14 +69,14 @@ public class StudentService implements EnrollmentService {
         }
     }
 
-    private void updatePersonalInformation() throws IllegalAccessException, IOException {
+    private void updatePersonalInformation() throws Exception {
         //TODO 개인정보 조회하여 출력
         int menu = 0;
         StudentDTO studentDTO;
         Protocol sendPt = new Protocol(Protocol.TYPE_REQUEST);
         sendPt.setCode(Protocol.T1_CODE_READ);
         sendPt.setEntity(Protocol.ENTITY_ACCOUNT);
-        os.write(sendPt.getPacket());
+        sendPt.send(os);
 
         Protocol recvPt = read();
         if (recvPt != null) {
@@ -91,12 +91,14 @@ public class StudentService implements EnrollmentService {
                     System.out.println("year : " + studentDTO.getYear());
                     System.out.println("studentCode : " + studentDTO.getStudentCode());
                 } else if (recvPt.getCode() == Protocol.T2_CODE_FAIL)
-                    System.out.println(Message.STUDENT_LOOKUP_PERSONAL_INFORMATION_FAIL);
+                    System.out.println(Message.LOOKUP_PERSONAL_INFORMATION_FAIL);
             }
         }
-        System.out.println(Message.UPDATE_PERSONAL_INFORMATION_MENU);
-        menu = scanner.nextInt();// int 파싱 오류 처리 필요
+
         while (menu != 4) {
+            System.out.println(Message.UPDATE_PERSONAL_INFORMATION_MENU);
+            menu = scanner.nextInt();// int 파싱 오류 처리 필요
+
             if (menu == 1) { //TODO 서버에게 이름 변경 요청하기
                 System.out.print(Message.CHANGE_NAME_INPUT);
                 String name = scanner.nextLine();
@@ -105,15 +107,15 @@ public class StudentService implements EnrollmentService {
                 sendPt.setObject(studentDTO1);
                 sendPt.setCode(Protocol.T1_CODE_UPDATE);
                 sendPt.setEntity(Protocol.ENTITY_ACCOUNT);
-                os.write(sendPt.getPacket());
+                sendPt.send(os);
 
                 recvPt = read();
                 if (recvPt != null) {
                     if (recvPt.getType() == Protocol.TYPE_RESPONSE) {
                         if (recvPt.getCode() == Protocol.T2_CODE_SUCCESS)
-                            System.out.println(Message.STUDENT_UPDATE_NAME_SUCCESS);
+                            System.out.println(Message.UPDATE_NAME_SUCCESS);
                         else if (recvPt.getCode() == Protocol.T2_CODE_FAIL)
-                            System.out.println(Message.STUDENT_UPDATE_NAME_FAIL);
+                            System.out.println(Message.UPDATE_NAME_FAIL);
                     }
                 }
             } else if (menu == 2) { //TODO 서버에게 전화번호 변경 요청하기
@@ -122,15 +124,15 @@ public class StudentService implements EnrollmentService {
 //                학생 전화번호 없음
 //                sendPt.setCode(Protocol.T1_CODE_UPDATE);
 //                sendPt.setEntity(Protocol.ENTITY_ACCOUNT);
-//                os.write(sendPt.getPacket());
+//                sendPt.send(os);
 //
 //                recvPt = read();
 //                if (recvPt != null) {
 //                    if (recvPt.getType() == Protocol.TYPE_RESPONSE) {
 //                        if (recvPt.getCode() == Protocol.T2_CODE_SUCCESS)
-//                            System.out.println(Message.STUDENT_UPDATE_PHONENUM_SUCCESS);
+//                            System.out.println(Message.UPDATE_PHONENUM_SUCCESS);
 //                        else if (recvPt.getCode() == Protocol.T2_CODE_FAIL)
-//                            System.out.println(Message.STUDENT_UPDATE_PHONENUM_FAIL);
+//                            System.out.println(Message.UPDATE_PHONENUM_FAIL);
 //                    }
 //                }
             } else if (menu == 3) {  //TODO 서버에게 비밀번호 변경 요청하기
@@ -138,18 +140,18 @@ public class StudentService implements EnrollmentService {
                 String newPassword = scanner.nextLine();
 
                 AccountDTO accountDTO = AccountDTO.builder().password(newPassword).build();
-                sendPt.setObject(Serializer.objectToBytes(accountDTO));
+                sendPt.setObject(accountDTO);
                 sendPt.setCode(Protocol.T1_CODE_UPDATE);
                 sendPt.setEntity(Protocol.ENTITY_ACCOUNT);
-                os.write(sendPt.getPacket());
+                sendPt.send(os);
 
                 recvPt = read();
                 if (recvPt != null) {
                     if (recvPt.getType() == Protocol.TYPE_RESPONSE) {
                         if (recvPt.getCode() == Protocol.T2_CODE_SUCCESS)
-                            System.out.println(Message.STUDENT_UPDATE_PASSWORD_SUCCESS);
+                            System.out.println(Message.UPDATE_PASSWORD_SUCCESS);
                         else if (recvPt.getCode() == Protocol.T2_CODE_FAIL)
-                            System.out.println(Message.STUDENT_UPDATE_PASSWORD_FAIL);
+                            System.out.println(Message.UPDATE_PASSWORD_FAIL);
                     }
                 }
             } else if (menu == 4) {
@@ -160,7 +162,7 @@ public class StudentService implements EnrollmentService {
         }
     }
 
-    private void registering() throws IOException {
+    private void registering() throws IOException, IllegalAccessException, ClassNotFoundException, NoSuchMethodException, InstantiationException, InvocationTargetException {
         int menu = 0;
         Protocol sendPt = new Protocol(Protocol.TYPE_REQUEST);
 
@@ -176,15 +178,15 @@ public class StudentService implements EnrollmentService {
                 sendPt.setCode(Protocol.T1_CODE_CREATE);
                 sendPt.setEntity(Protocol.ENTITY_REGISTRATION);
                 sendPt.setObject(lectureDTO);
-                os.write(sendPt.getPacket());
+                sendPt.send(os);
 
                 Protocol recvPt = read();
                 if (recvPt != null) {
                     if (recvPt.getType() == Protocol.TYPE_RESPONSE) {
                         if (recvPt.getCode() == Protocol.T2_CODE_SUCCESS)
-                            System.out.println(Message.STUDENT_REGISTERING_SUCCESS);
+                            System.out.println(Message.REGISTERING_SUCCESS);
                         else if (recvPt.getCode() == Protocol.T2_CODE_FAIL)
-                            System.out.println(Message.STUDENT_REGISTERING_FAIL);
+                            System.out.println(Message.REGISTERING_FAIL);
                     }
                 }
             } else if (menu == 2) { //수강 취소
@@ -194,20 +196,20 @@ public class StudentService implements EnrollmentService {
                 sendPt.setCode(Protocol.T1_CODE_DELETE);
                 sendPt.setEntity(Protocol.ENTITY_REGISTRATION);
                 sendPt.setObject(lectureDTO);
-                os.write(sendPt.getPacket());
+                sendPt.send(os);
 
                 Protocol recvPt = read();
                 if (recvPt != null) {
                     if (recvPt.getType() == Protocol.TYPE_RESPONSE) {
                         if (recvPt.getCode() == Protocol.T2_CODE_SUCCESS)
-                            System.out.println(Message.STUDENT_REGISTERING_CANCEL_SUCCESS);
+                            System.out.println(Message.REGISTERING_CANCEL_SUCCESS);
                         else if (recvPt.getCode() == Protocol.T2_CODE_FAIL)
-                            System.out.println(Message.STUDENT_REGISTERING_CANCEL_FAIL);
+                            System.out.println(Message.REGISTERING_CANCEL_FAIL);
                     }
                 } else if (menu == 3) { //수강 신청 현황 조회
                     sendPt.setCode(Protocol.T1_CODE_READ);
                     sendPt.setEntity(Protocol.ENTITY_REGISTRATION);
-                    os.write(sendPt.getPacket());
+                    sendPt.send(os);
 
                     recvPt = read();
                     if (recvPt != null) {
@@ -218,7 +220,7 @@ public class StudentService implements EnrollmentService {
                                     System.out.println(lectureLookUp[i].toString());
                                 }
                             } else if (recvPt.getCode() == Protocol.T2_CODE_FAIL)
-                                System.out.println(Message.STUDENT_LOOKUP_REGISTERING_FAIL);
+                                System.out.println(Message.LOOKUP_REGISTERING_FAIL);
                         }
                     }
                 } else if (menu == 4) {
@@ -230,12 +232,12 @@ public class StudentService implements EnrollmentService {
         }
     }
 
-    private void lectureLookup() throws IOException {
+    private void lectureLookup() throws IOException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
         //개설교과목 전체 목록 출력
         Protocol sendPt = new Protocol(Protocol.TYPE_REQUEST);
         sendPt.setCode(Protocol.T1_CODE_READ);
         sendPt.setEntity(Protocol.ENTITY_LECTURE);
-        os.write(sendPt.getPacket());
+        sendPt.send(os);
 
         Protocol recvPt = read();
         if (recvPt != null) {
@@ -246,12 +248,12 @@ public class StudentService implements EnrollmentService {
                         System.out.println(lectureLookUp[i].toString());
                     }
                 } else if (recvPt.getCode() == Protocol.T2_CODE_FAIL)
-                    System.out.println(Message.STUDENT_LOOKUP_LECTURE_FAIL);
+                    System.out.println(Message.LOOKUP_LECTURE_FAIL);
             }
         }
     }
 
-    private void lecturePlannerLookup() throws IOException {
+    private void lecturePlannerLookup() throws Exception {
         int menu = 0;
         Protocol sendPt = new Protocol(Protocol.TYPE_REQUEST);
 
@@ -267,7 +269,7 @@ public class StudentService implements EnrollmentService {
                 sendPt.setObject(lectureDTO);
                 sendPt.setCode(Protocol.T1_CODE_READ);
                 sendPt.setEntity(Protocol.ENTITY_LECTURE);
-                os.write(sendPt.getPacket());
+                sendPt.send(os);
 
                 Protocol recvPt = read();
                 if (recvPt != null) {
@@ -276,7 +278,7 @@ public class StudentService implements EnrollmentService {
                             lectureDTO = (LectureDTO) recvPt.getObject();
                             System.out.println(lectureDTO.getPlanner());
                         } else if (recvPt.getCode() == Protocol.T2_CODE_FAIL)
-                            System.out.println(Message.STUDENT_LOOKUP_LECTURE_PLANNER_FAIL);
+                            System.out.println(Message.LOOKUP_LECTURE_PLANNER_FAIL);
                     }
                 }
             } else if (menu == 2) {
@@ -287,12 +289,12 @@ public class StudentService implements EnrollmentService {
         }
     }
 
-    private void timeTableLookup() throws IOException {
+    private void timeTableLookup() throws IOException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
         //시간표 출력
         Protocol sendPt = new Protocol(Protocol.TYPE_REQUEST);
         sendPt.setCode(Protocol.T1_CODE_READ);
         sendPt.setEntity(Protocol.ENTITY_PROF_TIMETABLE);
-        os.write(sendPt.getPacket());
+        sendPt.send(os);
 
         LectureTimeDTO[] lectureTimeDTO = new LectureTimeDTO[30];
         Protocol recvPt = read();
@@ -301,7 +303,7 @@ public class StudentService implements EnrollmentService {
                 if (recvPt.getCode() == Protocol.T2_CODE_SUCCESS) {
                     lectureTimeDTO = (LectureTimeDTO[]) recvPt.getObjectArray();
                 } else
-                    System.out.println(Message.STUDENT_LOOKUP_TIMETABLE_FAIL);
+                    System.out.println(Message.LOOKUP_TIMETABLE_FAIL);
             }
         }
         int k = 0;
@@ -316,7 +318,7 @@ public class StudentService implements EnrollmentService {
                     System.out.printf("%10s%10s", day[j], " |");
                 } else {
                     if (lectureTimeDTO[k].getLectureDay() == day[j] && (lectureTimeDTO[k].getStartTime() == i || lectureTimeDTO[k].getEndTime() == i)) {
-                        System.out.printf("%10s%8s", lectureTimeDTO[k++].getLectureId(), " ");
+                        System.out.printf("%10s%8s", /*lectureTimeDTO[k++].getCourseName(),*/ " ");
                     } else {
                         System.out.printf("%10s%10s", "", "");
                     }
