@@ -1,12 +1,25 @@
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.Socket;
+import java.net.UnknownHostException;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
-        if (args.length < 2) System.out.println("사용법 : java Main 주소 포트번호");
-        else {
-            String address = args[0];
-            int port = Integer.parseInt(args[1]);
-            EnrollmentProgram.run(address, port);
+    public static void main(String[] args) {
+        String address = "localhost";
+        int port = 3000;
+        try {
+            Socket socket = new Socket(address, port);
+            InputStream is = socket.getInputStream();
+            OutputStream os = socket.getOutputStream();
+
+            EnrollmentProgram program = new EnrollmentProgram(is, os);
+            program.run();
+            socket.close();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
         }
     }
 }
