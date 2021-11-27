@@ -1,7 +1,4 @@
-
 package network;
-import network.Deserializer;
-import network.Serializer;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
@@ -24,6 +21,7 @@ public class Protocol {
     // TYPE_RESPONSE_CODE
     public static final int T2_CODE_SUCCESS = 1;
     public static final int T2_CODE_FAIL = 2;
+
     // ENTITY
     public static final int ENTITY_ACCOUNT = 1;
     public static final int ENTITY_COURSE = 2;
@@ -31,12 +29,11 @@ public class Protocol {
     public static final int ENTITY_REGIS_PERIOD= 4;
     public static final int ENTITY_PLANNER_PERIOD = 5;
     public static final int ENTITY_REGISTRATION = 6;
-    public static final int ENTITY_PLANNER = 7;
-    public static final int ENTITY_PROF_TIMETABLE = 8;
-    public static final int ENTITY_LECTURE_STUD_LIST = 9;
-    public static final int ENTITY_STUD_TIMETABLE = 10;
-    public static final int ENTITY_STUD_LIST = 11;
-    public static final int ENTITY_PROF_LIST = 12;
+    public static final int ENTITY_STUDENT = 7;
+    public static final int ENTITY_PROFESSOR = 8;
+    public static final int ENTITY_ADMIN = 9;
+    public static final int ENTITY_LECTURE_STUD_LIST = 10;
+
     // LENGTH
     public static final int LEN_HEADER = 7;
     public static final int LEN_TYPE = 1;
@@ -96,7 +93,7 @@ public class Protocol {
     public int getBodyLength() {
         return bodyLength;
     }
-    
+
     private void setBodyLength(int bodyLength) {
         this.bodyLength = bodyLength;
     }
@@ -107,7 +104,7 @@ public class Protocol {
         packet[0] = type;          // 타입 담기
         packet[LEN_TYPE] = code;   // 코드 담기
         packet[LEN_TYPE + LEN_CODE] = entity; // 엔티티 담기
-
+        // 데이터 길이 담기
         System.arraycopy(intToByte(bodyLength), 0, packet, LEN_TYPE + LEN_CODE + LEN_ENTITY, LEN_BODYLENGTH);
         if (bodyLength > 0) // 바디 담기
             System.arraycopy(body, LEN_BODYLENGTH, packet, LEN_HEADER, getBodyLength());
@@ -169,9 +166,8 @@ public class Protocol {
     public void send(OutputStream os) throws IOException {
         os.write(getPacket());
         os.flush();
-        System.out.println("Send to Server");
+        System.out.println("Send to Client");
     }
-
 
     public Protocol read(InputStream is) throws Exception {
         byte[] header = new byte[Protocol.LEN_HEADER];
@@ -182,7 +178,7 @@ public class Protocol {
             is.read(header, 0, Protocol.LEN_HEADER);
             setHeader(header);
 
-            if (this.type == Protocol.UNDEFINED)
+            if (this.type == Protocol.UNDEFINED)    //TODO code가 undefined인 경우도 해야하나
                 throw new Exception("통신 오류 > 연결 오류");
 
             byte[] buf = new byte[getBodyLength()];
@@ -200,4 +196,5 @@ public class Protocol {
             throw new IOException("통신 오류 > 데이터 수신 실패");
         }
     }
+
 }
