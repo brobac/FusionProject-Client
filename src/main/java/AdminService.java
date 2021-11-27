@@ -1,7 +1,4 @@
-import dto.CourseDTO;
-import dto.PeriodDTO;
-import dto.ProfessorDTO;
-import dto.StudentDTO;
+import dto.*;
 import network.Protocol;
 
 import java.io.IOException;
@@ -399,7 +396,7 @@ public class AdminService implements EnrollmentService {
         }
     }
 
-    private void registeringPeriodSettings() {
+    private void registeringPeriodSettings() throws IllegalAccessException, IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException {
         int menu = 0;
         while (menu != 3) {
             System.out.println(Message.REGISTERING_PERIOD_MENU);
@@ -408,17 +405,55 @@ public class AdminService implements EnrollmentService {
             scanner.nextLine();
             if (menu == 1) {
                 System.out.print(Message.BEGIN_PERIOD_INPUT);
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일 hh시 mm분");
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
                 LocalDateTime begin = LocalDateTime.parse(scanner.nextLine(), formatter);
                 System.out.print(Message.END_PERIOD_INPUT);
                 LocalDateTime end = LocalDateTime.parse(scanner.nextLine(), formatter);
                 System.out.println(Message.TARGET_GRADE_INPUT);
                 int grade = scanner.nextInt();
-                //TODO 사용자로부터 입력받은 기간을 서버에게 등록 요청한다.
+                PeriodDTO periodDTO = PeriodDTO.builder()
+                        .beginTime(begin)
+                        .endTime(end)
+                        .build();
+                RegisteringPeriodDTO registeringPeriodDTO = RegisteringPeriodDTO.builder()
+                        .period(periodDTO)
+                        .allowedYear(grade)
+                        .build();
+                Protocol sendProtocol = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_CREATE, Protocol.ENTITY_REGIS_PERIOD);
+                sendProtocol.setObject(registeringPeriodDTO);
+                sendProtocol.send(os);
 
+                Protocol receiveProtocol = new Protocol();
+                while (receiveProtocol.getType() == Protocol.UNDEFINED) {
+                    receiveProtocol.read(is);
+                    int result = receiveProtocol.getType();
+                    if (result == Protocol.T2_CODE_SUCCESS) {
+                        System.out.println("수강신청 기간 등록 성공");
+                    } else {
+                        System.out.println("수강신청 기간 등록 성공");
+                        return;
+                    }
+                }
             } else if (menu == 2) {
                 //TODO 서버에게 현재 등록되어있는 수강신청 기간 정보를 받아와서 출력한다.
-
+                Protocol sendProtocol = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_READ, Protocol.ENTITY_REGIS_PERIOD);
+                sendProtocol.send(os);
+                Protocol receiveProtocol = new Protocol();
+                while (receiveProtocol.getType() == Protocol.UNDEFINED) {
+                    receiveProtocol.read(is);
+                    int result = receiveProtocol.getType();
+                    if (result == Protocol.T2_CODE_SUCCESS) {
+                        RegisteringPeriodDTO[] registeringPeriodDTOS = (RegisteringPeriodDTO[]) receiveProtocol.getObjectArray();
+                        for (RegisteringPeriodDTO dto : registeringPeriodDTOS) {
+                            System.out.print("대상 학년 : " + dto.getAllowedYear() + " ");
+                            System.out.print("시작 : " + dto.getPeriodDTO().getBeginTime() + " ~ ");
+                            System.out.print("종료 : " + dto.getPeriodDTO().getEndTime());
+                        }
+                    } else {
+                        System.out.println("조회 실패");
+                        return;
+                    }
+                }
             } else if (menu == 3) {
             } else {
                 System.out.println(Message.WRONG_INPUT_NOTICE);
