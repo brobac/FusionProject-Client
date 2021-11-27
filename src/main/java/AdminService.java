@@ -276,7 +276,6 @@ public class AdminService implements EnrollmentService {
                     }
                 }
 
-
 //findByOption 제외 다 DTO에 담아서 보낸다.
 
 
@@ -285,8 +284,24 @@ public class AdminService implements EnrollmentService {
             } else if (menu == 3) {
                 System.out.print(Message.DELETE_COURSE_INPUT);
                 String courseCode = scanner.nextLine();
-                //TODO 사용자로부터 입력받은 과목코드에 해당하는 과목을 서버에게 삭제 요청한다.
+                Protocol sendProtocol = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_DELETE, Protocol.ENTITY_COURSE);
+                CourseDTO courseDTO = CourseDTO.builder()
+                        .courseCode(courseCode)
+                        .build();
+                sendProtocol.setObject(courseDTO);
+                sendProtocol.send(os);
 
+                Protocol receiveProtocol = new Protocol();
+                while (receiveProtocol.getType() == Protocol.UNDEFINED) {
+                    receiveProtocol.read(is);
+                    int result = receiveProtocol.getType();
+                    if (result == Protocol.T2_CODE_SUCCESS) {
+                        System.out.println("삭제 성공");
+                    } else {
+                        System.out.println("삭제 실패");
+                        return;
+                    }
+                }
             } else if (menu == 4) {
             } else {
                 System.out.println(Message.WRONG_INPUT_NOTICE);
