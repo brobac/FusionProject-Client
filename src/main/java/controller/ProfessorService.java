@@ -1,3 +1,5 @@
+package controller;
+
 import dto.*;
 import network.Protocol;
 import infra.database.option.lecture.LectureOption;
@@ -23,23 +25,6 @@ public class ProfessorService implements EnrollmentService {
         this.os = os;
     }
 
-    private static Protocol read() throws IOException {
-        byte[] header = new byte[Protocol.LEN_HEADER];
-        Protocol pt = new Protocol();
-        int totalReceived = 0;
-        int readSize;
-
-        is.read(header, 0, Protocol.LEN_HEADER);
-        pt.setHeader(header);
-
-        byte[] buf = new byte[pt.getBodyLength()];
-        while (totalReceived < pt.getBodyLength()) {
-            readSize = is.read(buf, totalReceived, pt.getBodyLength() - totalReceived);
-            totalReceived += readSize;
-        }
-        pt.setBody(buf);
-        return pt;
-    }
 
     public void run() throws Exception {
         int menu = 0;
