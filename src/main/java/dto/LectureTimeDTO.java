@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.security.InvalidParameterException;
+
 @Getter
 @Setter
 @ToString
@@ -32,89 +34,95 @@ public class LectureTimeDTO {
             return this;
         }
 
-        public Builder lectureDay(LectureTime.DayOfWeek value){
+        public Builder lectureDay(String value){
             switch(value){
-                case MON:
+                case "MON":
                     lectureDay = "MON";
                 break;
-                case TUE:
+                case "TUE":
                     lectureDay = "TUE";
                 break;
-                case WED:
+                case "WED":
                     lectureDay = "WED";
                 break;
-                case THU:
+                case "THU":
                     lectureDay = "THU";
                 break;
-                case FRI:
+                case "FRI":
                     lectureDay = "FRI";
                 break;
+                default:
+                    throw new InvalidParameterException("잘못된 요일 입력입니다.");
             }
             return this;
         }
 
-        public Builder startTime(LectureTime.LecturePeriod value){
+        public Builder startTime(int value){
             switch (value){
-                case FIRST:
+                case 1:
                     startTime = 1;
                 break;
-                case SECOND:
+                case 2:
                     startTime = 2;
                 break;
-                case THIRD:
+                case 3:
                     startTime = 3;
                 break;
-                case FOURTH:
+                case 4:
                     startTime = 4;
                 break;
-                case FIFTH:
+                case 5:
                     startTime = 5;
                 break;
-                case SIXTH:
+                case 6:
                     startTime = 6;
                 break;
-                case SEVENTH:
+                case 7:
                     startTime = 7;
                 break;
-                case EIGHTH:
+                case 8:
                     startTime = 8;
                 break;
-                case NINTH:
+                case 9:
                     startTime = 9;
                 break;
+                default:
+                    throw new InvalidParameterException("잘못된 시작 교시 입력입니다.");
             }
             return this;
         }
 
-        public Builder endTime(LectureTime.LecturePeriod value){
+        public Builder endTime(int value){
             switch (value){
-                case FIRST:
-                    endTime = 1;
+                case 1:
+                    startTime = 1;
                     break;
-                case SECOND:
-                    endTime = 2;
+                case 2:
+                    startTime = 2;
                     break;
-                case THIRD:
-                    endTime = 3;
+                case 3:
+                    startTime = 3;
                     break;
-                case FOURTH:
-                    endTime = 4;
+                case 4:
+                    startTime = 4;
                     break;
-                case FIFTH:
-                    endTime = 5;
+                case 5:
+                    startTime = 5;
                     break;
-                case SIXTH:
-                    endTime = 6;
+                case 6:
+                    startTime = 6;
                     break;
-                case SEVENTH:
-                    endTime = 7;
+                case 7:
+                    startTime = 7;
                     break;
-                case EIGHTH:
-                    endTime = 8;
+                case 8:
+                    startTime = 8;
                     break;
-                case NINTH:
-                    endTime = 9;
+                case 9:
+                    startTime = 9;
                     break;
+                default:
+                    throw new InvalidParameterException("잘못된 시작 교시 입력입니다.");
             }
             return this;
         }

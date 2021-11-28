@@ -1,9 +1,7 @@
 import dto.*;
 import network.Protocol;
-import infra.database.option.lecture.LectureOption;
-import infra.database.option.lecture.ProfessorCodeOption;
-import infra.database.option.lecture.LectureTargetYearOption;
-
+import option.lecture.LectureOption;
+import option.lecture.ProfessorCodeOption;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;

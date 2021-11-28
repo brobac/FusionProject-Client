@@ -7,7 +7,9 @@ import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashSet;
 import java.util.Scanner;
+import java.util.Set;
 
 public class AdminService implements EnrollmentService {
     public static Scanner scanner = new Scanner(System.in);
@@ -21,7 +23,7 @@ public class AdminService implements EnrollmentService {
         this.os = os;
     }
 
-    public void run() throws IOException, IllegalAccessException {
+    public void run() throws Exception {
         int menu = 0;
         while (menu != 8) {
             System.out.println(Message.ADMIN_SERVICE_MENU);
@@ -308,7 +310,7 @@ public class AdminService implements EnrollmentService {
         }
     }
 
-    private void lectureManage() {
+    private void lectureManage() throws IllegalAccessException, IOException {
         int menu = 0;
         while (menu != 4) {
             System.out.println(Message.COURSE_MANAGE_MENU);
@@ -318,6 +320,47 @@ public class AdminService implements EnrollmentService {
             if (menu == 1) {
                 System.out.println(Message.CREATE_LECTURE);
                 //TODO 사용자로 부터 개설 교과목 정보를 입력받고 서버에게 개설 교과목 생성을 요청한다.
+                System.out.print("courseID : ");
+                long courseId = Long.parseLong(scanner.nextLine());
+                System.out.print("LectureCode : ");
+                String lectureCode = scanner.nextLine();
+                System.out.print("제한인원 : ");
+                int limit = Integer.parseInt(scanner.nextLine());
+                System.out.print("lecturerCode : ");
+                String lecturerCode = scanner.nextLine();
+                Set<LectureTimeDTO> lectureTimeDTOSet = new HashSet<>();
+                int option = 0;
+                while (option != 2) {
+                    System.out.println("----- 강의시간 입력 -----");
+                    System.out.print("요일 : ");
+                    String day = scanner.nextLine();
+                    System.out.println("시작 교시 : ");
+                    int startTime = Integer.parseInt(scanner.nextLine());
+                    System.out.println("끝 교시 : ");
+                    int endTime = Integer.parseInt(scanner.nextLine());
+                    System.out.println("강의실 : ");
+                    String room = scanner.nextLine();
+                    LectureTimeDTO lectureTime = LectureTimeDTO.builder()
+                            .lectureDay(day)
+                            .startTime(startTime)
+                            .endTime(endTime)
+                            .build();
+                    lectureTimeDTOSet.add(lectureTime);
+                    System.out.println("[1] 추가입력  [2]종료");
+                    System.out.print(Message.INPUT);
+                    option = Integer.parseInt(scanner.nextLine());
+                }
+                LectureDTO lectureDTO = LectureDTO.builder()
+                        .courseID(courseId)
+                        .lectureCode(lectureCode)
+                        .limit(limit)
+                        .lecturerID(lecturerCode)
+                        .lectureTimes(lectureTimeDTOSet)
+                        .build();
+
+                Protocol sendProtocol = new Protocol(Protocol.TYPE_REQUEST,Protocol.T1_CODE_CREATE,Protocol.ENTITY_LECTURE);
+                sendProtocol.setObject(lectureDTO);
+                sendProtocol.send(os);
 
             } else if (menu == 2) {
                 //TODO 서버에서 현재 정보를 받아와서 print 해주고 새로운 입력을 받는다.
@@ -484,7 +527,7 @@ public class AdminService implements EnrollmentService {
                             System.out.print("학년 : " + studentList[i].getYear());
                             System.out.print("이름 : " + studentList[i].getName());
                             System.out.print("학번 : " + studentList[i].getStudentCode());
-                            System.out.print("생년월일 : " + studentList[i].getBirthDate());
+                            System.out.println("생년월일 : " + studentList[i].getBirthDate());
                         }
                     } else {
                         System.out.println("조회 실패");
@@ -507,7 +550,7 @@ public class AdminService implements EnrollmentService {
                             System.out.print("이름 : " + professorList[i].getName());
                             System.out.print("학번 : " + professorList[i].getProfessorCode());
                             System.out.print("전화번호 : " + professorList[i].getTelePhone());
-                            System.out.print("생년월일 : " + professorList[i].getBirthDate());
+                            System.out.println("생년월일 : " + professorList[i].getBirthDate());
                         }
                     } else {
                         System.out.println("조회 실패");
@@ -521,7 +564,7 @@ public class AdminService implements EnrollmentService {
         }
     }
 
-    private void lectureLookup() {
+    private void lectureLookup() throws IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
         int menu = 0;
         while (menu != 3) {
             System.out.println(Message.LECTURE_LOOKUP_MENU);
@@ -529,6 +572,25 @@ public class AdminService implements EnrollmentService {
             menu = scanner.nextInt();// int 파싱 오류 처리 필요
             scanner.nextLine();
             if (menu == 1) {
+                Protocol sendProtocol = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_READ, Protocol.ENTITY_LECTURE);
+                sendProtocol.send(os);
+
+                Protocol receiveProtocol = new Protocol();
+                while (receiveProtocol.getType() == Protocol.UNDEFINED) {
+                    receiveProtocol.read(is);
+                    int result = receiveProtocol.getType();
+                    if (result == Protocol.T2_CODE_SUCCESS) {
+                        LectureDTO[] lectureDTOS = (LectureDTO[]) receiveProtocol.getObjectArray();
+                        for (int i = 0; i < lectureDTOS.length; i++) {
+                            System.out.printf("[ %d ] ", i + 1);
+                            System.out.print("개설강좌코드 : " + lectureDTOS[i].getLectureCode());
+
+                        }
+                    } else {
+                        System.out.println("조회 실패");
+                        return;
+                    }
+                }
                 //TODO 전체 조회
             } else if (menu == 2) {
                 //TODO 조건부 조회

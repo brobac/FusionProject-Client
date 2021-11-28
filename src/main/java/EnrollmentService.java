@@ -1,5 +1,5 @@
 import java.io.IOException;
 
 public interface EnrollmentService {
-    public void run() throws IOException, IllegalAccessException, NoSuchMethodException, InstantiationException;
+    public void run() throws IOException, IllegalAccessException, NoSuchMethodException, InstantiationException, Exception;
 }
