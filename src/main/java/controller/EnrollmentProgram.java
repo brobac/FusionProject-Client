@@ -1,4 +1,5 @@
-import domain.model.Account;
+package controller;
+
 import dto.AccountDTO;
 import network.Protocol;
 
@@ -19,24 +20,25 @@ public class EnrollmentProgram {
         System.out.println("************* 수강신청 프로그램 **************");
         try {
             String user;
-            while (true)
+            int menu = 0;
+            while (menu != 2)
             {
                 System.out.println(Message.ENROLLMENT_MENU);  // 로그인 or 종료 선택
-                int menu = sc.nextInt();
-                if (menu == 1)
-                {
-                    user = login();
-                    if (user == null)
+                menu = sc.nextInt();
+                switch(menu) {
+                    case 1:
+                        user = login();
+                        if (user == null)
+                            continue;
+                        break;
+                    case 2:
+                    default:
                         continue;
                 }
-                else if (menu == 2)
-                    break;
-                else
-                    continue;
-
                 EnrollmentService service = createService(user, is, os);
                 service.run();
             }
+            System.out.println("************* 프로그램 종료 **************");
         } catch (Exception e) {
             System.err.println(e);
         }
@@ -79,5 +81,6 @@ public class EnrollmentProgram {
         } else if (authority.equals("student")) {
             return new StudentService(is, os);
         }
+        return null;
     }
 }

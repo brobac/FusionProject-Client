@@ -1,3 +1,5 @@
+package controller;
+
 import dto.*;
 import network.Protocol;
 import network.StudentProtocolService;
@@ -29,7 +31,7 @@ public class StudentService implements EnrollmentService {
             menu = scanner.nextInt();
             switch (menu) {
                 case 1:
-                    personaInformation();  // 개인정보 관리
+                    personalInformation();  // 개인정보 관리
                     break;
                 case 2:
                     registering();         // 수강신청 관리
@@ -51,7 +53,7 @@ public class StudentService implements EnrollmentService {
         }
     }
 
-    private void personaInformation() throws Exception {
+    private void personalInformation() throws Exception {
         ps.requestReadPersonalInfo();  // 개인정보 조회 요청
 
         StudentDTO studentDTO;
@@ -117,6 +119,7 @@ public class StudentService implements EnrollmentService {
     }
 
     private void registering() throws Exception {
+
         int menu = 0;
         while (true) {
             System.out.print(Message.REGISTERING_MENU);
@@ -124,12 +127,19 @@ public class StudentService implements EnrollmentService {
             menu = scanner.nextInt();
 
             if (menu == 1) {       //수강 신청
+                // TODO 수강신청 하기 전 수강신청 기간 조회하여 수강신청 가능 여부 확인 (사용자가 하는 것 아님)
+                ps.requestRegisteringReriod();
+                Protocol recv = ps.response();
+                if (recv != null) {
+                    System.out.println(Message.NOT_REGISTERING_PERIOD);
+                    continue;
+                }
                 System.out.print(Message.COURSE_CODE_INPUT);
                 String lectureCode = scanner.nextLine();
                 LectureDTO lectureDTO = LectureDTO.builder().lectureCode(lectureCode).build();
                 ps.requestRegistering(lectureDTO);
 
-                Protocol recv = ps.response();
+                recv = ps.response();
                 if (recv != null)
                     System.out.println(Message.REGISTERING_SUCCESS);
                 else
