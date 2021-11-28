@@ -1,9 +1,11 @@
 package controller;
 
 import dto.*;
+import network.ProfProtocolService;
 import network.Protocol;
 import option.lecture.LectureOption;
 import option.lecture.ProfessorCodeOption;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -15,12 +17,16 @@ import java.util.Scanner;
 public class ProfessorService implements EnrollmentService {
     public static Scanner scanner = new Scanner(System.in);
 
-    private static InputStream is;
-    private static OutputStream os;
+    private InputStream is;
+    private OutputStream os;
+    private AccountDTO account;
+    private ProfProtocolService ps;
 
-    public ProfessorService(InputStream is, OutputStream os) {
+    public ProfessorService(AccountDTO account, InputStream is, OutputStream os) {
+        this.account = account;
         this.is = is;
         this.os = os;
+        ps = new ProfProtocolService(is, os);
     }
 
 

@@ -2,11 +2,13 @@ package controller;
 
 public class Message {
     //공용
-    public static final String INPUT = "입력 > ";
+    public static final String INPUT = "입력 : ";
     public static final String WRONG_INPUT_NOTICE = "잘못된 입력입니다. 다시 입력해주세요.";
     public static final String NAME_INPUT = "이름 : ";
     public static final String PHONE_NUMBER_INPUT = "전화번호 : ";
     public static final String BIRTHDAY_INPUT = "생년월일 : ";
+    public static final String LECTURE_LOOKUP_MENU = "[1]조건부 조회  [2]강의계획서 조회  [3]나가기";
+    public static final String PLANNER_LOOKUP_INPUT = "조회할 교과목 번호 : ";
 
     //Controller.EnrollmentProgram
     public static final String ENROLLMENT_MENU = "[1] 로그인 [2] 종료";
@@ -57,7 +59,6 @@ public class Message {
 
 
     //Controller.AdminService > lectureLookup
-    public static final String LECTURE_LOOKUP_MENU = "[1]전체 조회  [2]조건부 조회  [3]나가기";
 
 
     //Controller.ProfessorService
@@ -65,7 +66,7 @@ public class Message {
 
     //Controller.ProfessorService > updatePersonalInformation
     // Controller.StudentService > personalInformation
-    public static final String UPDATE_PERSONAL_INFORMATION_MENU = "[1] 이름 변경  [2]전화번호 변경  [3]비밀번호 변경  [4]나기기";
+    public static final String UPDATE_PERSONAL_INFORMATION_MENU = "[1] 이름 변경  [2]비밀번호 변경  [3]나기기";
     public static final String CHANGE_NAME_INPUT = "새 이름 : ";
     public static final String CHANGE_PHONE_NUMBER_INPUT = "새 전화번호 : ";
     public static final String CHANGE_PASSWORD_INPUT = "새 비밀번호 : ";
@@ -80,10 +81,10 @@ public class Message {
     public static final String LECTURE_PLANNER_UPDATE_INPUT = "강의 계획서를 수정할 개설 교과목 번호를 입력해주세요 : ";
     public static final String MISMATCH_LECTURE_CODE = "담당 교과목이 아닙니다.";
     public static final String LECTURE_PLANNER_INPUT = "강의 계획서 내용을 입력해주세요 : ";
-    public static final String LECTURE_PLANNER_INPUT_SUCCESS ="강의 계획서 등록을 성공하였습니다.";
-    public static final String LECTURE_PLANNER_INPUT_FAIL ="강의 계획서 등록을 실패하였습니다.";
-    public static final String LECTURE_PLANNER_UPDATE_SUCCESS ="강의 계획서 수정을 성공하였습니다.";
-    public static final String LECTURE_PLANNER_UPDATE_FAIL ="강의 계획서 수정을 실패하였습니다.";
+    public static final String LECTURE_PLANNER_INPUT_SUCCESS = "강의 계획서 등록을 성공하였습니다.";
+    public static final String LECTURE_PLANNER_INPUT_FAIL = "강의 계획서 등록을 실패하였습니다.";
+    public static final String LECTURE_PLANNER_UPDATE_SUCCESS = "강의 계획서 수정을 성공하였습니다.";
+    public static final String LECTURE_PLANNER_UPDATE_FAIL = "강의 계획서 수정을 실패하였습니다.";
 
     //Controller.ProfessorService > LecturePlannerLookup
 
@@ -95,7 +96,7 @@ public class Message {
 
     //Controller.StudentService
 //    public static final String STUDENT_SERVICE_MENU = "[1] 개인정보 관리 [2] 수강신청 관리 [3] 개설교과목 조회 [4] 시간표 조회 [5] 로그아웃";
-    public static final String STUDENT_SERVICE_MENU = "[1] 개인정보 관리 [2] 수강신청 관리 [3] 개설교과목 조회 [4] 강의계획서 조회 [5] 시간표 조회 [6] 로그아웃";
+    public static final String STUDENT_SERVICE_MENU = "[1] 개인정보 관리  [2] 수강신청  [3] 개설교과목 조회  [4] 시간표 조회 [5] 로그아웃";
 
     //Controller.StudentService > updatePersonalInformation
     public static final String LOOKUP_PERSONAL_INFORMATION_FAIL = "개인정보 조회를 실패하였습니다.";
@@ -107,17 +108,20 @@ public class Message {
     public static final String UPDATE_PASSWORD_FAIL = "비밀번호 수정을 실패하였습니다.";
 
     //Controller.StudentService > registeringManage
-    public static final String REGISTERING_MENU = "[1] 수강 신청 [2] 수강 취소 [3] 수강 신청 현황 조회 [4]나가기";  //TODO 수강신청 현황 조회 꼭 있어야함?
+    public static final String REGISTERING_MENU = "[1] 수강 신청 [2] 수강 취소 [3]나가기";  //TODO 수강신청 현황 조회 꼭 있어야함?
     public static final String REGISTERING_SUCCESS = "수강신청을 성공하였습니다.";
     public static final String REGISTERING_FAIL = "수강신청을 실패하였습니다.";
     public static final String REGISTERING_CANCEL_SUCCESS = "수강신청 취소를 성공하였습니다.";
     public static final String REGISTERING_CANCEL_FAIL = "수강신청 취소를 실패하였습니다.";
     public static final String LOOKUP_REGISTERING_FAIL = "수강신청 현황 조회를 실패하였습니다.";
+    public static final String REGISTERING_CANCEL_INPUT = "수강 취소할 교과목 번호 : ";
+
 
     public static final String NOT_REGISTERING_PERIOD = "수강신청 가능 기간이 아닙니다.";
 
     //Controller.StudentService > lectureLookup
     public static final String LOOKUP_LECTURE_FAIL = "전체 개설교과목 조회를 실패하였습니다.";
+
 
     //Controller.StudentService >lecturePlannerLookup
     public static final String LECTURE_PLANNER_LOOKUP_MENU = "[1]강의 계획서 조회 [2]나가기";

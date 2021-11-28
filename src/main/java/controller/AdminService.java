@@ -1,6 +1,7 @@
 package controller;
 
 import dto.*;
+import network.AdminProtocolService;
 import network.Protocol;
 
 import java.io.IOException;
@@ -18,11 +19,14 @@ public class AdminService implements EnrollmentService {
 
     private InputStream is;
     private OutputStream os;
+    private AccountDTO account;
+    private AdminProtocolService ps;
 
-
-    public AdminService(InputStream is, OutputStream os) {
+    public AdminService(AccountDTO account, InputStream is, OutputStream os) {
+        this.account = account;
         this.is = is;
         this.os = os;
+        ps = new AdminProtocolService(is, os);
     }
 
     public void run() throws Exception {
@@ -360,7 +364,7 @@ public class AdminService implements EnrollmentService {
                         .lectureTimes(lectureTimeDTOSet)
                         .build();
 
-                Protocol sendProtocol = new Protocol(Protocol.TYPE_REQUEST,Protocol.T1_CODE_CREATE,Protocol.ENTITY_LECTURE);
+                Protocol sendProtocol = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_CREATE, Protocol.ENTITY_LECTURE);
                 sendProtocol.setObject(lectureDTO);
                 sendProtocol.send(os);
 

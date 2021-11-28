@@ -1,5 +1,8 @@
 package network;
 
+import dto.StudentDTO;
+import option.lecture.LectureOption;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -27,8 +30,8 @@ public class StudentProtocolService {
     }
 
     // 개인 정보 조회 요청
-    public void requestReadPersonalInfo() throws IOException {
-        Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_READ, Protocol.ENTITY_ACCOUNT);
+    public void requestReadPersonalInfo(StudentDTO studentDTO) throws IOException {
+        Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_READ, Protocol.ENTITY_STUDENT, Protocol.READ_BY_ID);
         pt.send(os);
     }
 
@@ -68,14 +71,20 @@ public class StudentProtocolService {
     }
 
     // 수강신청 목록 요청 (내꺼)
-    public void requestReadRegistering() throws IOException {
-        Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_READ, Protocol.ENTITY_REGISTRATION);
+    public void requestReadRegistering(StudentDTO studentDTO) throws IOException {
+        Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_READ, Protocol.ENTITY_REGISTRATION,Protocol.READ_BY_ID);
         pt.send(os);
     }
 
     // 개설 교과목 조회 요청 (전학년)
-    public void requestAllLectureList() throws IOException  {
-        Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_READ, Protocol.ENTITY_LECTURE);
+    public void requestAllLectureList() throws IOException {
+        Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_READ, Protocol.ENTITY_LECTURE, Protocol.READ_ALL);
+        pt.send(os);
+    }
+
+    public void requestLectureListByOption(LectureOption[] options) throws IOException, IllegalAccessException {
+        Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_READ, Protocol.ENTITY_LECTURE, Protocol.READ_BY_OPTION);
+        pt.setObjectArray(options);
         pt.send(os);
     }
 

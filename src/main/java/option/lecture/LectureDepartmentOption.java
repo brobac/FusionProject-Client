@@ -1,10 +1,10 @@
 package option.lecture;
 
-public class LectureDepartmentOption implements LectureOption{
-    private String query = "department ";
+public class LectureDepartmentOption implements LectureOption {
+    private String query = "department=";
 
-    public LectureDepartmentOption(String option){
-        query += option;
+    public LectureDepartmentOption(String option) {
+        query += ("'" + option + "'");
     }
 
     @Override

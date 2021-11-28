@@ -16,6 +16,7 @@ public class LectureTimeDTO {
     private int startTime;
     private int endTime;
     private String room;
+    private String lectureName;
 
     public static class Builder{
         private long id;
@@ -23,9 +24,15 @@ public class LectureTimeDTO {
         private int startTime;
         private int endTime;
         private String room;
+        private String lectureName;
 
         public Builder id(long value){
             id = value;
+            return this;
+        }
+
+        public Builder lectureName(String value){
+            lectureName = value;
             return this;
         }
 
@@ -144,5 +151,6 @@ public class LectureTimeDTO {
         startTime = builder.startTime;
         endTime = builder.endTime;
         room = builder.room;
+        lectureName = builder.lectureName;
     }
 }

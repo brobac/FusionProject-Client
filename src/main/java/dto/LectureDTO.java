@@ -12,24 +12,24 @@ import java.util.Set;
 @ToString
 public class LectureDTO {
     private long id;
-    private long courseID;
+    private CourseDTO course;
+    private ProfessorDTO professor;
     private String lectureCode;
-    private String lecturerID;
     private int limit;
     private int plannerID;
 
-    private Set<LectureTimeDTO> lectureTimes;
-    private Set<RegisteringDTO> myRegisterings;
+    private LectureTimeDTO[] lectureTimes;
+    private RegisteringDTO[] myRegisterings;
     private LecturePlannerDTO planner;
 
     public static class Builder {
         private long id;
-        private long courseID;
+        private CourseDTO course;
+        private ProfessorDTO professor;
         private String lectureCode;
-        private String lecturerID;
         private int limit;
-        private Set<LectureTimeDTO> lectureTimes;
-        private Set<RegisteringDTO> myRegisterings;
+        private LectureTimeDTO[] lectureTimes;
+        private RegisteringDTO[] myRegisterings;
         private LecturePlannerDTO planner;
 
         public Builder id(long id) {
@@ -37,18 +37,18 @@ public class LectureDTO {
             return this;
         }
 
-        public Builder courseID(long courseID) {
-            this.courseID = courseID;
+        public Builder course(CourseDTO course) {
+            this.course = course;
             return this;
         }
 
-        public Builder lectureCode(String lectureCode) {
-            this.lectureCode = lectureCode;
+        public Builder professor(ProfessorDTO value) {
+            professor = value;
             return this;
         }
 
-        public Builder lecturerID(String lecturerID) {
-            this.lecturerID = lecturerID;
+        public Builder lectureCode(String value){
+            lectureCode = value;
             return this;
         }
 
@@ -57,13 +57,13 @@ public class LectureDTO {
             return this;
         }
 
-        public Builder lectureTimes(Set<LectureTimeDTO> lectureTimes) {
-            this.lectureTimes = lectureTimes;
+        public Builder lectureTimes(Set<LectureTimeDTO> value) {
+            this.lectureTimes = value.toArray(new LectureTimeDTO[value.size()]);
             return this;
         }
 
-        public Builder registerings(Set<RegisteringDTO> registerings) {
-            myRegisterings = registerings;
+        public Builder registerings(Set<RegisteringDTO> value) {
+            myRegisterings = value.toArray(new RegisteringDTO[value.size()]);
             return this;
         }
 
@@ -83,16 +83,23 @@ public class LectureDTO {
 
     private LectureDTO(Builder builder){
         id = builder.id;
-        courseID = builder.courseID;
-        lectureCode = builder.lectureCode;
-        lecturerID = builder.lecturerID;
+        course = builder.course;
+        professor = builder.professor;
         limit = builder.limit;
+        lectureCode = builder.lectureCode;
         lectureTimes = builder.lectureTimes;
         myRegisterings = builder.myRegisterings;
         planner = builder.planner;
     }
 
+    public long getCourseID(){
+        return course.getId();
+    }
+
+    public String getProfessorCode(){
+        return professor.getProfessorCode();
+    }
     public int getApplicant(){
-        return myRegisterings.size();
+        return myRegisterings.length;
     }
 }

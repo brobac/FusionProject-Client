@@ -1,10 +1,10 @@
 package option.lecture;
 
 public class LectureCodeOption implements LectureOption {
-    private String query="lecture_code=";
+    private String query = "lecture_code=";
 
     public LectureCodeOption(String code) {
-        this.query += "'"+code+"'";
+        this.query += "'" + code + "'";
     }
 
     @Override

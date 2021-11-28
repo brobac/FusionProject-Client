@@ -3,7 +3,10 @@ package controller;
 import dto.AccountDTO;
 import network.Protocol;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.util.Scanner;
 
 public class EnrollmentProgram {
@@ -19,13 +22,12 @@ public class EnrollmentProgram {
         Scanner sc = new Scanner(System.in);
         System.out.println("************* 수강신청 프로그램 **************");
         try {
-            String user;
+            AccountDTO user;
             int menu = 0;
-            while (menu != 2)
-            {
+            while (menu != 2) {
                 System.out.println(Message.ENROLLMENT_MENU);  // 로그인 or 종료 선택
                 menu = sc.nextInt();
-                switch(menu) {
+                switch (menu) {
                     case 1:
                         user = login();
                         if (user == null)
@@ -45,7 +47,7 @@ public class EnrollmentProgram {
     }
 
 
-    private String login() throws Exception{
+    private AccountDTO login() throws Exception {
         while (true) {
             BufferedReader userIn = new BufferedReader(new InputStreamReader(System.in));
             System.out.print(Message.ID_INPUT);
@@ -65,7 +67,7 @@ public class EnrollmentProgram {
 
             if (recv.getType() == Protocol.TYPE_RESPONSE) {
                 if (recv.getCode() == Protocol.T2_CODE_SUCCESS)
-                    return accountDTO.getPosition();    // 어떤 사용자인지 return
+                    return (AccountDTO) recv.getObject();    // 어떤 사용자인지 return
                 else if (recv.getCode() == Protocol.T2_CODE_FAIL) // 로그인 실패시 null return
                     return null;
             } else
@@ -73,13 +75,13 @@ public class EnrollmentProgram {
         }
     }
 
-    private static EnrollmentService createService(String authority, InputStream is, OutputStream os) {
-        if (authority.equals("admin")) {
-            return new AdminService(is, os);
-        } else if (authority.equals("professor")) {
-            return new ProfessorService(is, os);
-        } else if (authority.equals("student")) {
-            return new StudentService(is, os);
+    private static EnrollmentService createService(AccountDTO account, InputStream is, OutputStream os) {
+        if (account.getPosition().equals("admin")) {
+            return new AdminService(account, is, os);
+        } else if (account.getPosition().equals("professor")) {
+            return new ProfessorService(account, is, os);
+        } else if (account.getPosition().equals("student")) {
+            return new StudentService(account, is, os);
         }
         return null;
     }

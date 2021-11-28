@@ -1,5 +1,10 @@
 package dto;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class AccountDTO {
     private long pk;
     private String id;
@@ -48,6 +53,14 @@ public class AccountDTO {
 
     public static Builder builder() {
         return new Builder();
+    }
+
+    public AccountDTO(AccountDTO dto) {
+        pk = dto.pk;
+        id = dto.id;
+        password = dto.password;
+        memberID = dto.memberID;
+        position = dto.position;
     }
 
     private AccountDTO(Builder builder) {

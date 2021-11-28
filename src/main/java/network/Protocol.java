@@ -34,16 +34,23 @@ public class Protocol {
     public static final int ENTITY_ADMIN = 9;
     public static final int ENTITY_LECTURE_STUD_LIST = 10;
 
+    //READ_OPTION
+    public static final int READ_ALL = 1;
+    public static final int READ_BY_ID = 2;
+    public static final int READ_BY_OPTION = 3;
+
     // LENGTH
-    public static final int LEN_HEADER = 7;
+    public static final int LEN_HEADER = 8;
     public static final int LEN_TYPE = 1;
     public static final int LEN_CODE = 1;
     public static final int LEN_ENTITY = 1;
+    public static final int LEN_READ_OPTION = 1;
     public static final int LEN_BODYLENGTH = 4;
 
     private byte type;
     private byte code;
     private byte entity;
+    private byte readOption;
     private int bodyLength;
     private byte[] body;
 
@@ -60,9 +67,14 @@ public class Protocol {
     }
 
     public Protocol(int type, int code, int entity) {
+        this(type, code, entity, UNDEFINED);
+    }
+
+    public Protocol(int type, int code, int entity, int readOption){
         setType(type);
         setCode(code);
         setEntity(entity);
+        setReadOption(readOption);
         setBodyLength(0);
     }
 
@@ -90,6 +102,14 @@ public class Protocol {
         this.entity = (byte) entity;
     }
 
+    public byte getReadOption(){
+        return readOption;
+    }
+
+    public void setReadOption(int readOption){
+        this.readOption = (byte) readOption;
+    }
+
     public int getBodyLength() {
         return bodyLength;
     }
@@ -104,8 +124,10 @@ public class Protocol {
         packet[0] = type;          // 타입 담기
         packet[LEN_TYPE] = code;   // 코드 담기
         packet[LEN_TYPE + LEN_CODE] = entity; // 엔티티 담기
+        packet[LEN_TYPE+LEN_CODE+LEN_ENTITY] = readOption;
         // 데이터 길이 담기
-        System.arraycopy(intToByte(bodyLength), 0, packet, LEN_TYPE + LEN_CODE + LEN_ENTITY, LEN_BODYLENGTH);
+        System.arraycopy(intToByte(bodyLength), 0, packet,
+                LEN_TYPE + LEN_CODE + LEN_ENTITY+LEN_READ_OPTION, LEN_BODYLENGTH);
         if (bodyLength > 0) // 바디 담기
             System.arraycopy(body, LEN_BODYLENGTH, packet, LEN_HEADER, getBodyLength());
         return packet;
@@ -130,14 +152,15 @@ public class Protocol {
         type = packet[0];
         code = packet[LEN_TYPE];
         entity = packet[LEN_TYPE + LEN_CODE];
+        readOption = packet[LEN_TYPE+LEN_CODE+LEN_ENTITY];
         byte[] temp = new byte[LEN_BODYLENGTH];
-        System.arraycopy(packet, LEN_TYPE + LEN_CODE + LEN_ENTITY, temp, 0, LEN_BODYLENGTH);
+        System.arraycopy(packet, LEN_TYPE + LEN_CODE + LEN_ENTITY+LEN_READ_OPTION,
+                temp, 0, LEN_BODYLENGTH);
         setBodyLength(byteToInt(temp));
     }
 
     // 받은 패킷 -> 바디 초기화
-    public void setBody(byte[] packet)
-    {
+    public void setBody(byte[] packet) {
         if (bodyLength > 0) {
             byte[] data = new byte[bodyLength];
             System.arraycopy(packet, LEN_HEADER, data, 0, bodyLength);
@@ -178,7 +201,7 @@ public class Protocol {
             is.read(header, 0, Protocol.LEN_HEADER);
             setHeader(header);
 
-            if (this.type == Protocol.UNDEFINED)    //TODO code가 undefined인 경우도 해야하나
+            if (this.type == Protocol.UNDEFINED)
                 throw new Exception("통신 오류 > 연결 오류");
 
             byte[] buf = new byte[getBodyLength()];
@@ -195,6 +218,6 @@ public class Protocol {
         catch (IOException e) {
             throw new IOException("통신 오류 > 데이터 수신 실패");
         }
-    }
 
+    }
 }

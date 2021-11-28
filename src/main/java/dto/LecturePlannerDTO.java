@@ -6,20 +6,20 @@ import java.util.Map;
 import java.util.Set;
 
 public class LecturePlannerDTO {
-    private Map<String, String> items;
-    private static PeriodDTO writePeriod;
+    private String goal;
+    private String summary;
 
     public static class Builder{
-        private Map<String, String> items;
-        private static PeriodDTO writePeriod;
+        private String goal;
+        private String summary;
 
-        public Builder items(Map<String, String> value){
-            items = value;
+        public Builder goal(String value){
+            goal = value;
             return this;
         }
 
-        public Builder writePeriod(PeriodDTO value){
-            writePeriod = value;
+        public Builder summary(String value){
+            summary = value;
             return this;
         }
 
@@ -32,12 +32,16 @@ public class LecturePlannerDTO {
         return new Builder();
     }
 
-    public Map<String, String> getItems(){
-        return items;
+    public String getGoal() {
+        return goal;
+    }
+
+    public String getSummary() {
+        return summary;
     }
 
     private LecturePlannerDTO(Builder builder){
-        items = builder.items;
-        writePeriod = builder.writePeriod;
+        goal = builder.goal;
+        summary = builder.summary;
     }
 }
