@@ -46,6 +46,13 @@ public class StudentProtocolService {
         pt.send(os);
     }
 
+    // 수강신청기간 조회 요청
+    public void requestRegisteringReriod() throws IOException {
+        Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_READ, Protocol.ENTITY_REGIS_PERIOD);
+        pt.send(os);
+    }
+
+
     // 수강신청 요청
     public void requestRegistering(Object dto) throws IllegalAccessException, IOException {
         Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_CREATE, Protocol.ENTITY_REGISTRATION);
@@ -66,8 +73,8 @@ public class StudentProtocolService {
         pt.send(os);
     }
 
-    // 개설 교과목 조회 요청
-    public void requestAllLectureList() throws IOException {
+    // 개설 교과목 조회 요청 (전학년)
+    public void requestAllLectureList() throws IOException  {
         Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_READ, Protocol.ENTITY_LECTURE);
         pt.send(os);
     }
