@@ -1,8 +1,5 @@
-package dto;
+package infra.dto;
 
-
-
-import java.time.LocalDate;
 
 public class MemberDTO {
     protected long id;

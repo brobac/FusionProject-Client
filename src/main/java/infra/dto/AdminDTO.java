@@ -1,4 +1,4 @@
-package dto;
+package infra.dto;
 
 
 public class AdminDTO extends MemberDTO {

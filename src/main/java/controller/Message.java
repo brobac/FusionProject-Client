@@ -114,6 +114,7 @@ public class Message {
     public static final String REGISTERING_CANCEL_SUCCESS = "수강신청 취소를 성공하였습니다.";
     public static final String REGISTERING_CANCEL_FAIL = "수강신청 취소를 실패하였습니다.";
     public static final String LOOKUP_REGISTERING_FAIL = "수강신청 현황 조회를 실패하였습니다.";
+    public static final String REGISTERING_INPUT = "수강 신청할 교과목 번호 : ";
     public static final String REGISTERING_CANCEL_INPUT = "수강 취소할 교과목 번호 : ";
 
 

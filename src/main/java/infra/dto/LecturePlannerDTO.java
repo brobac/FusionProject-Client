@@ -1,9 +1,4 @@
-package dto;
-
-import domain.generic.Period;
-
-import java.util.Map;
-import java.util.Set;
+package infra.dto;
 
 public class LecturePlannerDTO {
     private String goal;

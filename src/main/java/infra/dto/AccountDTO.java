@@ -1,4 +1,4 @@
-package dto;
+package infra.dto;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -9,8 +9,8 @@ public class AccountDTO {
     private long pk;
     private String id;
     private String password;
-    private long memberID;
     private String position;
+    private long memberID;
 
 
     public static class Builder {

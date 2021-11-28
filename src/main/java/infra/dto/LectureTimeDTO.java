@@ -1,6 +1,5 @@
-package dto;
+package infra.dto;
 
-import domain.generic.LectureTime;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

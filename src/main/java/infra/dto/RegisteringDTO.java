@@ -1,4 +1,4 @@
-package dto;
+package infra.dto;
 
 public class RegisteringDTO {
     private final long id;

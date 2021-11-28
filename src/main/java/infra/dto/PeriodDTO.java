@@ -1,7 +1,6 @@
-package dto;
+package infra.dto;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 public class PeriodDTO {
     private String beginTime;

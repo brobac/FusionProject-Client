@@ -92,8 +92,8 @@ public class Serializer {
         }catch(NullPointerException e){
         }
 
-        allLength += 4;
-        byteList.add(0, intToBytes(allLength));
+//        allLength += 4;
+//        byteList.add(0, intToBytes(allLength));
 
         byte[] result = new byte[allLength];
         int cursor = 0;

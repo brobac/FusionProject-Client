@@ -1,6 +1,6 @@
 package controller;
 
-import dto.*;
+import infra.dto.*;
 import network.Protocol;
 import network.StudentProtocolService;
 import option.lecture.LectureDepartmentOption;
@@ -8,10 +8,8 @@ import option.lecture.LectureNameOption;
 import option.lecture.LectureOption;
 import option.lecture.LectureTargetYearOption;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Scanner;
 
 public class StudentService implements EnrollmentService {
@@ -31,7 +29,7 @@ public class StudentService implements EnrollmentService {
 
     public void run() throws Exception {
         int menu = 0;
-        while (menu != 6) {
+        while (menu != 5) {
             System.out.println(Message.STUDENT_SERVICE_MENU);
             System.out.print(Message.INPUT);
             menu = scanner.nextInt();
@@ -49,11 +47,18 @@ public class StudentService implements EnrollmentService {
                     timeTableLookup();      // 시간표 조회
                     break;
                 case 5:                     // 로그아웃
+                    logout();
                     break;
                 default:
                     System.out.println(Message.WRONG_INPUT_NOTICE);
             }
         }
+    }
+
+    private void logout() throws Exception {
+        ps.requestLogout();
+        Protocol receiveProtocol = ps.response();
+        System.out.println((String) receiveProtocol.getObject());
     }
 
     private void personalInformation() throws Exception {
@@ -148,11 +153,20 @@ public class StudentService implements EnrollmentService {
             menu = scanner.nextInt();
 
             if (menu == 1) {       //수강 신청
+                ps.requestAllLectureList();  // 개설 교과목 (전체) 목록 요청
+                receiveProtocol = ps.response();
 
-                System.out.print(Message.COURSE_CODE_INPUT);
-                String lectureCode = scanner.nextLine();
-                LectureDTO lectureDTO = LectureDTO.builder().lectureCode(lectureCode).build();
-                ps.requestRegistering(lectureDTO);
+                LectureDTO[] lectureList;
+                lectureList = (LectureDTO[]) receiveProtocol.getObjectArray();
+                printLectureList(lectureList);
+
+                System.out.print(Message.REGISTERING_INPUT);
+                int lectureNum = Integer.parseInt(scanner.nextLine());
+                RegisteringDTO registeringDTO = RegisteringDTO.builder()
+                        .lectureID(lectureList[lectureNum - 1].getId())
+                        .studentCode(studentDTO.getStudentCode())
+                        .build();
+                ps.requestRegistering(registeringDTO);
 
                 receiveProtocol = ps.response();
                 // 응답으로 메세지받아서 출력해줘야함
@@ -236,10 +250,9 @@ public class StudentService implements EnrollmentService {
                 System.out.print(Message.PLANNER_LOOKUP_INPUT);
                 int lectureNum = Integer.parseInt(scanner.nextLine());
                 LecturePlannerDTO planner = lectureList[lectureNum - 1].getPlanner();
-                System.out.println(lectureList[lectureNum - 1].getCourseDTO().getCourseName());
-                System.out.println("강좌명 : ");
-                System.out.println("강의 목표 : ");
-                System.out.println("강의 개요 : ");
+                System.out.println("교과목명 : " + lectureList[lectureNum - 1].getCourse().getCourseName());
+                System.out.println("강의 목표 : " + planner.getGoal());
+                System.out.println("강의 개요 : " + planner.getSummary());
             } else if (menu == 3) {
 
             } else {
@@ -286,23 +299,16 @@ public class StudentService implements EnrollmentService {
 //        }
 //    }
 
-    private void timeTableLookup() throws IOException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
+    private void timeTableLookup() throws Exception {
         //시간표 출력
-        Protocol sendPt = new Protocol(Protocol.TYPE_REQUEST);
-        sendPt.setCode(Protocol.T1_CODE_READ);
-        sendPt.setEntity(Protocol.ENTITY_PROF_TIMETABLE);
-        sendPt.send(os);
+        StudentDTO studentDTO = StudentDTO.builder().id(account.getMemberID()).build();
+        ps.requestReadPersonalInfo(studentDTO);
 
-        LectureTimeDTO[] lectureTimeDTO = new LectureTimeDTO[30];
-        Protocol recvPt = read();
-        if (recvPt != null) {
-            if (recvPt.getType() == Protocol.TYPE_RESPONSE) {
-                if (recvPt.getCode() == Protocol.T2_CODE_SUCCESS) {
-                    lectureTimeDTO = (LectureTimeDTO[]) recvPt.getObjectArray();
-                } else
-                    System.out.println(Message.LOOKUP_TIMETABLE_FAIL);
-            }
-        }
+        Protocol receiveProtocol = ps.response();
+        studentDTO = (StudentDTO) receiveProtocol.getObject();
+
+        LectureTimeDTO[] lectureTimeDTO = studentDTO.getTimeTable();
+
         int k = 0;
         String[] day = {"MON", "TUE", "WED", "THU", "FRI"};
         for (int i = 0; i < 8; i++) {
@@ -315,7 +321,7 @@ public class StudentService implements EnrollmentService {
                     System.out.printf("%10s%10s", day[j], " |");
                 } else {
                     if (lectureTimeDTO[k].getLectureDay() == day[j] && (lectureTimeDTO[k].getStartTime() == i || lectureTimeDTO[k].getEndTime() == i)) {
-                        System.out.printf("%10s%8s", /*lectureTimeDTO[k++].getCourseName(),*/ " ");
+                        System.out.printf("%10s%8s", lectureTimeDTO[k++].getLectureName(), " ");
                     } else {
                         System.out.printf("%10s%10s", "", "");
                     }

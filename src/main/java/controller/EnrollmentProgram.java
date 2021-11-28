@@ -1,6 +1,7 @@
 package controller;
 
-import dto.AccountDTO;
+
+import infra.dto.*;
 import network.Protocol;
 
 import java.io.BufferedReader;
@@ -42,6 +43,7 @@ public class EnrollmentProgram {
             }
             System.out.println("************* 프로그램 종료 **************");
         } catch (Exception e) {
+            e.printStackTrace();
             System.err.println(e);
         }
     }
@@ -77,9 +79,9 @@ public class EnrollmentProgram {
 
     private static EnrollmentService createService(AccountDTO account, InputStream is, OutputStream os) {
         if (account.getPosition().equals("admin")) {
-            return new AdminService(account, is, os);
+//            return new AdminService(account, is, os);
         } else if (account.getPosition().equals("professor")) {
-            return new ProfessorService(account, is, os);
+//            return new ProfessorService(account, is, os);
         } else if (account.getPosition().equals("student")) {
             return new StudentService(account, is, os);
         }

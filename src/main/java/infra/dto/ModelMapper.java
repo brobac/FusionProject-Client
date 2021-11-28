@@ -1,4 +1,4 @@
-//package dto;
+//package infra.dto;
 //
 //import domain.generic.LectureTime;
 //import domain.generic.Period;

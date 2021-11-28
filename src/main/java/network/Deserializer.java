@@ -11,10 +11,10 @@ import java.util.List;
 public class Deserializer {
     public static Object bytesToObjectArr(byte[] bytes) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         String className = new String(
-                bytes, 4, 32
+                bytes, 0, 32
         ).trim();
 
-        int count = bytesToInt(bytes, 36);
+        int count = bytesToInt(bytes, 32);
 
         //TODO : prefix설정 필요
 
@@ -24,7 +24,7 @@ public class Deserializer {
 
         Object objectArr = Array.newInstance(clazz, count);
 
-        int cursor = 40;
+        int cursor = 36;
         for(int i=0; i<count; i++){
             Object obj = constructor.newInstance();
 
@@ -44,7 +44,7 @@ public class Deserializer {
     //TODO : 예외처리필요
     public static Object bytesToObject(byte[] bytes) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         String className = new String(
-                bytes, 4, 32
+                bytes, 0, 32
         ).trim();
 
 
