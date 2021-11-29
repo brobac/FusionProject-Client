@@ -1,6 +1,7 @@
 package network;
 
 import infra.dto.CourseDTO;
+import infra.dto.LectureDTO;
 import infra.dto.ProfessorDTO;
 import infra.dto.StudentDTO;
 
@@ -86,9 +87,9 @@ public class AdminProtocolService {
     }
 
     // 개설 교과목 생성 요청
-    public void reqCreateLecture(Object data) throws IllegalAccessException, IOException {
+    public void reqCreateLecture(LectureDTO lectureDTO) throws IllegalAccessException, IOException {
         Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_CREATE, Protocol.ENTITY_LECTURE);
-        pt.setObject(data);
+        pt.setObject(lectureDTO);
         pt.send(os);
         ;
     }

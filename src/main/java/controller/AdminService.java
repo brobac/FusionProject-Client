@@ -271,7 +271,7 @@ public class AdminService implements EnrollmentService {
 
     }
 
-    private void lectureManage() throws IllegalAccessException, IOException {
+    private void lectureManage() throws Exception {
         int menu = 0;
         while (menu != 4) {
             System.out.println(Message.COURSE_MANAGE_MENU);
@@ -312,16 +312,20 @@ public class AdminService implements EnrollmentService {
                     option = Integer.parseInt(scanner.nextLine());
                 }
                 LectureDTO lectureDTO = LectureDTO.builder()
-                        .courseID(courseId)
+                        .course(CourseDTO.builder().id(courseId).build())
                         .lectureCode(lectureCode)
                         .limit(limit)
-                        .lecturerID(lecturerCode)
                         .lectureTimes(lectureTimeDTOSet)
                         .build();
 
-                Protocol sendProtocol = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_CREATE, Protocol.ENTITY_LECTURE);
-                sendProtocol.setObject(lectureDTO);
-                sendProtocol.send(os);
+                ps.reqCreateLecture(lectureDTO);
+                Protocol receiveProtocol = ps.response();
+                int result = receiveProtocol.getCode();
+                if (result == Protocol.T2_CODE_SUCCESS) {
+                    System.out.println("개설 교과목 등록 성공");
+                } else {
+                    System.out.println("개설 교과목 등록 실패");
+                }
 
             } else if (menu == 2) {
                 //TODO 서버에서 현재 정보를 받아와서 print 해주고 새로운 입력을 받는다.
@@ -528,40 +532,6 @@ public class AdminService implements EnrollmentService {
     }
 
     private void lectureLookup() throws IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
-        int menu = 0;
-        while (menu != 3) {
-            System.out.println(Message.LECTURE_LOOKUP_MENU);
-            System.out.print(Message.INPUT);
-            menu = scanner.nextInt();// int 파싱 오류 처리 필요
-            scanner.nextLine();
-            if (menu == 1) {
-                Protocol sendProtocol = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_READ, Protocol.ENTITY_LECTURE);
-                sendProtocol.send(os);
-
-                Protocol receiveProtocol = new Protocol();
-                while (receiveProtocol.getType() == Protocol.UNDEFINED) {
-                    receiveProtocol.read(is);
-                    int result = receiveProtocol.getType();
-                    if (result == Protocol.T2_CODE_SUCCESS) {
-                        LectureDTO[] lectureDTOS = (LectureDTO[]) receiveProtocol.getObjectArray();
-                        for (int i = 0; i < lectureDTOS.length; i++) {
-                            System.out.printf("[ %d ] ", i + 1);
-                            System.out.print("개설강좌코드 : " + lectureDTOS[i].getLectureCode());
-
-                        }
-                    } else {
-                        System.out.println("조회 실패");
-                        return;
-                    }
-                }
-                //TODO 전체 조회
-            } else if (menu == 2) {
-                //TODO 조건부 조회
-            } else if (menu == 3) {
-            } else {
-                System.out.println(Message.WRONG_INPUT_NOTICE);
-            }
-        }
     }
 }
 
