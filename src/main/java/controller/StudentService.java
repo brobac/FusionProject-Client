@@ -198,13 +198,13 @@ public class StudentService implements EnrollmentService {
             System.out.printf("[ %d ]", i + 1);
             // 과목명, 대상학년, 과목코드, 제한인원, 신청인원, 학과, 학점, 교수명
             System.out.print("교과목명 : " + curLecture.getCourse().getCourseName());
-            System.out.print("학점 : " + curLecture.getCourse().getCredit());
-            System.out.print("과목코드 : " + curLecture.getLectureCode());
-            System.out.print("담당교수 : " + curLecture.getProfessor().getName());
-            System.out.print("수강학과 : " + curLecture.getCourse().getDepartment());
-            System.out.print("강의시간(강의실) : "); // 반복문필요
-            System.out.print("제한인원 : " + curLecture.getLimit());
-            System.out.println("수강인원 : " + curLecture.getApplicant());
+            System.out.print("  학점 : " + curLecture.getCourse().getCredit());
+            System.out.print("  과목코드 : " + curLecture.getLectureCode());
+            System.out.print("  담당교수 : " + curLecture.getProfessor().getName());
+            System.out.print("  수강학과 : " + curLecture.getCourse().getDepartment());
+            System.out.print("  강의시간(강의실) : "); // 반복문필요
+            System.out.print("  제한인원 : " + curLecture.getLimit());
+            System.out.println("  수강인원 : " + curLecture.getApplicant());
         }
     }
 

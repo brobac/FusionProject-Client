@@ -1,8 +1,6 @@
 package network;
 
-import infra.dto.CourseDTO;
-import infra.dto.ProfessorDTO;
-import infra.dto.StudentDTO;
+import infra.dto.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -86,9 +84,9 @@ public class AdminProtocolService {
     }
 
     // 개설 교과목 생성 요청
-    public void reqCreateLecture(Object data) throws IllegalAccessException, IOException {
+    public void reqCreateLecture(LectureDTO lectureDTO) throws IllegalAccessException, IOException {
         Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_CREATE, Protocol.ENTITY_LECTURE);
-        pt.setObject(data);
+        pt.setObject(lectureDTO);
         pt.send(os);
         ;
     }
@@ -102,12 +100,18 @@ public class AdminProtocolService {
     }
 
     // 강의계획서 입력 기간 설정 요청
-    public void reqCreatePlannerPeriod(Object data) throws IllegalAccessException, IOException {
+    public void reqCreatePlannerPeriod(PeriodDTO periodDTO) throws IllegalAccessException, IOException {
         Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_CREATE, Protocol.ENTITY_PLANNER_PERIOD);
-        pt.setObject(data);
+        pt.setObject(periodDTO);
         pt.send(os);
         ;
     }
+
+    public void reqReadPlannerPeriod() throws IOException {
+        Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_READ, Protocol.ENTITY_PLANNER_PERIOD, Protocol.READ_ALL);
+        pt.send(os);
+    }
+
 
     // 학년별 수강 신청 기간 설정 요청
     public void reqCreateRegisteringPeriod(Object data) throws IllegalAccessException, IOException {
