@@ -3,10 +3,10 @@ package controller;
 import infra.dto.*;
 import network.Protocol;
 import network.StudentProtocolService;
-import option.lecture.LectureDepartmentOption;
-import option.lecture.LectureNameOption;
-import option.lecture.LectureOption;
-import option.lecture.LectureTargetYearOption;
+import infra.database.option.lecture.LectureDepartmentOption;
+import infra.database.option.lecture.LectureNameOption;
+import infra.database.option.lecture.LectureOption;
+import infra.database.option.lecture.YearOption;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -48,7 +48,7 @@ public class StudentService implements EnrollmentService {
                     break;
                 case 5:                     // 로그아웃
                     logout();
-                    break;
+                    return;
                 default:
                     System.out.println(Message.WRONG_INPUT_NOTICE);
             }
@@ -58,7 +58,7 @@ public class StudentService implements EnrollmentService {
     private void logout() throws Exception {
         ps.requestLogout();
         Protocol receiveProtocol = ps.response();
-        System.out.println((String) receiveProtocol.getObject());
+//        System.out.println((String) receiveProtocol.getObject());
     }
 
     private void personalInformation() throws Exception {
@@ -229,7 +229,7 @@ public class StudentService implements EnrollmentService {
                     if (optionMenu == 1) {
                         System.out.print(Message.TARGET_GRADE_INPUT);
                         int year = Integer.parseInt(scanner.nextLine());
-                        options[0] = new LectureTargetYearOption(year);
+                        options[0] = new YearOption(year);
                     } else if (optionMenu == 2) {
                         System.out.print(Message.DEPARTMENT_INPUT);
                         String department = scanner.nextLine();

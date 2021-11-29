@@ -6,6 +6,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class Serializer {
+    private final static int LEN_MAX_CLASSNAME = 64;
+    private final static int LEN_LENGTH_FIELD = 4;
+    private final static int LEN_COUNT_FIELD = 4;
+
     public static byte[] objectArrToBytes(Object[] objs) throws IllegalAccessException, IllegalArgumentException{
         if(objs.length==0){
             throw new IllegalArgumentException();
@@ -13,7 +17,7 @@ public class Serializer {
 
         List<byte[]> byteList = new LinkedList<>();
 
-        byte[] classNameBytes = new byte[32];
+        byte[] classNameBytes = new byte[LEN_MAX_CLASSNAME];
         String className = objs.getClass().getName().replace(";","");
         System.arraycopy(
                 className.getBytes(StandardCharsets.UTF_8), 0,
@@ -22,45 +26,23 @@ public class Serializer {
         byteList.add(classNameBytes);
 
 
-        int allLength = 32;
+        int allLength = LEN_MAX_CLASSNAME;
         int count = 0;
 
         try{
             for(Object obj : objs){
-                List<byte[]> tempByteList = new LinkedList<>();
-                int objLength = 0;
-
-                for(Field f : getAllFields(obj.getClass())){
-                    byte[] fieldBytes = getBytesFrom(obj, f);
-//                    System.out.println("name = " + f.getName());
-//                    System.out.println("simpleType = " + f.getType());
-//                    System.out.println("genericType = " + f.getGenericType());
-                    byte[] fieldLength = intToBytes(fieldBytes.length);
-
-                    tempByteList.add(fieldLength);
-                    tempByteList.add(fieldBytes);
-                    objLength+=fieldBytes.length+4;
-                }
-//            tempByteList.add(0, intToBytes(objLength+4));
-
-                byte[] objBytes = new byte[objLength];
-                int cursor = 0;
-                for(byte[] b : tempByteList){
-                    System.arraycopy(b, 0, objBytes, cursor, b.length);
-                    cursor+=b.length;
-                }
+                byte[] objBytes = objectToBytes(obj);
 
                 count++;
-                allLength+=objLength;
+                allLength+=objBytes.length;
                 byteList.add(objBytes);
             }
         }catch(NullPointerException e){
         }
 
-//        byteList.add(0, intToBytes(allLength));
         byteList.add(1, intToBytes(count));
 
-        byte[] result = new byte[allLength+4];
+        byte[] result = new byte[allLength+LEN_COUNT_FIELD];
         int cursor = 0;
         for(byte[] b : byteList){
             System.arraycopy(b, 0, result, cursor, b.length);
@@ -73,7 +55,7 @@ public class Serializer {
     public static byte[] objectToBytes(Object obj) throws IllegalAccessException {
         List<byte[]> byteList = new LinkedList<>();
 
-        byte[] classNameBytes = new byte[32];
+        byte[] classNameBytes = new byte[LEN_MAX_CLASSNAME];
         String className = obj.getClass().getName().replace(";","");
         System.arraycopy(
                 className.getBytes(StandardCharsets.UTF_8), 0,
@@ -81,7 +63,7 @@ public class Serializer {
         );
         byteList.add(classNameBytes);
 
-        int allLength = 32;
+        int allLength = LEN_MAX_CLASSNAME;
 
         try{
             for(Field f : getAllFields(obj.getClass())){
@@ -90,14 +72,11 @@ public class Serializer {
 
                 byteList.add(fieldLength);
                 byteList.add(fieldBytes);
-                allLength+=fieldBytes.length+4;
+                allLength+=fieldBytes.length+LEN_LENGTH_FIELD;
             }
 
         }catch(NullPointerException e){
         }
-
-//        allLength += 4;
-//        byteList.add(0, intToBytes(allLength));
 
         byte[] result = new byte[allLength];
         int cursor = 0;

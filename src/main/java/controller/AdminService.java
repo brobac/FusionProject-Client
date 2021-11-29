@@ -296,8 +296,8 @@
 //                System.out.print("lecturerCode : ");
 //                String lecturerCode = scanner.nextLine();
 //                Set<LectureTimeDTO> lectureTimeDTOSet = new HashSet<>();
-//                int option = 0;
-//                while (option != 2) {
+//                int infra.database.option = 0;
+//                while (infra.database.option != 2) {
 //                    System.out.println("----- 강의시간 입력 -----");
 //                    System.out.print("요일 : ");
 //                    String day = scanner.nextLine();
@@ -315,7 +315,7 @@
 //                    lectureTimeDTOSet.add(lectureTime);
 //                    System.out.println("[1] 추가입력  [2]종료");
 //                    System.out.print(Message.INPUT);
-//                    option = Integer.parseInt(scanner.nextLine());
+//                    infra.database.option = Integer.parseInt(scanner.nextLine());
 //                }
 //                LectureDTO lectureDTO = LectureDTO.builder()
 //                        .courseID(courseId)

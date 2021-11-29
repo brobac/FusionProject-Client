@@ -9,28 +9,35 @@ import java.util.Collections;
 import java.util.List;
 
 public class Deserializer {
+    private final static int LEN_MAX_CLASSNAME = 64;
+    private final static int LEN_LENGTH_FIELD = 4;
+    private final static int LEN_COUNT_FIELD = 4;
+
     public static Object bytesToObjectArr(byte[] bytes) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         String className = new String(
-                bytes, 0, 32
+                bytes, 0, LEN_MAX_CLASSNAME
         ).trim();
 
-        int count = bytesToInt(bytes, 32);
-
-        //TODO : prefix설정 필요
+        int count = bytesToInt(bytes, LEN_MAX_CLASSNAME);
 
         className = className.replace("[L","");
         Class clazz = Class.forName(className);
-        Constructor constructor = clazz.getDeclaredConstructor(); //TODO : 각객체는 빈생성자 가져야함
-
+//        Constructor constructor = clazz.getDeclaredConstructor(); //TODO : 각객체는 빈생성자 가져야함
         Object objectArr = Array.newInstance(clazz, count);
 
-        int cursor = 36;
+        int cursor = LEN_MAX_CLASSNAME+LEN_COUNT_FIELD;
         for(int i=0; i<count; i++){
+            String objClassName = new String(
+                    bytes, cursor, LEN_MAX_CLASSNAME
+            ).trim();
+            Class objClass = Class.forName(objClassName);
+            Constructor constructor = objClass.getDeclaredConstructor();
             Object obj = constructor.newInstance();
 
-            for(Field f : getAllFields(clazz)){
+            cursor += LEN_MAX_CLASSNAME;
+            for(Field f : getAllFields(objClass)){
                 int length = bytesToInt(bytes, cursor);
-                cursor += 4;
+                cursor += LEN_LENGTH_FIELD;
                 setData(obj, f, bytes, cursor, length);
                 cursor += length;
             }
@@ -44,19 +51,19 @@ public class Deserializer {
     //TODO : 예외처리필요
     public static Object bytesToObject(byte[] bytes) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         String className = new String(
-                bytes, 0, 32
+                bytes, 0, LEN_MAX_CLASSNAME
         ).trim();
 
 
         Class clazz = Class.forName(className);
         Constructor constructor = clazz.getDeclaredConstructor(); //TODO : 각객체는 빈생성자 가져야함
 
-        int cursor = 32;
+        int cursor = LEN_MAX_CLASSNAME;
         Object obj = constructor.newInstance();
 
         for(Field f : getAllFields(clazz)){
             int length = bytesToInt(bytes, cursor);
-            cursor += 4;
+            cursor += LEN_LENGTH_FIELD;
             setData(obj, f, bytes, cursor, length);
             cursor += length;
         }

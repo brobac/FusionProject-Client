@@ -1,4 +1,4 @@
-//package option.student;
+//package infra.database.option.student;
 //
 //public class StudentCodeOption implements StudentOption {
 //    private String query="student_code=";
