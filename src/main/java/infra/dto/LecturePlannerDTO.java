@@ -41,4 +41,12 @@ public class LecturePlannerDTO {
         goal = builder.goal;
         summary = builder.summary;
     }
+
+    public void setGoal(String goal) {
+        this.goal = goal;
+    }
+
+    public void setSummary(String summary) {
+        this.summary = summary;
+    }
 }

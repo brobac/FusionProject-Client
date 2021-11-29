@@ -12,7 +12,7 @@ public class Message {
     public static final String PLANNER_LOOKUP_INPUT = "조회할 교과목 번호 : ";
 
     //personalInfo
-    public static final String UPDATE_PERSONAL_INFORMATION_MENU = "[1] 이름 변경  [2]비밀번호 변경  [3]나기기";
+    public static final String UPDATE_PERSONAL_INFORMATION_MENU = "[1] 이름 변경  [2] 전화번호 변경  [3]비밀번호 변경  [4]나기기";
     public static final String CHANGE_NAME_INPUT = "새 이름 : ";
     public static final String CHANGE_PHONE_NUMBER_INPUT = "새 전화번호 : ";
     public static final String CHANGE_PASSWORD_INPUT = "새 비밀번호 : ";
@@ -69,15 +69,20 @@ public class Message {
 
 
     //Controller.ProfessorService
-    public static final String PROFESSOR_SERVICE_MENU = "[1]개인정보 수정  [2]개설 교과목 조회  [3]강의 계획서 관리  [4]개설 교과목 강의 계획서 조회\n [5]교과목 수강 신청 학생 목록 조회  [6]교과목 시간표 조회  [7]종료";
+    public static final String PROFESSOR_SERVICE_MENU = "[1]개인정보 수정  [2]개설 교과목 메뉴  [3]교과목 시간표 조회  [4]로그아웃";
 
     //Controller.ProfessorService > updatePersonalInformation
 
 
     // Controller.StudentService > personalInformation
 
+    //Controller.ProfessorService > lectureMenu
+    public static final String PROFESSOR_SERVICE_LECTURE_MENU = "[1]개설 교과목 조회  [2]담당 교과목 조회  [3]나가기";
+
+
+    //Controller.ProfessorService > lectureMenu > lookupLecture
     //Controller.ProfessorService > lectureLookup
-    public static final String PROFESSOR_LECTURE_LOOKUP_MENU1 = "[1]조건부 조회 [2]나가기";
+    public static final String PROFESSOR_MY_LECTURE_MENU = "[1]수강생 조회 [2]강의계획서 조회 [3]강의계획서 입력 [4]나가기";
     public static final String PROFESSOR_LECTURE_LOOKUP_MENU2 = "[1]학년별 조회 [2]담당 교수별 조회 [3]학년별 담당 교수별 조회 [4]나가기";
 
 
@@ -85,7 +90,10 @@ public class Message {
     public static final String PROFESSOR_LECTURE_MANAGE_MENU = "[1]강의계획서 입력  [2]강의계획서 수정  [3]수강신청 인원 조회  [4]나가기";
     public static final String LECTURE_PLANNER_INSERT_INPUT = "강의 계획서를 등록할 교과목 번호를 입력해주세요 : ";
     public static final String LECTURE_PLANNER_UPDATE_INPUT = "강의 계획서를 수정할 교과목 번호를 입력해주세요 : ";
-    public static final String LECTURE_REGISTER_LIST_INPUT = "수강신청 인원을 조회할 교과묙 번호를 입력해주세요 : ";
+    public static final String LECTURE_PLANNER_CATEGORIES = "[1]강의 목표  [2]강의 개요 [3]완료";
+    public static final String LECTURE_PLANNER_CATEGORIES_INPUT = "변경할 항목의 번호를 입력해주세요 : ";
+    public static final String LECTURE_PLANNER_GOAL_INPUT = "강의 목표 : ";
+    public static final String LECTURE_PLANNER_SUMMARY_INPUT = "강의 개요 : ";
 
     //Controller.ProfessorService > lecturePlannerSettings
     public static final String LECTURE_PLANNER_SETTINGS_MENU = "[1]강의 계획서 등록 [2]강의 계획서 수정 [3]나가기";

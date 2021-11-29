@@ -81,7 +81,7 @@ public class EnrollmentProgram {
         if (account.getPosition().equals("ADMIN")) {
 //            return new AdminService(account, is, os);
         } else if (account.getPosition().equals("PROF")) {
-//            return new ProfessorService(account, is, os);
+            return new ProfessorService(account, is, os);
         } else if (account.getPosition().equals("STUD")) {
             return new StudentService(account, is, os);
         }
