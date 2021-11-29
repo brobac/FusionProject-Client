@@ -49,6 +49,11 @@ public class ProfProtocolService {
         pt.send(os);
     }
 
+    public void requestMyLectureList(){
+        Protocol pt  = new Protocol(Protocol.TYPE_REQUEST,Protocol.T1_CODE_READ,Protocol.ENTITY_LECTURE);
+    }
+
+
     // 개설 교과목 목록 조회 요청(옵션)
 
     // 강의 계획서 조회 요청

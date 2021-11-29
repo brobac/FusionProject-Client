@@ -309,29 +309,63 @@ public class StudentService implements EnrollmentService {
         Protocol receiveProtocol = ps.response();
         studentDTO = (StudentDTO) receiveProtocol.getObject();
 
-        LectureTimeDTO[] lectureTimeDTO = studentDTO.getTimeTable();
-
-        int k = 0;
-        String[] day = {"MON", "TUE", "WED", "THU", "FRI"};
-        for (int i = 0; i < 8; i++) {
-            if (i != 0)
-                System.out.print(i + " |");
-            else
-                System.out.print("\\ |");
-            for (int j = 0; j < 5; j++) {
-                if (i == 0) {
-                    System.out.printf("%10s%10s", day[j], " |");
-                } else {
-                    if (lectureTimeDTO[k].getLectureDay() == day[j] && (lectureTimeDTO[k].getStartTime() == i || lectureTimeDTO[k].getEndTime() == i)) {
-                        System.out.printf("%10s%8s", lectureTimeDTO[k++].getLectureName(), " ");
-                    } else {
-                        System.out.printf("%10s%10s", "", "");
-                    }
-                }
+        LectureTimeDTO[] lectureTimeDTOS = studentDTO.getTimeTable();
+        String[][] timeTable = new String[10][6];
+        for (LectureTimeDTO lecture : lectureTimeDTOS) {
+            int day = 0;
+            switch (lecture.getLectureDay()) {
+                case "MON":
+                    day = 1;
+                    break;
+                case "TUE":
+                    day = 2;
+                    break;
+                case "WED":
+                    day = 3;
+                    break;
+                case "THU":
+                    day = 4;
+                    break;
+                case "FRI":
+                    day = 5;
+                    break;
+                default:
+                    break;
             }
-            System.out.println();
-            System.out.println("--|-------------------|-------------------|-------------------|-------------------|-------------------|");
+            for (int i = lecture.getStartTime(); i <= lecture.getEndTime(); i++) {
+                timeTable[day][i] = lecture.getLectureName();
+            }
         }
+
+        for (int i = 0; i < 10; i++) {
+            System.out.println("--|-------------------|-------------------|-------------------|-------------------|-------------------|");
+            System.out.print("|");
+            for (int j = 0; j < 6; j++) {
+                System.out.printf("%15s|",timeTable[i][j]);
+            }
+            System.out.println("|");
+        }
+//        int k = 0;
+//        String[] day = {"MON", "TUE", "WED", "THU", "FRI"};
+//        for (int i = 0; i < 8; i++) {
+//            if (i != 0)
+//                System.out.print(i + " |");
+//            else
+//                System.out.print("\\ |");
+//            for (int j = 0; j < 5; j++) {
+//                if (i == 0) {
+//                    System.out.printf("%10s%10s", day[j], " |");
+//                } else {
+//                    if (lectureTimeDTO[k].getLectureDay() == day[j] && (lectureTimeDTO[k].getStartTime() == i || lectureTimeDTO[k].getEndTime() == i)) {
+//                        System.out.printf("%10s%8s", lectureTimeDTO[k++].getLectureName(), " ");
+//                    } else {
+//                        System.out.printf("%10s%10s", "", "");
+//                    }
+//                }
+//            }
+//            System.out.println();
+//            System.out.println("--|-------------------|-------------------|-------------------|-------------------|-------------------|");
+//        }
     }
 }
 

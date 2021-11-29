@@ -10,6 +10,12 @@ public class Message {
     public static final String LECTURE_LOOKUP_MENU = "[1]조건부 조회  [2]강의계획서 조회  [3]나가기";
     public static final String PLANNER_LOOKUP_INPUT = "조회할 교과목 번호 : ";
 
+    //personalInfo
+    public static final String UPDATE_PERSONAL_INFORMATION_MENU = "[1] 이름 변경  [2]비밀번호 변경  [3]나기기";
+    public static final String CHANGE_NAME_INPUT = "새 이름 : ";
+    public static final String CHANGE_PHONE_NUMBER_INPUT = "새 전화번호 : ";
+    public static final String CHANGE_PASSWORD_INPUT = "새 비밀번호 : ";
+
     //Controller.EnrollmentProgram
     public static final String ENROLLMENT_MENU = "[1] 로그인 [2] 종료";
     public static final String ID_INPUT = "아이디 : ";
@@ -65,20 +71,23 @@ public class Message {
     public static final String PROFESSOR_SERVICE_MENU = "[1]개인정보 수정  [2]개설 교과목 조회  [3]강의 계획서 관리  [4]개설 교과목 강의 계획서 조회\n [5]교과목 수강 신청 학생 목록 조회  [6]교과목 시간표 조회  [7]종료";
 
     //Controller.ProfessorService > updatePersonalInformation
+
+
     // Controller.StudentService > personalInformation
-    public static final String UPDATE_PERSONAL_INFORMATION_MENU = "[1] 이름 변경  [2]비밀번호 변경  [3]나기기";
-    public static final String CHANGE_NAME_INPUT = "새 이름 : ";
-    public static final String CHANGE_PHONE_NUMBER_INPUT = "새 전화번호 : ";
-    public static final String CHANGE_PASSWORD_INPUT = "새 비밀번호 : ";
 
     //Controller.ProfessorService > lectureLookup
     public static final String PROFESSOR_LECTURE_LOOKUP_MENU1 = "[1]조건부 조회 [2]나가기";
     public static final String PROFESSOR_LECTURE_LOOKUP_MENU2 = "[1]학년별 조회 [2]담당 교수별 조회 [3]학년별 담당 교수별 조회 [4]나가기";
 
+
+    //Controller.ProfessorService > lectureManage
+    public static final String PROFESSOR_LECTURE_MANAGE_MENU = "[1]강의계획서 입력  [2]강의계획서 수정  [3]수강신청 인원 조회  [4]나가기";
+    public static final String LECTURE_PLANNER_INSERT_INPUT = "강의 계획서를 등록할 교과목 번호를 입력해주세요 : ";
+    public static final String LECTURE_PLANNER_UPDATE_INPUT = "강의 계획서를 수정할 교과목 번호를 입력해주세요 : ";
+    public static final String LECTURE_REGISTER_LIST_INPUT = "수강신청 인원을 조회할 교과묙 번호를 입력해주세요 : ";
+
     //Controller.ProfessorService > lecturePlannerSettings
     public static final String LECTURE_PLANNER_SETTINGS_MENU = "[1]강의 계획서 등록 [2]강의 계획서 수정 [3]나가기";
-    public static final String LECTURE_PLANNER_INSERT_INPUT = "강의 계획서를 등록할 개설 교과목 번호를 입력해주세요 : ";
-    public static final String LECTURE_PLANNER_UPDATE_INPUT = "강의 계획서를 수정할 개설 교과목 번호를 입력해주세요 : ";
     public static final String MISMATCH_LECTURE_CODE = "담당 교과목이 아닙니다.";
     public static final String LECTURE_PLANNER_INPUT = "강의 계획서 내용을 입력해주세요 : ";
     public static final String LECTURE_PLANNER_INPUT_SUCCESS = "강의 계획서 등록을 성공하였습니다.";
@@ -86,7 +95,6 @@ public class Message {
     public static final String LECTURE_PLANNER_UPDATE_SUCCESS = "강의 계획서 수정을 성공하였습니다.";
     public static final String LECTURE_PLANNER_UPDATE_FAIL = "강의 계획서 수정을 실패하였습니다.";
 
-    //Controller.ProfessorService > LecturePlannerLookup
 
     //Controller.ProfessorService > studentListLookup
     public static final String STUDENT_LIST_LOOKUP_MENU = "교과목 수강 신청 학생 목록을 조회할 개설 교과목 번호를 입력해주세요 : ";

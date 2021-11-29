@@ -66,7 +66,7 @@
 //        }
 //    }
 //
-//    private void createAccount() throws IllegalAccessException, IOException {
+//    private void createAccount() throws Exception {
 //        int menu = 0;
 //        while (menu != 3) {
 //            System.out.println(Message.CREATE_ACCOUNT_MENU);
@@ -99,21 +99,13 @@
 //                        .build();
 //
 //                //계정생성이 필요한 학생의 정보를 서버에게 전달
-//                Protocol sendProtocol = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_CREATE, Protocol.ENTITY_ACCOUNT);
-//                sendProtocol.setObject(studentDTO);
-//                sendProtocol.send(os);
-//
-//                Protocol receiveProtocol = new Protocol();
-//                while (receiveProtocol.getType() == Protocol.UNDEFINED) {
-//                    receiveProtocol.read(is);
-//                    int result = receiveProtocol.getType();
-//                    if (result == Protocol.T2_CODE_SUCCESS) {
-//                        System.out.println("계정생성 성공");
-//                    } else {
-//                        System.out.println("계정생성 실패");
-//                    }
+//                ps.reqCreateStudAccount(studentDTO);
+//                Protocol receiveProtocol = ps.response();
+//                if (receiveProtocol.getCode() == Protocol.T2_CODE_SUCCESS) {
+//                    System.out.println("계정생성 성공");
+//                } else {
+//                    System.out.println("계정생성 실패");
 //                }
-//
 //            } else if (menu == 2) {
 //                System.out.print(Message.PROFESSOR_CODE_INPUT);
 //                String professorCode = scanner.nextLine();
@@ -138,27 +130,19 @@
 //                        .telePhone(phoneNumber)
 //                        .build();
 //
-//                Protocol sendProtocol = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_CREATE, Protocol.ENTITY_ACCOUNT);
-//                sendProtocol.setObject(professorDTO);
-//                sendProtocol.send(os);
-//
-//                Protocol receiveProtocol = new Protocol();
-//                while (receiveProtocol.getType() == Protocol.UNDEFINED) {
-//                    receiveProtocol.read(is);
-//                    int result = receiveProtocol.getType();
-//                    if (result == Protocol.T2_CODE_SUCCESS) {
-//                        System.out.println("계정생성 성공");
-//                    } else {
-//                        System.out.println("계정생성 실패");
-//                    }
+//                ps.reqCreateProfAccount(professorDTO);
+//                Protocol receiveProtocol = ps.response();
+//                if (receiveProtocol.getCode() == Protocol.T2_CODE_SUCCESS) {
+//                    System.out.println("계정생성 성공");
+//                } else {
+//                    System.out.println("계정생성 실패");
 //                }
-//
-//                //TODO 서버로 memberCode 전송해 계정 생성을 요청한다.
 //            } else if (menu == 3) {
 //            } else {
 //                System.out.println(Message.WRONG_INPUT_NOTICE);
 //            }
 //        }
+//
 //    }
 //
 //    private void courseManage() throws Exception {
@@ -189,45 +173,32 @@
 //                        .credit(credit)
 //                        .build();
 //
-//                Protocol sendProtocol = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_CREATE, Protocol.ENTITY_COURSE);
-//                sendProtocol.setObject(courseDTO);
-//                sendProtocol.send(os);
-//
-//                Protocol receiveProtocol = new Protocol();
-//                while (receiveProtocol.getType() == Protocol.UNDEFINED) {
-//                    receiveProtocol.read(is);
-//                    int result = receiveProtocol.getType();
-//                    if (result == Protocol.T2_CODE_SUCCESS) {
-//                        System.out.println("과목 생성 성공");
-//                    } else {
-//                        System.out.println("과목 생성 실패");
-//                        //잘못된 입력? 이미존재하는 과목?
-//                    }
+//                ps.reqCreateCourse(courseDTO);
+//                Protocol receiveProtocol = ps.response();
+//                int result = receiveProtocol.getType();
+//                if (result == Protocol.T2_CODE_SUCCESS) {
+//                    System.out.println("과목 생성 성공");
+//                } else {
+//                    System.out.println("과목 생성 실패");
 //                }
-//
 //            } else if (menu == 2) {
 //                System.out.print(Message.UPDATE_COURSE_INPUT);
 //                String courseCode = scanner.nextLine();
-//                Protocol sendProtocol = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_READ, Protocol.ENTITY_COURSE);
 //                CourseDTO courseDTO = CourseDTO.builder()
 //                        .courseCode(courseCode)
 //                        .build();
-//                sendProtocol.setObject(courseDTO);
-//                sendProtocol.send(os);
-//
+//                ps.reqReadCourse(courseDTO);
 //                //해당과목 정보조회
-//                Protocol receiveProtocol = new Protocol();
-//                while (receiveProtocol.getType() == Protocol.UNDEFINED) {
-//                    receiveProtocol.read(is);
-//                    int result = receiveProtocol.getType();
-//                    if (result == Protocol.T2_CODE_SUCCESS) {
-//                        System.out.println("조회성공");
-//                        courseDTO = (CourseDTO) receiveProtocol.getObject();
-//                    } else {
-//                        System.out.println("과목 생성 실패");
-//                        return;
-//                    }
+//                Protocol receiveProtocol = ps.response();
+//                int result = receiveProtocol.getType();
+//                if (result == Protocol.T2_CODE_SUCCESS) {
+//                    System.out.println("조회성공");
+//                    courseDTO = (CourseDTO) receiveProtocol.getObject();
+//                } else {
+//                    System.out.println("과목 생성 실패");
+//                    return;
 //                }
+//
 //                System.out.println("현재 정보");
 //                System.out.println("과목코드 : " + courseDTO.getCourseCode());
 //                System.out.println("과목명 : " + courseDTO.getCourseName());
@@ -260,19 +231,14 @@
 //                            courseDTO.setCredit(Integer.parseInt(scanner.nextLine()));
 //                            break;
 //                        case 6:
-//                            sendProtocol = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_UPDATE, Protocol.ENTITY_COURSE);
-//                            sendProtocol.setObject(courseDTO);
-//                            sendProtocol.send(os);
-//                            receiveProtocol = new Protocol();
-//                            while (receiveProtocol.getType() == Protocol.UNDEFINED) {
-//                                receiveProtocol.read(is);
-//                                int result = receiveProtocol.getType();
-//                                if (result == Protocol.T2_CODE_SUCCESS) {
-//                                    System.out.println("업데이트 되었습니다.");
-//                                } else {
-//                                    System.out.println("업데이트 실패");
-//                                    return;
-//                                }
+//                            ps.reqUpdateCourse(courseDTO);
+//                            receiveProtocol = ps.response();
+//                            result = receiveProtocol.getType();
+//                            if (result == Protocol.T2_CODE_SUCCESS) {
+//                                System.out.println("업데이트 되었습니다.");
+//                            } else {
+//                                System.out.println("업데이트 실패");
+//                                return;
 //                            }
 //                            break;
 //                        case 7:
@@ -282,12 +248,6 @@
 //                            break;
 //                    }
 //                }
-//
-////findByOption 제외 다 DTO에 담아서 보낸다.
-//
-//
-//                //TODO 서버에서 현재 정보를 받아와서 print 해주고 새로운 입력을 받는다.
-//
 //            } else if (menu == 3) {
 //                System.out.print(Message.DELETE_COURSE_INPUT);
 //                String courseCode = scanner.nextLine();
@@ -314,6 +274,7 @@
 //                System.out.println(Message.WRONG_INPUT_NOTICE);
 //            }
 //        }
+//
 //    }
 //
 //    private void lectureManage() throws IllegalAccessException, IOException {
@@ -428,7 +389,8 @@
 //                    int result = receiveProtocol.getType();
 //                    if (result == Protocol.T2_CODE_SUCCESS) {
 //                        PeriodDTO[] periodDTOS = (PeriodDTO[]) receiveProtocol.getObjectArray();
-//                        for (PeriodDTO infra.dto : periodDTOS) {
+//                        for (PeriodDTO infra.dto:
+//                        periodDTOS){
 //                            System.out.print("시작 : " + infra.dto.getBeginTime() + " ~ ");
 //                            System.out.print("종료 : " + infra.dto.getEndTime());
 //                        }
@@ -493,7 +455,8 @@
 //                    int result = receiveProtocol.getType();
 //                    if (result == Protocol.T2_CODE_SUCCESS) {
 //                        RegisteringPeriodDTO[] registeringPeriodDTOS = (RegisteringPeriodDTO[]) receiveProtocol.getObjectArray();
-//                        for (RegisteringPeriodDTO infra.dto : registeringPeriodDTOS) {
+//                        for (RegisteringPeriodDTO infra.dto:
+//                        registeringPeriodDTOS){
 //                            System.out.print("대상 학년 : " + infra.dto.getAllowedYear() + " ");
 //                            System.out.print("시작 : " + infra.dto.getPeriodDTO().getBeginTime() + " ~ ");
 //                            System.out.print("종료 : " + infra.dto.getPeriodDTO().getEndTime());

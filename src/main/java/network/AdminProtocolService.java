@@ -1,5 +1,9 @@
 package network;
 
+import infra.dto.CourseDTO;
+import infra.dto.ProfessorDTO;
+import infra.dto.StudentDTO;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -30,90 +34,110 @@ public class AdminProtocolService {
     public void reqCreateAdminAccount(Object data) throws IllegalAccessException, IOException {
         Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_CREATE, Protocol.ENTITY_ADMIN);
         pt.setObject(data);
-        pt.send(os);;
+        pt.send(os);
+        ;
     }
 
     // 교수 계정 생성 요청
-    public void reqCreateProfAccount(Object data) throws IllegalAccessException, IOException {
+    public void reqCreateProfAccount(ProfessorDTO professorDTO) throws IllegalAccessException, IOException {
         Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_CREATE, Protocol.ENTITY_PROFESSOR);
-        pt.setObject(data);
-        pt.send(os);;
+        pt.setObject(professorDTO);
+        pt.send(os);
+        ;
     }
 
     // 학생 계정 생성 요청
-    public void reqCreateStudAccount(Object data) throws IllegalAccessException, IOException {
+    public void reqCreateStudAccount(StudentDTO studentDTO) throws IllegalAccessException, IOException {
         Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_CREATE, Protocol.ENTITY_STUDENT);
-        pt.setObject(data);
-        pt.send(os);;
+        pt.setObject(studentDTO);
+        pt.send(os);
+        ;
+    }
+
+    public void reqReadCourse(CourseDTO courseDTO) throws IllegalAccessException, IOException {
+        Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_READ, Protocol.ENTITY_COURSE,Protocol.READ_BY_ID);
+        pt.setObject(courseDTO);
+        pt.send(os);
+        ;
     }
 
     // 교과목 생성 요청
-    public void reqCreateCourse(Object data) throws IllegalAccessException, IOException {
+    public void reqCreateCourse(CourseDTO courseDTO) throws IllegalAccessException, IOException {
         Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_CREATE, Protocol.ENTITY_COURSE);
-        pt.setObject(data);
-        pt.send(os);;
+        pt.setObject(courseDTO);
+        pt.send(os);
+        ;
     }
 
     // 교과목 수정 요청
-    public void reqUpdateCourse(Object data) throws IllegalAccessException, IOException {
+    public void reqUpdateCourse(CourseDTO courseDTO) throws IllegalAccessException, IOException {
         Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_UPDATE, Protocol.ENTITY_COURSE);
-        pt.setObject(data);
-        pt.send(os);;
+        pt.setObject(courseDTO);
+        pt.send(os);
+        ;
     }
 
     // 교과목 삭제 요청
     public void reqDeleteCourse(Object data) throws IllegalAccessException, IOException {
         Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_DELETE, Protocol.ENTITY_COURSE);
         pt.setObject(data);
-        pt.send(os);;
+        pt.send(os);
+        ;
     }
 
     // 개설 교과목 생성 요청
-    public void reqCreateLecture(Object data) throws IllegalAccessException, IOException  {
+    public void reqCreateLecture(Object data) throws IllegalAccessException, IOException {
         Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_CREATE, Protocol.ENTITY_LECTURE);
         pt.setObject(data);
-        pt.send(os);;
+        pt.send(os);
+        ;
     }
 
     // 개설 교과목 삭제 요청
-    public void reqDeleteLecture(Object data) throws IllegalAccessException, IOException  {
+    public void reqDeleteLecture(Object data) throws IllegalAccessException, IOException {
         Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_DELETE, Protocol.ENTITY_LECTURE);
         pt.setObject(data);
-        pt.send(os);;
+        pt.send(os);
+        ;
     }
 
     // 강의계획서 입력 기간 설정 요청
-    public void reqCreatePlannerPeriod(Object data) throws IllegalAccessException, IOException  {
+    public void reqCreatePlannerPeriod(Object data) throws IllegalAccessException, IOException {
         Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_CREATE, Protocol.ENTITY_PLANNER_PERIOD);
         pt.setObject(data);
-        pt.send(os);;
+        pt.send(os);
+        ;
     }
 
     // 학년별 수강 신청 기간 설정 요청
-    public void reqCreateRegisteringPeriod(Object data) throws IllegalAccessException, IOException  {
+    public void reqCreateRegisteringPeriod(Object data) throws IllegalAccessException, IOException {
         Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_CREATE, Protocol.ENTITY_REGIS_PERIOD);
         pt.setObject(data);
-        pt.send(os);;
+        pt.send(os);
+        ;
     }
 
     // 교수 정보 조회 요청
-    public void reqReadProfessorInfo(Object data) throws IllegalAccessException, IOException  {
+    public void reqReadProfessorInfo(Object data) throws IllegalAccessException, IOException {
         Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_READ, Protocol.ENTITY_PROFESSOR);
         pt.setObject(data);
-        pt.send(os);;
+        pt.send(os);
+        ;
     }
 
     // 학생 정보 조회 요청
-    public void reqReadStudentInfo(Object data) throws IllegalAccessException, IOException  {
+    public void reqReadStudentInfo(Object data) throws IllegalAccessException, IOException {
         Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_READ, Protocol.ENTITY_STUDENT);
         pt.setObject(data);
-        pt.send(os);;
+        pt.send(os);
+        ;
     }
 
     // 개설 교과목 정보 조회 요청
-    public void reqReadLectureInfo(Object data) throws IllegalAccessException, IOException  {
+    public void reqReadLectureInfo(Object data) throws IllegalAccessException, IOException {
         Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_READ, Protocol.ENTITY_LECTURE);
         pt.setObject(data);
-        pt.send(os);;
+        pt.send(os);
+        ;
     }
 }
