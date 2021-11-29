@@ -321,7 +321,8 @@ public class StudentService implements EnrollmentService {
                 if (i == 0) {
                     System.out.printf("%10s%10s", day[j], " |");
                 } else {
-                    if (lectureTimeDTO[k].getLectureDay() == day[j] && (lectureTimeDTO[k].getStartTime() == i || lectureTimeDTO[k].getEndTime() == i)) {
+                    if (lectureTimeDTO[k].getLectureDay().equals(day[j]) &&
+                            (lectureTimeDTO[k].getStartTime() == i || lectureTimeDTO[k].getEndTime() == i)) {
                         System.out.printf("%10s%8s", lectureTimeDTO[k++].getLectureName(), " ");
                     } else {
                         System.out.printf("%10s%10s", "", "");
