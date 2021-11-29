@@ -2,7 +2,7 @@ package network;
 
 import infra.dto.RegisteringDTO;
 import infra.dto.StudentDTO;
-import option.lecture.LectureOption;
+import infra.database.option.lecture.LectureOption;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -93,7 +93,8 @@ public class StudentProtocolService {
     }
 
     //로그아웃 요청
-    public void requestLogout() {
+    public void requestLogout() throws IOException {
         Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_LOGOUT);
+        pt.send(os);
     }
 }

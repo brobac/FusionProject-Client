@@ -1,6 +1,6 @@
-//package option.course;
+//package infra.database.option.course;
 //
-//import infra.database.option.Option;
+//import infra.database.infra.database.option.Option;
 //
 //public interface CourseOption extends Option {
 //    public String getQuery();

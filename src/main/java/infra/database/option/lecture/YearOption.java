@@ -1,9 +1,9 @@
-package option.lecture;
+package infra.database.option.lecture;
 
-public class LectureTargetYearOption implements LectureOption{
+public class YearOption implements LectureOption{
     private String query="target_year=";
 
-    public LectureTargetYearOption(int year) {
+    public YearOption(int year) {
         this.query += year;
     }
 

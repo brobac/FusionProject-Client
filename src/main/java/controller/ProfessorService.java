@@ -3,8 +3,8 @@
 //import infra.dto.*;
 //import network.ProfProtocolService;
 //import network.Protocol;
-//import option.lecture.LectureOption;
-//import option.lecture.ProfessorCodeOption;
+//import infra.database.option.lecture.LectureOption;
+//import infra.database.option.lecture.ProfessorCodeOption;
 //
 //import java.io.IOException;
 //import java.io.InputStream;

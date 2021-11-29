@@ -1,4 +1,4 @@
-package option.lecture;
+package infra.database.option.lecture;
 
 public class LectureDepartmentOption implements LectureOption {
     private String query = "department=";

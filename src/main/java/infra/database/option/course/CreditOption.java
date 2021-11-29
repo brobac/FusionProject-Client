@@ -1,4 +1,4 @@
-//package option.course;
+//package infra.database.option.course;
 //
 //public class CreditOption  implements CourseOption{
 //    @Override
