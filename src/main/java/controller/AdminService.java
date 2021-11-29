@@ -71,8 +71,7 @@ public class AdminService implements EnrollmentService {
         while (menu != 3) {
             System.out.println(Message.CREATE_ACCOUNT_MENU);
             System.out.print(Message.INPUT);
-            menu = scanner.nextInt();  // int 파싱 오류 처리 필요
-            scanner.nextLine();
+            menu = Integer.parseInt(scanner.nextLine());
             if (menu == 1) {
                 System.out.print(Message.STUDENT_CODE_INPUT);
                 String studentCode = scanner.nextLine();
@@ -343,7 +342,7 @@ public class AdminService implements EnrollmentService {
         }
     }
 
-    private void plannerInputPeriodSettings() throws IllegalAccessException, IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException {
+    private void plannerInputPeriodSettings() throws Exception {
         int menu = 0;
         while (menu != 3) {
             System.out.println(Message.PLANNER_INPUT_PERIOD_MENU);
@@ -360,44 +359,30 @@ public class AdminService implements EnrollmentService {
                         .beginTime(begin)
                         .endTime(end)
                         .build();
-                Protocol sendProtocol = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_CREATE, Protocol.ENTITY_PLANNER_PERIOD);
-                sendProtocol.setObject(periodDTO);
-                sendProtocol.send(os);
-                Protocol receiveProtocol = new Protocol();
-                while (receiveProtocol.getType() == Protocol.UNDEFINED) {
-                    receiveProtocol.read(is);
-                    int result = receiveProtocol.getType();
-                    if (result == Protocol.T2_CODE_SUCCESS) {
-                        System.out.println("강의 계획서 입력기간 등록 성공");
-                    } else {
-                        System.out.println("강의 계획서 입력기간 등록 실패");
-                        return;
-                    }
+                ps.reqCreatePlannerPeriod(periodDTO);
+                Protocol receiveProtocol = ps.response();
+                int result = receiveProtocol.getCode();
+                if (result == Protocol.T2_CODE_SUCCESS) {
+                    System.out.println("강의 계획서 입력기간 등록 성공");
+                } else {
+                    System.out.println("강의 계획서 입력기간 등록 실패");
+                    return;
                 }
-
-
-                //TODO 사용자로부터 입력받은 기간을 서버에게 등록 요청한다.
-
             } else if (menu == 2) {
-                Protocol sendProtocol = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_READ, Protocol.ENTITY_PLANNER_PERIOD);
-                sendProtocol.send(os);
-                Protocol receiveProtocol = new Protocol();
-                while (receiveProtocol.getType() == Protocol.UNDEFINED) {
-                    receiveProtocol.read(is);
-                    int result = receiveProtocol.getType();
-                    if (result == Protocol.T2_CODE_SUCCESS) {
-                        PeriodDTO[] periodDTOS = (PeriodDTO[]) receiveProtocol.getObjectArray();
-                        for (PeriodDTO infra.dto:
-                        periodDTOS){
-                            System.out.print("시작 : " + infra.dto.getBeginTime() + " ~ ");
-                            System.out.print("종료 : " + infra.dto.getEndTime());
-                        }
-                    } else {
-                        System.out.println("조회 실패");
-                        return;
+                ps.reqReadPlannerPeriod();
+                Protocol receiveProtocol = ps.response();
+                int result = receiveProtocol.getCode();
+                if (result == Protocol.T2_CODE_SUCCESS) {
+                    PeriodDTO[] periodDTOS = (PeriodDTO[]) receiveProtocol.getObjectArray();
+                    for (PeriodDTO dto :
+                            periodDTOS) {
+                        System.out.print("시작 : " + dto.getBeginTime() + " ~ ");
+                        System.out.print("종료 : " + dto.getEndTime());
                     }
+                } else {
+                    System.out.println("조회 실패");
+                    return;
                 }
-                //TODO 서버에게 현재 등록되어있는 강의계획서 등록 기간 정보를 받아와서 출력한다.
             } else if (menu == 3) {
             } else {
                 System.out.println(Message.WRONG_INPUT_NOTICE);

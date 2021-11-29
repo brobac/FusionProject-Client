@@ -101,31 +101,31 @@ public class LectureTimeDTO {
         public Builder endTime(int value){
             switch (value){
                 case 1:
-                    startTime = 1;
+                    endTime = 1;
                     break;
                 case 2:
-                    startTime = 2;
+                    endTime = 2;
                     break;
                 case 3:
-                    startTime = 3;
+                    endTime = 3;
                     break;
                 case 4:
-                    startTime = 4;
+                    endTime = 4;
                     break;
                 case 5:
-                    startTime = 5;
+                    endTime = 5;
                     break;
                 case 6:
-                    startTime = 6;
+                    endTime = 6;
                     break;
                 case 7:
-                    startTime = 7;
+                    endTime = 7;
                     break;
                 case 8:
-                    startTime = 8;
+                    endTime = 8;
                     break;
                 case 9:
-                    startTime = 9;
+                    endTime = 9;
                     break;
                 default:
                     throw new InvalidParameterException("잘못된 시작 교시 입력입니다.");

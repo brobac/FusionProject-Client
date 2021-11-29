@@ -198,13 +198,13 @@ public class StudentService implements EnrollmentService {
             System.out.printf("[ %d ]", i + 1);
             // 과목명, 대상학년, 과목코드, 제한인원, 신청인원, 학과, 학점, 교수명
             System.out.print("교과목명 : " + curLecture.getCourse().getCourseName());
-            System.out.print("학점 : " + curLecture.getCourse().getCredit());
-            System.out.print("과목코드 : " + curLecture.getLectureCode());
-            System.out.print("담당교수 : " + curLecture.getProfessor().getName());
-            System.out.print("수강학과 : " + curLecture.getCourse().getDepartment());
-            System.out.print("강의시간(강의실) : "); // 반복문필요
-            System.out.print("제한인원 : " + curLecture.getLimit());
-            System.out.println("수강인원 : " + curLecture.getApplicant());
+            System.out.print("  학점 : " + curLecture.getCourse().getCredit());
+            System.out.print("  과목코드 : " + curLecture.getLectureCode());
+            System.out.print("  담당교수 : " + curLecture.getProfessor().getName());
+            System.out.print("  수강학과 : " + curLecture.getCourse().getDepartment());
+            System.out.print("  강의시간(강의실) : "); // 반복문필요
+            System.out.print("  제한인원 : " + curLecture.getLimit());
+            System.out.println("  수강인원 : " + curLecture.getApplicant());
         }
     }
 
@@ -331,6 +331,14 @@ public class StudentService implements EnrollmentService {
 //    }
 
     private void timeTableLookup() throws Exception {
+        final int NUM_OF_PERIOD = 9;
+        final int NUM_OF_DAY = 5;
+        final int MON = 0;
+        final int TUE = 1;
+        final int WED = 2;
+        final int THU = 3;
+        final int FRI = 4;
+
         //시간표 출력
         StudentDTO studentDTO = StudentDTO.builder().id(account.getMemberID()).build();
         ps.requestReadPersonalInfo(studentDTO);
@@ -339,72 +347,62 @@ public class StudentService implements EnrollmentService {
         studentDTO = (StudentDTO) receiveProtocol.getObject();
 
         LectureTimeDTO[] lectureTimeDTOS = studentDTO.getTimeTable();
-        String[][] timeTable = new String[10][6];
+        String[][] timeTable = new String[NUM_OF_PERIOD][NUM_OF_DAY];
         String[] days = {"MON", "TUE", "WED", "THU", "FRI"};
-        timeTable[0][0] = "-";
-        for (int i = 1; i < 6; i++) {
-            timeTable[0][i] = days[i - 1];
-        }
-        for (int i = 1; i <= 9; i++) {
-            timeTable[i][0] = i + "교시";
-        }
-        for (LectureTimeDTO lecture : lectureTimeDTOS) {
-            int day = 0;
-            switch (lecture.getLectureDay()) {
+
+        for(LectureTimeDTO dto : lectureTimeDTOS){
+            int day = -1;
+            switch (dto.getLectureDay()) {
                 case "MON":
-                    day = 1;
+                    day = MON;
                     break;
                 case "TUE":
-                    day = 2;
+                    day = TUE;
                     break;
                 case "WED":
-                    day = 3;
+                    day = WED;
                     break;
                 case "THU":
-                    day = 4;
+                    day = THU;
                     break;
                 case "FRI":
-                    day = 5;
-                    break;
-                default:
+                    day = FRI;
                     break;
             }
-            for (int i = lecture.getStartTime(); i <= lecture.getEndTime(); i++) {
-                timeTable[day][i] = lecture.getLectureName();
+
+            for(int i=dto.getStartTime(); i<=dto.getEndTime(); i++){
+                timeTable[i-1][day] = dto.getLectureName();
             }
         }
 
-        for (int i = 0; i < 10; i++) {
-            System.out.println("|---------------|---------------|---------------|---------------|---------------|---------------|");
-            System.out.print("|");
-            for (int j = 0; j < 6; j++) {
-                if (timeTable[i][j] != null) {
-                    System.out.printf("%15s|", timeTable[i][j]);
-                } else {
-                    System.out.printf("%15s|", " ");
-                }
+        for(int i=0; i<NUM_OF_DAY; i++){
+            if(i==0){
+                System.out.printf("%10s%10s", "", " |");
             }
-            System.out.println("|");
+            System.out.printf("%10s%10s", days[i], " |");
         }
-//        int k = 0;
-//        for (int i = 0; i < 8; i++) {
-//            if (i != 0)
-//                System.out.print(i + " |");
-//            else
-//                System.out.print("\\ |");
-//            for (int j = 0; j < 5; j++) {
-//                if (i == 0) {
-//                    System.out.printf("%10s%10s", day[j], " |");
-//                } else {
-//                    if (lectureTimeDTO[k].getLectureDay() == day[j] && (lectureTimeDTO[k].getStartTime() == i || lectureTimeDTO[k].getEndTime() == i)) {
-//                        System.out.printf("%10s%8s", lectureTimeDTO[k++].getLectureName(), " ");
-//                    } else {
-//                        System.out.printf("%10s%10s", "", "");
-//                    }
-//                }
-//            }
-//            System.out.println();
-//            System.out.println("--|-------------------|-------------------|-------------------|-------------------|-------------------|");
-//        }
+
+        System.out.println();
+        System.out.println("-------------------|-------------------|-------------------|-------------------|-------------------|-------------------|");
+
+        for(int i=0; i<NUM_OF_PERIOD; i++){
+            for(int j=0; j<NUM_OF_DAY; j++){
+                if(j==0){
+                    System.out.printf("%8s%10s", (i+1)+"교시", " |");
+                }
+
+                if(timeTable[i][j]==null){
+                    System.out.printf("%10s%10s", "", " |");
+                }else{
+                    System.out.printf(
+                            "%"+(10-timeTable[i][j].length()/2)+"s%"
+                                    +(10-timeTable[i][j].length()/2)+"s",
+                            timeTable[i][j], " |");
+                }
+
+            }
+            System.out.println();
+            System.out.println("-------------------|-------------------|-------------------|-------------------|-------------------|-------------------|");
+        }
     }
 }
