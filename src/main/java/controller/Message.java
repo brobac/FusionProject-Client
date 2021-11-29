@@ -7,7 +7,8 @@ public class Message {
     public static final String NAME_INPUT = "이름 : ";
     public static final String PHONE_NUMBER_INPUT = "전화번호 : ";
     public static final String BIRTHDAY_INPUT = "생년월일 : ";
-    public static final String LECTURE_LOOKUP_MENU = "[1]조건부 조회  [2]강의계획서 조회  [3]나가기";
+    public static final String LECTURE_LOOKUP_MENU = "[1]전체 조회  [2]조건부 조회  [3]나가기";
+    public static final String LECTURE_LOOKUP_INNER_MENU = "[1]강의 계획서 조회  [2]나가기";
     public static final String PLANNER_LOOKUP_INPUT = "조회할 교과목 번호 : ";
 
     //personalInfo

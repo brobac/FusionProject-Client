@@ -209,17 +209,36 @@ public class StudentService implements EnrollmentService {
     }
 
     private void lectureLookup() throws Exception {
-        ps.requestAllLectureList();  // 개설 교과목 (전체) 목록 요청
-
-        Protocol receiveProtocol = ps.response();
-        if (receiveProtocol != null) {
-            LectureDTO[] lectureList = (LectureDTO[]) receiveProtocol.getObjectArray();
-            printLectureList(lectureList);
-            System.out.println(Message.LECTURE_LOOKUP_MENU);
-            System.out.print(Message.INPUT);
-            int menu = 0;
-            menu = Integer.parseInt(scanner.nextLine());
+        int menu = 0;
+        while (menu != 3) {
+        System.out.println(Message.LECTURE_LOOKUP_MENU);
+        System.out.print(Message.INPUT);
+        menu = Integer.parseInt(scanner.nextLine());
             if (menu == 1) {
+                ps.requestAllLectureList();  // 개설 교과목 (전체) 목록 요청
+                Protocol receiveProtocol = ps.response();
+                LectureDTO[] lectureList = (LectureDTO[]) receiveProtocol.getObjectArray();
+                printLectureList(lectureList);
+
+                int innerMenu = 0;
+                while (innerMenu != 2) {
+                    System.out.println(Message.LECTURE_LOOKUP_INNER_MENU);
+                    System.out.print(Message.INPUT);
+                    innerMenu = Integer.parseInt(scanner.nextLine());
+                    if (innerMenu == 1) {
+                        System.out.print(Message.PLANNER_LOOKUP_INPUT);
+                        int lectureNum = Integer.parseInt(scanner.nextLine());
+                        LecturePlannerDTO planner = lectureList[lectureNum - 1].getPlanner();
+                        System.out.println("교과목명 : " + lectureList[lectureNum - 1].getCourse().getCourseName());
+                        System.out.println("강의 목표 : " + planner.getGoal());
+                        System.out.println("강의 개요 : " + planner.getSummary());
+                    } else if (innerMenu == 2) {
+                    } else {
+                        System.out.println(Message.WRONG_INPUT_NOTICE);
+                    }
+                }
+
+            } else if (menu == 2) {
                 LectureOption[] options = new LectureOption[3];
                 System.out.println("-----조건설정-----");
                 int optionMenu = 0;
@@ -240,28 +259,38 @@ public class StudentService implements EnrollmentService {
                         options[2] = new LectureNameOption(lectureName);
                     } else if (optionMenu == 4) {
                         ps.requestLectureListByOption(options);
-                        receiveProtocol = ps.response();
-                        lectureList = (LectureDTO[]) receiveProtocol.getObjectArray();
+                        Protocol receiveProtocol = ps.response();
+                        LectureDTO[] lectureList = (LectureDTO[]) receiveProtocol.getObjectArray();
                         printLectureList(lectureList);
+
+                        int innerMenu = 0;
+                        while (innerMenu != 2) {
+                            System.out.println(Message.LECTURE_LOOKUP_INNER_MENU);
+                            System.out.print(Message.INPUT);
+                            innerMenu = Integer.parseInt(scanner.nextLine());
+                            if (innerMenu == 1) {
+                                System.out.print(Message.PLANNER_LOOKUP_INPUT);
+                                int lectureNum = Integer.parseInt(scanner.nextLine());
+                                LecturePlannerDTO planner = lectureList[lectureNum - 1].getPlanner();
+                                System.out.println("교과목명 : " + lectureList[lectureNum - 1].getCourse().getCourseName());
+                                System.out.println("강의 목표 : " + planner.getGoal());
+                                System.out.println("강의 개요 : " + planner.getSummary());
+                            } else if (innerMenu == 2) {
+                            } else {
+                                System.out.println(Message.WRONG_INPUT_NOTICE);
+                            }
+                        }
                     } else {
                         System.out.println(Message.WRONG_INPUT_NOTICE);
                     }
                 }
 
-            } else if (menu == 2) {  //TODO lecturedDTO 수정하고나서 더 만들어야함
-                System.out.print(Message.PLANNER_LOOKUP_INPUT);
-                int lectureNum = Integer.parseInt(scanner.nextLine());
-                LecturePlannerDTO planner = lectureList[lectureNum - 1].getPlanner();
-                System.out.println("교과목명 : " + lectureList[lectureNum - 1].getCourse().getCourseName());
-                System.out.println("강의 목표 : " + planner.getGoal());
-                System.out.println("강의 개요 : " + planner.getSummary());
             } else if (menu == 3) {
 
             } else {
                 System.out.println(Message.WRONG_INPUT_NOTICE);
             }
-        } else
-            System.out.println(Message.LOOKUP_LECTURE_FAIL);
+        }
     }
 
     // TODO 강의계획서 조회랑 시간표 조회는 어떻게 된건지 모르겠어서 일단 놔둠
@@ -351,8 +380,8 @@ public class StudentService implements EnrollmentService {
             for (int j = 0; j < 6; j++) {
                 if (timeTable[i][j] != null) {
                     System.out.printf("%15s|", timeTable[i][j]);
-                }else{
-                    System.out.printf("%15s|"," ");
+                } else {
+                    System.out.printf("%15s|", " ");
                 }
             }
             System.out.println("|");
