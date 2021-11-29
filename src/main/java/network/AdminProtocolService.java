@@ -55,7 +55,7 @@ public class AdminProtocolService {
     }
 
     public void reqReadCourse(CourseDTO courseDTO) throws IllegalAccessException, IOException {
-        Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_READ, Protocol.ENTITY_COURSE,Protocol.READ_BY_ID);
+        Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_READ, Protocol.ENTITY_COURSE, Protocol.READ_BY_ID);
         pt.setObject(courseDTO);
         pt.send(os);
         ;
@@ -78,9 +78,9 @@ public class AdminProtocolService {
     }
 
     // 교과목 삭제 요청
-    public void reqDeleteCourse(Object data) throws IllegalAccessException, IOException {
+    public void reqDeleteCourse(CourseDTO courseDTO) throws IllegalAccessException, IOException {
         Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_DELETE, Protocol.ENTITY_COURSE);
-        pt.setObject(data);
+        pt.setObject(courseDTO);
         pt.send(os);
         ;
     }
