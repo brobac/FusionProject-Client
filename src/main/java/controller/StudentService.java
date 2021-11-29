@@ -222,9 +222,10 @@ public class StudentService implements EnrollmentService {
             if (menu == 1) {
                 LectureOption[] options = new LectureOption[3];
                 System.out.println("-----조건설정-----");
-                System.out.println("[1]대상학년  [2]학과  [3]과목명  [4]조회하기");
                 int optionMenu = 0;
                 while (optionMenu != 4) {
+                    System.out.println("[1]대상학년  [2]학과  [3]과목명  [4]조회하기");
+                    optionMenu = Integer.parseInt(scanner.nextLine());
                     if (optionMenu == 1) {
                         System.out.print(Message.TARGET_GRADE_INPUT);
                         int year = Integer.parseInt(scanner.nextLine());
