@@ -78,11 +78,11 @@ public class EnrollmentProgram {
     }
 
     private static EnrollmentService createService(AccountDTO account, InputStream is, OutputStream os) {
-        if (account.getPosition().equals("admin")) {
+        if (account.getPosition().equals("ADMIN")) {
 //            return new AdminService(account, is, os);
-        } else if (account.getPosition().equals("professor")) {
+        } else if (account.getPosition().equals("PROF")) {
 //            return new ProfessorService(account, is, os);
-        } else if (account.getPosition().equals("student")) {
+        } else if (account.getPosition().equals("STUD")) {
             return new StudentService(account, is, os);
         }
         return null;

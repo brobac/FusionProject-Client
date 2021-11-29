@@ -51,7 +51,7 @@ public class Deserializer {
         Class clazz = Class.forName(className);
         Constructor constructor = clazz.getDeclaredConstructor(); //TODO : 각객체는 빈생성자 가져야함
 
-        int cursor = 36;
+        int cursor = 32;
         Object obj = constructor.newInstance();
 
         for(Field f : getAllFields(clazz)){
