@@ -1,7 +1,12 @@
 package infra.dto;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.*;
 
+@Getter
+@Setter
 public class ProfessorDTO extends MemberDTO {
     private String professorCode;
     private String telePhone;
@@ -78,6 +83,7 @@ public class ProfessorDTO extends MemberDTO {
     }
 
     //TODO : 테스트용
+
 
 
     @Override

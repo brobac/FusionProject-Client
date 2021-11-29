@@ -1,6 +1,10 @@
 package infra.dto;
 
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class MemberDTO {
     protected long id;
     protected String name;

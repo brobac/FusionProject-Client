@@ -1,5 +1,7 @@
 package network;
 
+import infra.dto.ProfessorDTO;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -27,8 +29,9 @@ public class ProfProtocolService {
     }
 
     // 개인 정보 조회 요청
-    public void requestReadPersonalInfo() throws IOException {
-        Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_READ, Protocol.ENTITY_ACCOUNT);
+    public void requestReadPersonalInfo(ProfessorDTO professorDTO) throws IOException, IllegalAccessException {
+        Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_READ, Protocol.ENTITY_PROFESSOR, Protocol.READ_BY_ID);
+        pt.setObject(professorDTO);
         pt.send(os);
     }
 
