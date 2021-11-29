@@ -1,12 +1,12 @@
 package controller;
 
-import infra.dto.*;
-import network.Protocol;
-import network.StudentProtocolService;
 import infra.database.option.lecture.LectureDepartmentOption;
 import infra.database.option.lecture.LectureNameOption;
 import infra.database.option.lecture.LectureOption;
 import infra.database.option.lecture.YearOption;
+import infra.dto.*;
+import network.Protocol;
+import network.StudentProtocolService;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -311,6 +311,14 @@ public class StudentService implements EnrollmentService {
 
         LectureTimeDTO[] lectureTimeDTOS = studentDTO.getTimeTable();
         String[][] timeTable = new String[10][6];
+        String[] days = {"MON", "TUE", "WED", "THU", "FRI"};
+        timeTable[0][0] = "-";
+        for (int i = 1; i < 6; i++) {
+            timeTable[0][i] = days[i - 1];
+        }
+        for (int i = 1; i <= 9; i++) {
+            timeTable[i][0] = i + "교시";
+        }
         for (LectureTimeDTO lecture : lectureTimeDTOS) {
             int day = 0;
             switch (lecture.getLectureDay()) {
@@ -338,15 +346,18 @@ public class StudentService implements EnrollmentService {
         }
 
         for (int i = 0; i < 10; i++) {
-            System.out.println("--|-------------------|-------------------|-------------------|-------------------|-------------------|");
+            System.out.println("|---------------|---------------|---------------|---------------|---------------|---------------|");
             System.out.print("|");
             for (int j = 0; j < 6; j++) {
-                System.out.printf("%15s|",timeTable[i][j]);
+                if (timeTable[i][j] != null) {
+                    System.out.printf("%15s|", timeTable[i][j]);
+                }else{
+                    System.out.printf("%15s|"," ");
+                }
             }
             System.out.println("|");
         }
 //        int k = 0;
-//        String[] day = {"MON", "TUE", "WED", "THU", "FRI"};
 //        for (int i = 0; i < 8; i++) {
 //            if (i != 0)
 //                System.out.print(i + " |");
@@ -368,5 +379,3 @@ public class StudentService implements EnrollmentService {
 //        }
     }
 }
-
-
