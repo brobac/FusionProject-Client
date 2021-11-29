@@ -27,7 +27,7 @@ public class EnrollmentProgram {
             int menu = 0;
             while (menu != 2) {
                 System.out.println(Message.ENROLLMENT_MENU);  // 로그인 or 종료 선택
-                menu = sc.nextInt();
+                menu = Integer.parseInt(sc.nextLine());
                 switch (menu) {
                     case 1:
                         user = login();

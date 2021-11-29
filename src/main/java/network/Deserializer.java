@@ -110,12 +110,20 @@ public class Deserializer {
                 f.set(obj, new String(bytes, cursor, length));
                 return;
             case "array":{
+                if(length==0){
+                    f.set(obj, null);
+                    return;
+                }
                 byte[] a = new byte[length];
                 System.arraycopy(bytes, cursor, a, 0, length);
                 f.set(obj, bytesToObjectArr(a));
                 return;
             }
             default:{
+                if(length==0){
+                    f.set(obj, null);
+                    return;
+                }
                 byte[] a = new byte[length];
                 System.arraycopy(bytes, cursor, a, 0, length);
                 f.set(obj, bytesToObject(a));

@@ -32,7 +32,7 @@ public class StudentService implements EnrollmentService {
         while (menu != 5) {
             System.out.println(Message.STUDENT_SERVICE_MENU);
             System.out.print(Message.INPUT);
-            menu = scanner.nextInt();
+            menu = Integer.parseInt(scanner.nextLine());
             switch (menu) {
                 case 1:
                     personalInformation();  // 개인정보 관리
@@ -148,9 +148,9 @@ public class StudentService implements EnrollmentService {
 
         int menu = 0;
         while (true) {
-            System.out.print(Message.REGISTERING_MENU);
+            System.out.println(Message.REGISTERING_MENU);
             System.out.print(Message.INPUT);
-            menu = scanner.nextInt();
+            menu = Integer.parseInt(scanner.nextLine());
 
             if (menu == 1) {       //수강 신청
                 ps.requestAllLectureList();  // 개설 교과목 (전체) 목록 요청
@@ -170,7 +170,7 @@ public class StudentService implements EnrollmentService {
 
                 receiveProtocol = ps.response();
                 // 응답으로 메세지받아서 출력해줘야함
-                receiveProtocol.getObject();
+//                receiveProtocol.getObject();
 
             } else if (menu == 2) {    //수강 취소   //TODO 조회 하고 취소??
                 System.out.println("수강신청현황");
@@ -194,16 +194,17 @@ public class StudentService implements EnrollmentService {
 
     private void printLectureList(LectureDTO[] lectureList) {
         for (int i = 0; i < lectureList.length; i++) {
+            LectureDTO curLecture = lectureList[i];
             System.out.printf("[ %d ]", i + 1);
             // 과목명, 대상학년, 과목코드, 제한인원, 신청인원, 학과, 학점, 교수명
-            System.out.print("교과목명 : ");
-            System.out.print("학점 : ");
-            System.out.print("과목코드 : ");
-            System.out.print("담당교수 : ");
-            System.out.print("수강학과 : ");
+            System.out.print("교과목명 : " + curLecture.getCourse().getCourseName());
+            System.out.print("학점 : " + curLecture.getCourse().getCredit());
+            System.out.print("과목코드 : " + curLecture.getLectureCode());
+            System.out.print("담당교수 : " + curLecture.getProfessor().getName());
+            System.out.print("수강학과 : " + curLecture.getCourse().getDepartment());
             System.out.print("강의시간(강의실) : "); // 반복문필요
-            System.out.print("제한인원 : ");
-            System.out.print("수강인원 : ");
+            System.out.print("제한인원 : " + curLecture.getLimit());
+            System.out.println("수강인원 : " + curLecture.getApplicant());
         }
     }
 

@@ -86,6 +86,8 @@ public class StudentDTO extends MemberDTO {
         return new Builder();
     }
 
+    public StudentDTO(){}
+
     private StudentDTO(Builder builder) {
         super(builder.id, builder.name,
                 builder.department, builder.birthDate);

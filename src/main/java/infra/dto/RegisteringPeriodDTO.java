@@ -34,6 +34,8 @@ public class RegisteringPeriodDTO {
         return new Builder();
     }
 
+    public RegisteringPeriodDTO(){}
+
     private RegisteringPeriodDTO(Builder builder){
         period = builder.period;
         allowedYear = builder.allowedYear;

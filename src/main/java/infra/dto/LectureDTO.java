@@ -80,6 +80,8 @@ public class LectureDTO {
         return new Builder();
     }
 
+    public LectureDTO(){}
+
     private LectureDTO(Builder builder){
         id = builder.id;
         course = builder.course;
@@ -99,6 +101,10 @@ public class LectureDTO {
         return professor.getProfessorCode();
     }
     public int getApplicant(){
-        return myRegisterings.length;
+        if(myRegisterings==null){
+            return 0;
+        }else{
+            return myRegisterings.length;
+        }
     }
 }

@@ -1,10 +1,10 @@
 package infra.dto;
 
 public class RegisteringDTO {
-    private final long id;
-    private final long lectureID;
-    private final String studentCode;
-    private final String registeringTime;
+    private long id;
+    private long lectureID;
+    private String studentCode;
+    private String registeringTime;
 
     public static class Builder{
         private long id;
@@ -40,6 +40,8 @@ public class RegisteringDTO {
     public static Builder builder(){
         return new Builder();
     }
+
+    public RegisteringDTO(){}
 
     public RegisteringDTO(Builder builder){
         id = builder.id;

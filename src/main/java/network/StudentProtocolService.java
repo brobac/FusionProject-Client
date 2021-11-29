@@ -31,8 +31,9 @@ public class StudentProtocolService {
     }
 
     // 개인 정보 조회 요청
-    public void requestReadPersonalInfo(StudentDTO studentDTO) throws IOException {
+    public void requestReadPersonalInfo(StudentDTO studentDTO) throws IOException, IllegalAccessException {
         Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_READ, Protocol.ENTITY_STUDENT, Protocol.READ_BY_ID);
+        pt.setObject(studentDTO);
         pt.send(os);
     }
 
@@ -52,7 +53,7 @@ public class StudentProtocolService {
 
     // 수강신청기간 조회 요청
     public void requestRegisteringReriod() throws IOException {
-        Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_READ, Protocol.ENTITY_REGIS_PERIOD);
+        Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_READ, Protocol.ENTITY_REGIS_PERIOD, Protocol.READ_ALL);
         pt.send(os);
     }
 

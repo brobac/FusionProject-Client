@@ -6,7 +6,11 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class Serializer {
-    public static byte[] objectArrToBytes(Object[] objs) throws IllegalAccessException{
+    public static byte[] objectArrToBytes(Object[] objs) throws IllegalAccessException, IllegalArgumentException{
+        if(objs.length==0){
+            throw new IllegalArgumentException();
+        }
+
         List<byte[]> byteList = new LinkedList<>();
 
         byte[] classNameBytes = new byte[32];
@@ -53,10 +57,10 @@ public class Serializer {
         }catch(NullPointerException e){
         }
 
-        byteList.add(0, intToBytes(allLength));
-        byteList.add(2, intToBytes(count));
+//        byteList.add(0, intToBytes(allLength));
+        byteList.add(1, intToBytes(count));
 
-        byte[] result = new byte[allLength+8];
+        byte[] result = new byte[allLength+4];
         int cursor = 0;
         for(byte[] b : byteList){
             System.arraycopy(b, 0, result, cursor, b.length);
@@ -151,7 +155,7 @@ public class Serializer {
             case "array":
                 try{
                     return objectArrToBytes((Object[])f.get(obj));
-                }catch(NullPointerException e){
+                }catch(NullPointerException | IllegalArgumentException e){
                     return new byte[0];
                 }
             default:
