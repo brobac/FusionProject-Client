@@ -55,6 +55,8 @@ public class AccountDTO {
         return new Builder();
     }
 
+    public AccountDTO(){}
+
     public AccountDTO(AccountDTO dto) {
         pk = dto.pk;
         id = dto.id;
