@@ -8,6 +8,7 @@ import infra.dto.*;
 import network.Protocol;
 import network.StudentProtocolService;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -127,7 +128,6 @@ public class StudentService implements EnrollmentService {
         boolean isRegisteringPeriod = false;
         StudentDTO studentDTO = StudentDTO.builder().id(account.getMemberID()).build();
         ps.requestReadPersonalInfo(studentDTO);  // 개인정보 조회 요청
-
         Protocol receiveProtocol = ps.response();   // 개인정보 조회 요청에 대한 응답
         if (receiveProtocol != null) {   // 조회 성공
             studentDTO = (StudentDTO) receiveProtocol.getObject();
@@ -184,6 +184,13 @@ public class StudentService implements EnrollmentService {
                 }
 
             } else if (menu == 2) {    //수강 취소   //TODO 조회 하고 취소??
+                studentDTO = StudentDTO.builder().id(account.getMemberID()).build();
+                ps.requestReadPersonalInfo(studentDTO);  // 개인정보 조회 요청
+                receiveProtocol = ps.response();   // 개인정보 조회 요청에 대한 응답
+                if (receiveProtocol != null) {   // 조회 성공
+                    studentDTO = (StudentDTO) receiveProtocol.getObject();
+                }
+
                 System.out.println("수강신청현황");
                 ps.requestReadRegistering(studentDTO);
                 receiveProtocol = ps.response();
@@ -200,6 +207,8 @@ public class StudentService implements EnrollmentService {
                 } else {
                     System.out.println(Message.REGISTERING_EMPTY);
                 }
+
+                ps.response();
             } else if (menu == 3)
                 break;
             else
