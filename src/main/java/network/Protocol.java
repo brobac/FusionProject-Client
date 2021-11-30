@@ -197,14 +197,14 @@ public class Protocol {
         int readSize;
 
         try {
-            is.read(header, 0, Protocol.LEN_HEADER);
+            is.read(header);
             setHeader(header);
 
             if (this.type == Protocol.UNDEFINED)
                 throw new Exception("통신 오류 > 연결 오류");
 
             byte[] buf = new byte[getBodyLength()];
-            is.read(buf, 0, getBodyLength());
+            is.read(buf);
 //            while (totalReceived < getBodyLength()) {
 //                readSize = is.read(buf, totalReceived, getBodyLength() - totalReceived);
 //                totalReceived += readSize;

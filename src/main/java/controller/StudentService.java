@@ -127,7 +127,6 @@ public class StudentService implements EnrollmentService {
         boolean isRegisteringPeriod = false;
         StudentDTO studentDTO = StudentDTO.builder().id(account.getMemberID()).build();
         ps.requestReadPersonalInfo(studentDTO);  // 개인정보 조회 요청
-
         Protocol receiveProtocol = ps.response();   // 개인정보 조회 요청에 대한 응답
         if (receiveProtocol != null) {   // 조회 성공
             studentDTO = (StudentDTO) receiveProtocol.getObject();
