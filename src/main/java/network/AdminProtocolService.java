@@ -162,6 +162,11 @@ public class AdminProtocolService {
         Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_READ, Protocol.ENTITY_LECTURE);
         pt.setObject(data);
         pt.send(os);
-        ;
+    }
+
+    public void reqDeleteRegPeriod(RegisteringPeriodDTO regPeriod) throws IllegalAccessException, IOException {
+        Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_DELETE, Protocol.ENTITY_REGIS_PERIOD);
+        pt.setObject(regPeriod);
+        pt.send(os);
     }
 }

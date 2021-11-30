@@ -1,9 +1,11 @@
 package controller;
 
+import domain.model.Registering;
 import infra.dto.*;
 import network.AdminProtocolService;
 import network.Protocol;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.time.LocalDateTime;
@@ -415,7 +417,7 @@ public class AdminService implements EnrollmentService {
                 if (result == Protocol.T2_CODE_SUCCESS) {
                     PeriodDTO periodDTO = (PeriodDTO) receiveProtocol.getObject();
                     System.out.println("시작 : " + periodDTO.getBeginTime() + " ~ ");
-                    System.out.println("종료 : " + periodDTO.getEndTime().);
+                    System.out.println("종료 : " + periodDTO.getEndTime());
                 } else {
                     System.out.println("조회 실패");
                     return;
@@ -435,17 +437,7 @@ public class AdminService implements EnrollmentService {
             System.out.print(Message.INPUT);
             menu = Integer.parseInt(scanner.nextLine());
             if (menu == 1) {
-                ps.reqReadRegisteringPeriod();
-                Protocol receiveProtocol = ps.response();
-                RegisteringPeriodDTO[] registeringPeriodDTOs = (RegisteringPeriodDTO[]) receiveProtocol.getObjectArray();
-                if (registeringPeriodDTOs != null) {
-                    for (int i = 0; i < registeringPeriodDTOs.length; i++) {
-                        System.out.printf("[ %d ]", i + 1);
-                        System.out.print("학년 : " + registeringPeriodDTOs[i].getAllowedYear());
-                        System.out.print("시작일 : " + registeringPeriodDTOs[i].getPeriodDTO().getBeginTime().toString());
-                        System.out.print("종료일 : " + registeringPeriodDTOs[i].getPeriodDTO().getEndTime().toString());
-                    }
-                }
+                readRegisteringPeriods();
             } else if (menu == 2) {
                 System.out.print(Message.BEGIN_PERIOD_INPUT);
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
@@ -453,7 +445,7 @@ public class AdminService implements EnrollmentService {
                 System.out.print(Message.END_PERIOD_INPUT);
                 LocalDateTime end = LocalDateTime.parse(scanner.nextLine(), formatter);
                 System.out.println(Message.TARGET_GRADE_INPUT);
-                int grade = scanner.nextInt();
+                int grade = Integer.parseInt(scanner.nextLine());
                 PeriodDTO periodDTO = PeriodDTO.builder()
                         .beginTime(begin)
                         .endTime(end)
@@ -473,12 +465,46 @@ public class AdminService implements EnrollmentService {
                     return;
                 }
             } else if (menu == 3) {//삭제
+                RegisteringPeriodDTO[] regPeriods = readRegisteringPeriods();
+                System.out.print(Message.BEGIN_PERIOD_INPUT);
+                int regPeriodNum = Integer.parseInt(scanner.nextLine());
+
+                if(regPeriodNum-1 > regPeriods.length){
+                    System.out.println(Message.WRONG_INPUT_NOTICE);
+                    break;
+                }
+
+                ps.reqDeleteRegPeriod(regPeriods[regPeriodNum-1]);
+                Protocol receiveProtocol = ps.response();
+                int result = receiveProtocol.getCode();
+                if (result == Protocol.T2_CODE_SUCCESS) {
+                    System.out.println("수강신청 기간 삭제 성공");
+                } else {
+                    System.out.println("수강신청 기간 삭제 실패");
+                    return;
+                }
             } else if (menu == 4) {//나가기
+                break;
             } else {
                 System.out.println(Message.WRONG_INPUT_NOTICE);
             }
         }
+    }
 
+    private RegisteringPeriodDTO[] readRegisteringPeriods() throws Exception {
+        ps.reqReadRegisteringPeriod();
+        Protocol receiveProtocol = ps.response();
+        RegisteringPeriodDTO[] registeringPeriodDTOs = (RegisteringPeriodDTO[]) receiveProtocol.getObjectArray();
+        if (registeringPeriodDTOs != null) {
+            for (int i = 0; i < registeringPeriodDTOs.length; i++) {
+                System.out.printf("[ %d ]", i + 1);
+                System.out.print("학년 : " + registeringPeriodDTOs[i].getAllowedYear());
+                System.out.print("시작일 : " + registeringPeriodDTOs[i].getPeriodDTO().getBeginTime().toString());
+                System.out.print("종료일 : " + registeringPeriodDTOs[i].getPeriodDTO().getEndTime().toString());
+                System.out.println();
+            }
+        }
+        return registeringPeriodDTOs;
     }
 
     private void printLectureList(LectureDTO[] lectureList) {
