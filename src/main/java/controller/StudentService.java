@@ -8,9 +8,9 @@ import infra.dto.*;
 import network.Protocol;
 import network.StudentProtocolService;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -124,6 +124,7 @@ public class StudentService implements EnrollmentService {
         }
     }
 
+
     private void registering() throws Exception {
         boolean isRegisteringPeriod = false;
         StudentDTO studentDTO = StudentDTO.builder().id(account.getMemberID()).build();
@@ -138,7 +139,7 @@ public class StudentService implements EnrollmentService {
         receiveProtocol = ps.response();
         RegisteringPeriodDTO[] registeringPeriodDTOS = (RegisteringPeriodDTO[]) receiveProtocol.getObjectArray();
         for (RegisteringPeriodDTO registeringPeriodDTO : registeringPeriodDTOS) {
-            if (registeringPeriodDTO.getAllowedYear() == studentDTO.getYear()) {
+            if (registeringPeriodDTO.getAllowedYear() == studentDTO.getYear() && registeringPeriodDTO.getPeriodDTO().getBeginTime().isBefore(LocalDateTime.now()) && registeringPeriodDTO.getPeriodDTO().getEndTime().isAfter(LocalDateTime.now())) {
                 isRegisteringPeriod = true;
             }
         }
