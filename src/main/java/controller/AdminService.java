@@ -101,7 +101,6 @@ public class AdminService implements EnrollmentService {
                         .year(year)
                         .department(department)
                         .birthDate(birthday)
-
                         .build();
 
                 //계정생성이 필요한 학생의 정보를 서버에게 전달

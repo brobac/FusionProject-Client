@@ -90,7 +90,9 @@ public class EnrollmentProgram {
                     System.out.println(Message.ADMIN_CREATE_SUCCESS);
                     return;
                 } else if (recvPt.getCode() == Protocol.T2_CODE_FAIL) {
-                    System.out.println(Message.ADMIN_CREATE_SUCCESS);
+                    MessageDTO failMsg = (MessageDTO) recvPt.getObject();
+                    System.out.println(Message.ADMIN_CREATE_FAIL);
+                    System.out.println(failMsg);
                 }
             }
         }
@@ -117,10 +119,11 @@ public class EnrollmentProgram {
             if (recv.getType() == Protocol.TYPE_RESPONSE) {
                 if (recv.getCode() == Protocol.T2_CODE_SUCCESS)
                     return (AccountDTO) recv.getObject();    // 어떤 사용자인지 return
-                else if (recv.getCode() == Protocol.T2_CODE_FAIL) // 로그인 실패시 null return
-                    return null;
-            } else
-                throw new Exception("서버에서 요청이 왜 와???"); //TODO 최종본에선 지울것
+                else if (recv.getCode() == Protocol.T2_CODE_FAIL){
+                    MessageDTO failMsg = (MessageDTO) recv.getObject();
+                    System.out.println(failMsg);
+                }
+            }
         }
     }
 
