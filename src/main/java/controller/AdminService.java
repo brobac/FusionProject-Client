@@ -352,8 +352,69 @@ public class AdminService implements EnrollmentService {
                 }
 
             } else if (menu == 2) {
-                //TODO 서버에서 현재 정보를 받아와서 print 해주고 새로운 입력을 받는다.
+                ps.reqAllLectureList();
+                Protocol response = ps.response();
+                LectureDTO[] lectureList = (LectureDTO[]) response.getObjectArray();
+                printLectureList(lectureList);
                 System.out.print(Message.UPDATE_LECTURE_INPUT);
+                int lectureNum = Integer.parseInt(scanner.nextLine());
+                LectureDTO updateLecture = lectureList[lectureNum - 1];
+                System.out.println("-----현재 개설 교과목 정보-----");
+                printLecture(updateLecture);
+                int updateMenu = 0;
+                while (updateMenu != 5) {
+                    System.out.println(Message.UPDATE_LECTURE_MENU);
+                    updateMenu = Integer.parseInt(scanner.nextLine());
+                    if (updateMenu == 1) {
+                        System.out.print(Message.COURSE_CODE_INPUT);
+                        updateLecture.setLectureCode(scanner.nextLine());
+                    } else if (updateMenu == 2) {
+                        //교수목록조회 밑 출력
+                        System.out.print(Message.PROF_CODE_INPUT);
+                        updateLecture.setProfessor(ProfessorDTO.builder().professorCode(scanner.nextLine()).build());
+                    } else if (updateMenu == 3) {
+                        LectureTimeDTO[] times = updateLecture.getLectureTimes();
+                        int option = 0;
+                        while (option != 2) {
+                            for (int i = 0; i < updateLecture.getLectureTimes().length; i++) {
+                                LectureTimeDTO time = times[i];
+                                System.out.printf("[ %d ]", i + 1);
+                                System.out.println("요일 : " + time.getLectureDay() + "  시작교시 : " + time.getStartTime() + "  끝교시 : " + time.getEndTime() + "  강의실 : " + time.getRoom());
+                            }
+                            System.out.print("변경할 강의시간 번호를 입력해주세요 : ");
+                            int timeNum = Integer.parseInt(scanner.nextLine());
+                            System.out.println("----- 강의시간 입력 -----");
+                            System.out.print("요일 : ");
+                            times[timeNum - 1].setLectureDay(scanner.nextLine());
+                            System.out.print("시작 교시 : ");
+                            times[timeNum - 1].setStartTime(Integer.parseInt(scanner.nextLine()));
+                            System.out.print("끝 교시 : ");
+                            times[timeNum - 1].setEndTime(Integer.parseInt(scanner.nextLine()));
+                            System.out.print("강의실 : ");
+                            times[timeNum - 1].setRoom(scanner.nextLine());
+                            System.out.println("[1] 추가변경  [2]완료");
+                            System.out.print(Message.INPUT);
+                            option = Integer.parseInt(scanner.nextLine());
+                        }
+                    } else if (updateMenu == 4) {
+                        System.out.print("제한인원 : ");
+                        updateLecture.setLimit(Integer.parseInt(scanner.nextLine()));
+                    } else if (updateMenu == 5) {
+                        printLecture(updateLecture);
+                        ps.reqUpdateLecture(updateLecture);
+                        response = ps.response();
+                        int result = response.getCode();
+                        if (result == Protocol.T2_CODE_SUCCESS) {
+                            System.out.println("개설 교과목 수정에 성공했습니다.");
+                            printLecture(updateLecture);
+                        } else {
+                            System.out.println("개설 교과목 수정에 실패했습니다.");
+                        }
+                    } else {
+                        System.out.println(Message.WRONG_INPUT_NOTICE);
+                    }
+                }
+
 
             } else if (menu == 3) {
                 ps.reqAllLectureList();
@@ -415,7 +476,7 @@ public class AdminService implements EnrollmentService {
                 if (result == Protocol.T2_CODE_SUCCESS) {
                     PeriodDTO periodDTO = (PeriodDTO) receiveProtocol.getObject();
                     System.out.println("시작 : " + periodDTO.getBeginTime() + " ~ ");
-                    System.out.println("종료 : " + periodDTO.getEndTime().);
+                    System.out.println("종료 : " + periodDTO.getEndTime());
                 } else {
                     System.out.println("조회 실패");
                     return;
@@ -481,6 +542,20 @@ public class AdminService implements EnrollmentService {
 
     }
 
+    private void printLecture(LectureDTO lecture) {
+        System.out.println("교과목명 : " + lecture.getCourse().getCourseName());
+        System.out.println("  학점 : " + lecture.getCourse().getCredit());
+        System.out.println("  과목코드 : " + lecture.getLectureCode());
+        System.out.println("  담당교수 : " + lecture.getProfessor().getName());
+        System.out.println("  수강학과 : " + lecture.getCourse().getDepartment());
+        System.out.print("  강의시간(강의실) : "); // 반복문필요
+        for (LectureTimeDTO lectureTime : lecture.getLectureTimes()) {
+            System.out.print(lectureTime.getLectureDay() + " " + lectureTime.getStartTime() + "~" + lectureTime.getEndTime() + "  강의실 : " + lectureTime.getRoom()  + "/");
+        }
+        System.out.println("  제한인원 : " + lecture.getLimit());
+        System.out.println("  수강인원 : " + lecture.getApplicant());
+    }
+
     private void printLectureList(LectureDTO[] lectureList) {
         for (int i = 0; i < lectureList.length; i++) {
             LectureDTO curLecture = lectureList[i];
@@ -492,7 +567,10 @@ public class AdminService implements EnrollmentService {
             System.out.print("  담당교수 : " + curLecture.getProfessor().getName());
             System.out.print("  수강학과 : " + curLecture.getCourse().getDepartment());
             System.out.print("  강의시간(강의실) : "); // 반복문필요
-            System.out.print("  제한인원 : " + curLecture.getLimit());
+            for (LectureTimeDTO lectureTime : curLecture.getLectureTimes()) {
+                System.out.print(lectureTime.getLectureDay() + " " + lectureTime.getStartTime() + "~" + lectureTime.getEndTime() + "  강의실 : " + lectureTime.getRoom() + "/");
+            }
+            System.out.println("  제한인원 : " + curLecture.getLimit());
             System.out.println("  수강인원 : " + curLecture.getApplicant());
         }
     }
