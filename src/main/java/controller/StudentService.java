@@ -165,6 +165,10 @@ public class StudentService implements EnrollmentService {
 
                 System.out.print(Message.REGISTERING_INPUT);
                 int lectureNum = Integer.parseInt(scanner.nextLine());
+                if (lectureNum < 0 || lectureList.length < lectureNum) {
+                    System.out.println(Message.WRONG_INPUT_NOTICE);
+                    return;
+                }
                 RegisteringDTO registeringDTO = RegisteringDTO.builder()
                         .lectureID(lectureList[lectureNum - 1].getId())
                         .studentCode(studentDTO.getStudentCode())
@@ -172,21 +176,29 @@ public class StudentService implements EnrollmentService {
                 ps.requestRegistering(registeringDTO);
 
                 receiveProtocol = ps.response();
-                // 응답으로 메세지받아서 출력해줘야함
-//                receiveProtocol.getObject();
+                int result = receiveProtocol.getCode();
+                if (result == Protocol.T2_CODE_SUCCESS) {
+                    System.out.println(Message.REGISTERING_CANCEL_SUCCESS);
+                } else {
+                    System.out.println(Message.REGISTERING_CANCEL_FAIL);
+                }
 
             } else if (menu == 2) {    //수강 취소   //TODO 조회 하고 취소??
                 System.out.println("수강신청현황");
                 ps.requestReadRegistering(studentDTO);
                 receiveProtocol = ps.response();
                 LectureDTO[] registeringList = (LectureDTO[]) receiveProtocol.getObjectArray();
-                printLectureList(registeringList);
-                System.out.print(Message.REGISTERING_CANCEL_INPUT);
-                int cancelNum = Integer.parseInt(scanner.nextLine());
-                for (RegisteringDTO registeringDTO : studentDTO.getMyRegisterings()) {
-                    if (registeringDTO.getLectureID() == registeringList[cancelNum - 1].getId()) {
-                        ps.requestDeleteRegistering(registeringDTO);
+                if (registeringList != null) {
+                    printLectureList(registeringList);
+                    System.out.print(Message.REGISTERING_CANCEL_INPUT);
+                    int cancelNum = Integer.parseInt(scanner.nextLine());
+                    for (RegisteringDTO registeringDTO : studentDTO.getMyRegisterings()) {
+                        if (registeringDTO.getLectureID() == registeringList[cancelNum - 1].getId()) {
+                            ps.requestDeleteRegistering(registeringDTO);
+                        }
                     }
+                } else {
+                    System.out.println(Message.REGISTERING_EMPTY);
                 }
             } else if (menu == 3)
                 break;

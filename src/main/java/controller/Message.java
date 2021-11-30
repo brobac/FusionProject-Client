@@ -89,7 +89,6 @@ public class Message {
 
     //Controller.ProfessorService > updatePersonalInformation
 
-    // Controller.StudentService > personalInformation
 
     //Controller.ProfessorService > lectureMenu
     public static final String PROFESSOR_SERVICE_LECTURE_MENU = "[1]개설 교과목 조회  [2]담당 교과목 조회  [3]나가기";
@@ -148,7 +147,7 @@ public class Message {
     public static final String LOOKUP_REGISTERING_FAIL = "수강신청 현황 조회를 실패하였습니다.";
     public static final String REGISTERING_INPUT = "수강 신청할 교과목 번호 : ";
     public static final String REGISTERING_CANCEL_INPUT = "수강 취소할 교과목 번호 : ";
-
+    public static final String REGISTERING_EMPTY = "수강중인 교과목이 없습니다.";
 
     public static final String NOT_REGISTERING_PERIOD = "수강신청 가능 기간이 아닙니다.";
 
