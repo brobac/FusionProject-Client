@@ -1,5 +1,6 @@
 package network;
 
+import infra.database.option.lecture.LectureOption;
 import infra.database.option.professor.ProfessorOption;
 import infra.database.option.student.StudentOption;
 import infra.dto.*;
@@ -72,6 +73,14 @@ public class AdminProtocolService {
         pt.send(os);
     }
 
+
+    //개설교과목 조건 조회
+    public void requestLectureListByOption(LectureOption[] options) throws IOException, IllegalAccessException {
+        Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_READ, Protocol.ENTITY_LECTURE, Protocol.READ_BY_OPTION);
+        pt.setObjectArray(options);
+        pt.send(os);
+    }
+    
 
     // 교과목 생성 요청
     public void reqCreateCourse(CourseDTO courseDTO) throws IllegalAccessException, IOException {
@@ -200,4 +209,10 @@ public class AdminProtocolService {
         pt.setObjectArray(options);
         pt.send(os);
     }
+
+    public void requestLogout() throws IOException {
+        Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_LOGOUT);
+        pt.send(os);
+    }
+
 }

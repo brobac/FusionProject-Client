@@ -1,5 +1,9 @@
 package controller;
 
+import infra.database.option.lecture.LectureDepartmentOption;
+import infra.database.option.lecture.LectureNameOption;
+import infra.database.option.lecture.LectureOption;
+import infra.database.option.lecture.YearOption;
 import infra.database.option.professor.NameOption;
 import infra.database.option.professor.ProfessorOption;
 import infra.database.option.student.DepartmentOption;
@@ -56,9 +60,10 @@ public class AdminService implements EnrollmentService {
                     memberLookup();
                     break;
                 case 7:
-//                    lectureLookup();
+                    lectureLookup();
                     break;
                 case 8:
+                    logout();
                     break;
                 default:
                     System.out.println(Message.WRONG_INPUT_NOTICE);
@@ -767,21 +772,97 @@ public class AdminService implements EnrollmentService {
         }
     }
 
-//
-//    private void lectureLookup() throws IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
-//    }
-//}
+    private void lectureLookup() throws Exception {
+        int menu = 0;
+        while (menu != 3) {
+            System.out.println(Message.LECTURE_LOOKUP_MENU);
+            System.out.print(Message.INPUT);
+            menu = Integer.parseInt(scanner.nextLine());
+            if (menu == 1) {
+                ps.reqAllLectureList();  // 개설 교과목 (전체) 목록 요청
+                Protocol receiveProtocol = ps.response();
+                LectureDTO[] lectureList = (LectureDTO[]) receiveProtocol.getObjectArray();
+                printLectureList(lectureList);
 
-//    public enum Menu {
-//        CREATE_ACCOUNT(1),
-//        COURSE_MANAGE(2),
-//        LECTURE_MANAGE(3),
-//        PLANNER_INPUT_PERIOD(4),
-//        REGISTERING_PERIOD(5),
-//        MEMBER_LOOKUP(6),
-//        LECTURE_LOOKUP(7);
-//        private final int value;
-//        Menu(int value){
-//            this.value = value;
-//        }
+                int innerMenu = 0;
+                while (innerMenu != 2) {
+                    System.out.println(Message.LECTURE_LOOKUP_INNER_MENU);
+                    System.out.print(Message.INPUT);
+                    innerMenu = Integer.parseInt(scanner.nextLine());
+                    if (innerMenu == 1) {
+                        System.out.print(Message.PLANNER_LOOKUP_INPUT);
+                        int lectureNum = Integer.parseInt(scanner.nextLine());
+                        LecturePlannerDTO planner = lectureList[lectureNum - 1].getPlanner();
+                        System.out.println("교과목명 : " + lectureList[lectureNum - 1].getCourse().getCourseName());
+                        System.out.println("강의 목표 : " + planner.getGoal());
+                        System.out.println("강의 개요 : " + planner.getSummary());
+                    } else if (innerMenu == 2) {
+                    } else {
+                        System.out.println(Message.WRONG_INPUT_NOTICE);
+                    }
+                }
+
+            } else if (menu == 2) {
+                List<LectureOption> optionList = new ArrayList<>();
+                System.out.println("-----조건설정-----");
+                int optionMenu = 0;
+                while (optionMenu != 4) {
+                    System.out.println("[1]대상학년  [2]학과  [3]과목명  [4]조회하기");
+                    optionMenu = Integer.parseInt(scanner.nextLine());
+                    if (optionMenu == 1) {
+                        System.out.print(Message.TARGET_GRADE_INPUT);
+                        int year = Integer.parseInt(scanner.nextLine());
+                        optionList.add(new YearOption(year));
+                    } else if (optionMenu == 2) {
+                        System.out.print(Message.DEPARTMENT_INPUT);
+                        String department = scanner.nextLine();
+                        optionList.add(new LectureDepartmentOption(department));
+                    } else if (optionMenu == 3) {
+                        System.out.print(Message.COURSE_NAME_INPUT);
+                        String lectureName = scanner.nextLine();
+                        optionList.add(new LectureNameOption(lectureName));
+                    } else if (optionMenu == 4) {
+                        ps.requestLectureListByOption(
+                                optionList.toArray(new LectureOption[optionList.size()])
+                        );
+                        Protocol receiveProtocol = ps.response();
+                        LectureDTO[] lectureList = (LectureDTO[]) receiveProtocol.getObjectArray();
+                        printLectureList(lectureList);
+
+                        int innerMenu = 0;
+                        while (innerMenu != 2) {
+                            System.out.println(Message.LECTURE_LOOKUP_INNER_MENU);
+                            System.out.print(Message.INPUT);
+                            innerMenu = Integer.parseInt(scanner.nextLine());
+                            if (innerMenu == 1) {
+                                System.out.print(Message.PLANNER_LOOKUP_INPUT);
+                                int lectureNum = Integer.parseInt(scanner.nextLine());
+                                LecturePlannerDTO planner = lectureList[lectureNum - 1].getPlanner();
+                                System.out.println("교과목명 : " + lectureList[lectureNum - 1].getCourse().getCourseName());
+                                System.out.println("강의 목표 : " + planner.getGoal());
+                                System.out.println("강의 개요 : " + planner.getSummary());
+                            } else if (innerMenu == 2) {
+                            } else {
+                                System.out.println(Message.WRONG_INPUT_NOTICE);
+                            }
+                        }
+                    } else {
+                        System.out.println(Message.WRONG_INPUT_NOTICE);
+                    }
+                }
+
+            } else if (menu == 3) {
+
+            } else {
+                System.out.println(Message.WRONG_INPUT_NOTICE);
+            }
+        }
+    }
+
+    private void logout() throws Exception {
+        ps.requestLogout();
+        Protocol receiveProtocol = ps.response();
+    }
+
+
 }
