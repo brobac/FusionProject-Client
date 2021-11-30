@@ -1,6 +1,11 @@
 package controller;
 
 import domain.model.Registering;
+import infra.database.option.professor.NameOption;
+import infra.database.option.professor.ProfessorOption;
+import infra.database.option.student.DepartmentOption;
+import infra.database.option.student.StudentOption;
+import infra.database.option.student.StudentYearOption;
 import infra.dto.*;
 import network.AdminProtocolService;
 import network.Protocol;
@@ -10,9 +15,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashSet;
-import java.util.Scanner;
-import java.util.Set;
+import java.util.*;
 
 public class AdminService implements EnrollmentService {
     public static Scanner scanner = new Scanner(System.in);
@@ -52,7 +55,7 @@ public class AdminService implements EnrollmentService {
                     registeringPeriodSettings();
                     break;
                 case 6:
-//                    memberLookup();
+                    memberLookup();
                     break;
                 case 7:
 //                    lectureLookup();
@@ -524,65 +527,159 @@ public class AdminService implements EnrollmentService {
     }
 
 
-//    private void memberLookup() throws IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
-//        int menu = 0;
-//        while (menu != 3) {
-//            System.out.println(Message.MEMBER_LOOKUP_MENU);
-//            System.out.print(Message.INPUT);
-//            menu = scanner.nextInt();// int 파싱 오류 처리 필요
-//            scanner.nextLine();
-//            if (menu == 1) {
-//                //TODO 학생 조회
-//                Protocol sendProtocol = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_READ, Protocol.ENTITY_STUD_LIST);
-//                sendProtocol.send(os);
-//                Protocol receiveProtocol = new Protocol();
-//                while (receiveProtocol.getType() == Protocol.UNDEFINED) {
-//                    receiveProtocol.read(is);
-//                    int result = receiveProtocol.getType();
-//                    if (result == Protocol.T2_CODE_SUCCESS) {
-//                        StudentDTO[] studentList = (StudentDTO[]) receiveProtocol.getObjectArray();
-//                        for (int i = 0; i < studentList.length; i++) {
-//                            System.out.printf("[ %d ] ", i + 1);
-//                            System.out.print("학과 : " + studentList[i].getDepartment());
-//                            System.out.print("학년 : " + studentList[i].getYear());
-//                            System.out.print("이름 : " + studentList[i].getName());
-//                            System.out.print("학번 : " + studentList[i].getStudentCode());
-//                            System.out.println("생년월일 : " + studentList[i].getBirthDate());
-//                        }
-//                    } else {
-//                        System.out.println("조회 실패");
-//                        return;
-//                    }
-//                }
-//            } else if (menu == 2) {
-//                //TODO 교수 조회
-//                Protocol sendProtocol = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_READ, Protocol.ENTITY_PROF_LIST);
-//                sendProtocol.send(os);
-//                Protocol receiveProtocol = new Protocol();
-//                while (receiveProtocol.getType() == Protocol.UNDEFINED) {
-//                    receiveProtocol.read(is);
-//                    int result = receiveProtocol.getType();
-//                    if (result == Protocol.T2_CODE_SUCCESS) {
-//                        ProfessorDTO[] professorList = (ProfessorDTO[]) receiveProtocol.getObjectArray();
-//                        for (int i = 0; i < professorList.length; i++) {
-//                            System.out.printf("[ %d ] ", i + 1);
-//                            System.out.print("학과 : " + professorList[i].getDepartment());
-//                            System.out.print("이름 : " + professorList[i].getName());
-//                            System.out.print("학번 : " + professorList[i].getProfessorCode());
-//                            System.out.print("전화번호 : " + professorList[i].getTelePhone());
-//                            System.out.println("생년월일 : " + professorList[i].getBirthDate());
-//                        }
-//                    } else {
-//                        System.out.println("조회 실패");
-//                        return;
-//                    }
-//                }
-//            } else if (menu == 3) {
-//            } else {
-//                System.out.println(Message.WRONG_INPUT_NOTICE);
-//            }
-//        }
-//    }
+    private void memberLookup() throws Exception {
+        int menu = 0;
+        while (true) {
+            System.out.println(Message.MEMBER_LOOKUP_MENU);
+            System.out.print(Message.INPUT);
+            menu = Integer.parseInt(scanner.nextLine());// int 파싱 오류 처리 필요
+
+            if (menu == 1) { //학생조회
+                lookupStudent();
+            } else if (menu == 2) { //교수조회
+                lookupProfessor();
+            } else if (menu == 3) {
+                break;
+            } else {
+                System.out.println(Message.WRONG_INPUT_NOTICE);
+            }
+        }
+    }
+
+    private void lookupProfessor() throws Exception {
+        int menu = 0;
+        while (true) {
+            System.out.println(Message.MEMBER_LOOKUP_MENU_CATEGORIES);
+            System.out.print(Message.INPUT);
+            menu = Integer.parseInt(scanner.nextLine());// int 파싱 오류 처리 필요
+
+            if (menu == 1) { //전체조회
+                ps.reqReadAllProfessor();
+                Protocol receiveProtocol = ps.response();
+                ProfessorDTO[] profArr = (ProfessorDTO[]) receiveProtocol.getObjectArray();
+                printProfessorList(profArr);
+            } else if (menu == 2) { //조건조회
+                lookupProfessorByOption();
+            } else if (menu == 3) {//나가기
+                break;
+            } else {
+                System.out.println(Message.WRONG_INPUT_NOTICE);
+            }
+        }
+    }
+
+    private void lookupProfessorByOption() throws Exception {
+        List<ProfessorOption> optionList = new ArrayList();
+        int menu = 0;
+        while (true) {
+            System.out.println(Message.PROFESSOR_LOOKUP_OPTION_CATEGORIES);
+            System.out.print(Message.INPUT);
+            menu = Integer.parseInt(scanner.nextLine());// int 파싱 오류 처리 필요
+
+            if (menu == 1) { // 학과조건
+                System.out.print(Message.INPUT);
+                String dep = scanner.nextLine();
+                optionList.add(new infra.database.option.professor.DepartmentOption(dep));
+            } else if (menu == 2) { //이름조건
+                System.out.print(Message.INPUT);
+                String name = scanner.nextLine();
+                optionList.add(new NameOption(name));
+            } else if (menu == 3) {//조회하기
+                ps.reqReadProfessorByOption(
+                        optionList.toArray(new ProfessorOption[optionList.size()])
+                );
+                Protocol receiveProtocol = ps.response();
+                ProfessorDTO[] profArr = (ProfessorDTO[]) receiveProtocol.getObjectArray();
+                printProfessorList(profArr);
+                break;
+            } else if(menu == 4){ //나가기
+                break;
+            } else{
+                System.out.println(Message.WRONG_INPUT_NOTICE);
+            }
+        }
+    }
+
+    private void lookupStudent() throws Exception {
+        int menu = 0;
+        while (true) {
+            System.out.println(Message.MEMBER_LOOKUP_MENU_CATEGORIES);
+            System.out.print(Message.INPUT);
+            menu = Integer.parseInt(scanner.nextLine());// int 파싱 오류 처리 필요
+
+            if (menu == 1) { //전체조회
+                ps.reqReadAllStudent();
+                Protocol receiveProtocol = ps.response();
+                StudentDTO[] stdArr = (StudentDTO[]) receiveProtocol.getObjectArray();
+                printStudentList(stdArr);
+            } else if (menu == 2) { //조건조회
+                lookupStudentByOption();
+            } else if (menu == 3) {//나가기
+                break;
+            } else {
+                System.out.println(Message.WRONG_INPUT_NOTICE);
+            }
+        }
+    }
+
+    private void lookupStudentByOption() throws Exception {
+        List<StudentOption> optionList = new ArrayList();
+        int menu = 0;
+        while (true) {
+            System.out.println(Message.STUDENT_LOOKUP_OPTION_CATEGORIES);
+            System.out.print(Message.INPUT);
+            menu = Integer.parseInt(scanner.nextLine());// int 파싱 오류 처리 필요
+
+            if (menu == 1) { // 학과조건
+                System.out.print(Message.INPUT);
+                String dep = scanner.nextLine();
+                optionList.add(new DepartmentOption(dep));
+            } else if (menu == 2) { //학년조건
+                System.out.print(Message.INPUT);
+                String grade = scanner.nextLine();
+                optionList.add(new StudentYearOption(grade));
+            } else if (menu == 3) {//조회하기
+                ps.reqReadStudentByOption(
+                        optionList.toArray(new StudentOption[optionList.size()])
+                );
+                Protocol receiveProtocol = ps.response();
+                StudentDTO[] stdArr = (StudentDTO[]) receiveProtocol.getObjectArray();
+                printStudentList(stdArr);
+                break;
+            } else if(menu == 4){ //나가기
+                break;
+            } else{
+                System.out.println(Message.WRONG_INPUT_NOTICE);
+            }
+        }
+    }
+
+    private void printProfessorList(ProfessorDTO[] profArr) {
+        System.out.printf("%1s %14s %8s %5s %4s %2s \n", "번호", "이름", "생년월일", "학과", "교번", "전화번호");
+        int num = 0;
+        for(ProfessorDTO prof : profArr){
+            num++;
+            System.out.printf(
+                    "%3s %17s %10s %10s %5s %4s\n",
+                    num, prof.getName(), prof.getBirthDate(), prof.getDepartment(),
+                    prof.getProfessorCode(), prof.getTelePhone()
+            );
+        }
+    }
+
+    private void printStudentList(StudentDTO[] stdArr) {
+        System.out.printf("%1s %14s %8s %9s %4s %1s %1s\n", "번호", "이름", "생년월일", "학과", "학번", "학년", "수강학점");
+        int num = 0;
+        for(StudentDTO std : stdArr){
+            num++;
+            System.out.printf(
+                    "%3s %17s %10s %10s %5s %2s %3s\n",
+                    num, std.getName(), std.getBirthdate(), std.getDepartment(),
+                    std.getStudentCode(), std.getYear(), std.getCredit()
+            );
+        }
+    }
+
 //
 //    private void lectureLookup() throws IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
 //    }

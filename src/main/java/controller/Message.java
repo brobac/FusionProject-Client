@@ -64,6 +64,9 @@ public class Message {
 
     //Controller.AdminService > memberLookup
     public static final String MEMBER_LOOKUP_MENU = "[1]학생 조회  [2]교수 조회  [3]나가기";
+    public static final String MEMBER_LOOKUP_MENU_CATEGORIES = "[1]전체 조회  [2]조건 조회  [3]나가기";
+    public static final String STUDENT_LOOKUP_OPTION_CATEGORIES = "[1]학과  [2]학년  [3]조회 [4]나가기";
+    public static final String PROFESSOR_LOOKUP_OPTION_CATEGORIES = "[1]학과  [2]이름  [3]조회  [4]나가기";
 
 
     //Controller.AdminService > lectureLookup

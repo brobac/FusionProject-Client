@@ -1,5 +1,7 @@
 package network;
 
+import infra.database.option.professor.ProfessorOption;
+import infra.database.option.student.StudentOption;
 import infra.dto.*;
 
 import java.io.IOException;
@@ -167,6 +169,28 @@ public class AdminProtocolService {
     public void reqDeleteRegPeriod(RegisteringPeriodDTO regPeriod) throws IllegalAccessException, IOException {
         Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_DELETE, Protocol.ENTITY_REGIS_PERIOD);
         pt.setObject(regPeriod);
+        pt.send(os);
+    }
+
+    public void reqReadAllStudent() throws IOException {
+        Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_READ, Protocol.ENTITY_STUDENT, Protocol.READ_ALL);
+        pt.send(os);
+    }
+
+    public void reqReadStudentByOption(StudentOption[] options) throws IllegalAccessException, IOException {
+        Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_READ, Protocol.ENTITY_STUDENT, Protocol.READ_BY_OPTION);
+        pt.setObjectArray(options);
+        pt.send(os);
+    }
+
+    public void reqReadAllProfessor() throws IOException {
+        Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_READ, Protocol.ENTITY_PROFESSOR, Protocol.READ_ALL);
+        pt.send(os);
+    }
+
+    public void reqReadProfessorByOption(ProfessorOption[] options) throws IllegalAccessException, IOException {
+        Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_READ, Protocol.ENTITY_PROFESSOR, Protocol.READ_BY_OPTION);
+        pt.setObjectArray(options);
         pt.send(os);
     }
 }
