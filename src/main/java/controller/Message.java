@@ -60,11 +60,14 @@ public class Message {
     public static final String END_PERIOD_INPUT = "종료 날짜 및 시간 : ";
 
     //Controller.AdminService > registeringPeriodSettings
-    public static final String REGISTERING_PERIOD_MENU = "[1]수강신청 기간 조회  [2]수강신청 기간 등록  [1]수강신청 기간 삭제  [3]나가기";
+    public static final String REGISTERING_PERIOD_MENU = "[1]수강신청 기간 조회  [2]수강신청 기간 등록  [3]수강신청 기간 삭제  [4]나가기";
 
 
     //Controller.AdminService > memberLookup
     public static final String MEMBER_LOOKUP_MENU = "[1]학생 조회  [2]교수 조회  [3]나가기";
+    public static final String MEMBER_LOOKUP_MENU_CATEGORIES = "[1]전체 조회  [2]조건 조회  [3]나가기";
+    public static final String STUDENT_LOOKUP_OPTION_CATEGORIES = "[1]학과  [2]학년  [3]조회 [4]나가기";
+    public static final String PROFESSOR_LOOKUP_OPTION_CATEGORIES = "[1]학과  [2]이름  [3]조회  [4]나가기";
 
 
     //Controller.AdminService > lectureLookup
