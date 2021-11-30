@@ -138,10 +138,10 @@ public class StudentService implements EnrollmentService {
         ps.requestRegisteringReriod();
         receiveProtocol = ps.response();
         RegisteringPeriodDTO[] registeringPeriodDTOS = (RegisteringPeriodDTO[]) receiveProtocol.getObjectArray();
-        for (RegisteringPeriodDTO registeringPeriodDTO : registeringPeriodDTOS) {
-            if (registeringPeriodDTO.getAllowedYear() == studentDTO.getYear() && registeringPeriodDTO.getPeriodDTO().getBeginTime().isBefore(LocalDateTime.now()) && registeringPeriodDTO.getPeriodDTO().getEndTime().isAfter(LocalDateTime.now())) {
-                isRegisteringPeriod = true;
-            }
+            for (RegisteringPeriodDTO registeringPeriodDTO : registeringPeriodDTOS) {
+                if (registeringPeriodDTO.getAllowedYear() == studentDTO.getYear() && registeringPeriodDTO.getPeriodDTO().getBeginTime().isBefore(LocalDateTime.now()) && registeringPeriodDTO.getPeriodDTO().getEndTime().isAfter(LocalDateTime.now())) {
+                    isRegisteringPeriod = true;
+                }
         }
 
         //수강신청기간 아닐경우 진행 불가
@@ -376,7 +376,6 @@ public class StudentService implements EnrollmentService {
         LectureTimeDTO[] lectureTimeDTOS = studentDTO.getTimeTable();
         String[][] timeTable = new String[NUM_OF_PERIOD][NUM_OF_DAY];
         String[] days = {"MON", "TUE", "WED", "THU", "FRI"};
-
         for (LectureTimeDTO dto : lectureTimeDTOS) {
             int day = -1;
             switch (dto.getLectureDay()) {
