@@ -64,6 +64,13 @@ public class AdminProtocolService {
         ;
     }
 
+    //개설교과목 조회
+    public void reqAllLectureList() throws IOException {
+        Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_READ, Protocol.ENTITY_LECTURE, Protocol.READ_ALL);
+        pt.send(os);
+    }
+
+
     // 교과목 생성 요청
     public void reqCreateCourse(CourseDTO courseDTO) throws IllegalAccessException, IOException {
         Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_CREATE, Protocol.ENTITY_COURSE);
@@ -97,9 +104,9 @@ public class AdminProtocolService {
     }
 
     // 개설 교과목 삭제 요청
-    public void reqDeleteLecture(Object data) throws IllegalAccessException, IOException {
+    public void reqDeleteLecture(LectureDTO lectureDTO) throws IllegalAccessException, IOException {
         Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_DELETE, Protocol.ENTITY_LECTURE);
-        pt.setObject(data);
+        pt.setObject(lectureDTO);
         pt.send(os);
         ;
     }

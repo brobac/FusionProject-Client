@@ -338,6 +338,7 @@ public class AdminService implements EnrollmentService {
                         .lectureCode(lectureCode)
                         .limit(limit)
                         .lectureTimes(lectureTimeDTOSet)
+                        .planner(new LecturePlannerDTO())
                         .professor(ProfessorDTO.builder().professorCode(lecturerCode).build())
                         .build();
 
@@ -355,8 +356,22 @@ public class AdminService implements EnrollmentService {
                 System.out.print(Message.UPDATE_LECTURE_INPUT);
 
             } else if (menu == 3) {
-                //TODO 사용자로부터 입력받은 과목코드에 해당하는 개설 교과목을 서버에게 삭제 요청한다.
+                ps.reqAllLectureList();
+                Protocol response = ps.response();
+                LectureDTO[] lectureList = (LectureDTO[]) response.getObjectArray();
+                printLectureList(lectureList);
                 System.out.print(Message.DELETE_LECTURE_INPUT);
+                int lectureNum = Integer.parseInt(scanner.nextLine());
+
+                ps.reqDeleteLecture(lectureList[lectureNum - 1]);
+                response = ps.response();
+
+                int result = response.getCode();
+                if (result == Protocol.T2_CODE_SUCCESS) {
+                    System.out.println("개설 교과목 삭제를 성공했습니다.");
+                } else {
+                    System.out.println("개설 교과목 삭제에 실패했습니다.");
+                }
 
             } else if (menu == 4) {
 
@@ -365,6 +380,7 @@ public class AdminService implements EnrollmentService {
             }
         }
     }
+
 
     private void plannerInputPeriodSettings() throws Exception {
         int menu = 0;
@@ -397,12 +413,9 @@ public class AdminService implements EnrollmentService {
                 Protocol receiveProtocol = ps.response();
                 int result = receiveProtocol.getCode();
                 if (result == Protocol.T2_CODE_SUCCESS) {
-                    PeriodDTO[] periodDTOS = (PeriodDTO[]) receiveProtocol.getObjectArray();
-                    for (PeriodDTO dto :
-                            periodDTOS) {
-                        System.out.print("시작 : " + dto.getBeginTime() + " ~ ");
-                        System.out.print("종료 : " + dto.getEndTime());
-                    }
+                    PeriodDTO periodDTO = (PeriodDTO) receiveProtocol.getObject();
+                    System.out.println("시작 : " + periodDTO.getBeginTime() + " ~ ");
+                    System.out.println("종료 : " + periodDTO.getEndTime().);
                 } else {
                     System.out.println("조회 실패");
                     return;
@@ -412,6 +425,7 @@ public class AdminService implements EnrollmentService {
                 System.out.println(Message.WRONG_INPUT_NOTICE);
             }
         }
+
     }
 
     private void registeringPeriodSettings() throws Exception {
@@ -455,7 +469,7 @@ public class AdminService implements EnrollmentService {
                 if (result == Protocol.T2_CODE_SUCCESS) {
                     System.out.println("수강신청 기간 등록 성공");
                 } else {
-                    System.out.println("수강신청 기간 등록 성공");
+                    System.out.println("수강신청 기간 등록 실패");
                     return;
                 }
             } else if (menu == 3) {//삭제
@@ -466,6 +480,23 @@ public class AdminService implements EnrollmentService {
         }
 
     }
+
+    private void printLectureList(LectureDTO[] lectureList) {
+        for (int i = 0; i < lectureList.length; i++) {
+            LectureDTO curLecture = lectureList[i];
+            System.out.printf("[ %d ]", i + 1);
+            // 과목명, 대상학년, 과목코드, 제한인원, 신청인원, 학과, 학점, 교수명
+            System.out.print("교과목명 : " + curLecture.getCourse().getCourseName());
+            System.out.print("  학점 : " + curLecture.getCourse().getCredit());
+            System.out.print("  과목코드 : " + curLecture.getLectureCode());
+            System.out.print("  담당교수 : " + curLecture.getProfessor().getName());
+            System.out.print("  수강학과 : " + curLecture.getCourse().getDepartment());
+            System.out.print("  강의시간(강의실) : "); // 반복문필요
+            System.out.print("  제한인원 : " + curLecture.getLimit());
+            System.out.println("  수강인원 : " + curLecture.getApplicant());
+        }
+    }
+
 
 //    private void memberLookup() throws IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
 //        int menu = 0;

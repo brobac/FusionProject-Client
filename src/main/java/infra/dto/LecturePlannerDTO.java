@@ -4,26 +4,26 @@ public class LecturePlannerDTO {
     private String goal;
     private String summary;
 
-    public static class Builder{
+    public static class Builder {
         private String goal;
         private String summary;
 
-        public Builder goal(String value){
+        public Builder goal(String value) {
             goal = value;
             return this;
         }
 
-        public Builder summary(String value){
+        public Builder summary(String value) {
             summary = value;
             return this;
         }
 
-        public LecturePlannerDTO build(){
+        public LecturePlannerDTO build() {
             return new LecturePlannerDTO(this);
         }
     }
 
-    public static Builder builder(){
+    public static Builder builder() {
         return new Builder();
     }
 
@@ -35,9 +35,12 @@ public class LecturePlannerDTO {
         return summary;
     }
 
-    public LecturePlannerDTO(){}
+    public LecturePlannerDTO() {
+        goal = " ";
+        summary = " ";
+    }
 
-    private LecturePlannerDTO(Builder builder){
+    private LecturePlannerDTO(Builder builder) {
         goal = builder.goal;
         summary = builder.summary;
     }
