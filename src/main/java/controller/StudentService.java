@@ -178,9 +178,9 @@ public class StudentService implements EnrollmentService {
                 receiveProtocol = ps.response();
                 int result = receiveProtocol.getCode();
                 if (result == Protocol.T2_CODE_SUCCESS) {
-                    System.out.println(Message.REGISTERING_CANCEL_SUCCESS);
+                    System.out.println(Message.REGISTERING_SUCCESS);
                 } else {
-                    System.out.println(Message.REGISTERING_CANCEL_FAIL);
+                    System.out.println(Message.REGISTERING_FAIL);
                 }
 
             } else if (menu == 2) {    //수강 취소   //TODO 조회 하고 취소??
