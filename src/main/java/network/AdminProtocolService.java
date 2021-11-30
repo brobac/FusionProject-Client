@@ -102,7 +102,14 @@ public class AdminProtocolService {
         Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_CREATE, Protocol.ENTITY_LECTURE);
         pt.setObject(lectureDTO);
         pt.send(os);
-        ;
+    }
+
+    // 개설 교과목 수정 요청
+
+    public void reqUpdateLecture(LectureDTO lectureDTO) throws IllegalAccessException, IOException {
+        Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_UPDATE, Protocol.ENTITY_LECTURE);
+        pt.setObject(lectureDTO);
+        pt.send(os);
     }
 
     // 개설 교과목 삭제 요청
