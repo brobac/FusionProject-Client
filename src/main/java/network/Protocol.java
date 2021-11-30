@@ -189,7 +189,6 @@ public class Protocol {
     public void send(OutputStream os) throws IOException {
         os.write(getPacket());
         os.flush();
-        System.out.println("Send to Client");
     }
 
     public Protocol read(InputStream is) throws Exception {

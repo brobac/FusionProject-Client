@@ -60,7 +60,7 @@ public class StudentService implements EnrollmentService {
     private void logout() throws Exception {
         ps.requestLogout();
         Protocol receiveProtocol = ps.response();
-//        System.out.println((String) receiveProtocol.getObject());
+        System.out.println(Message.LOGOUT_NOTICE);
     }
 
     private void personalInformation() throws Exception {
@@ -70,12 +70,13 @@ public class StudentService implements EnrollmentService {
         Protocol receiveProtocol = ps.response();   // 개인정보 조회 요청에 대한 응답
         if (receiveProtocol != null) {   // 조회 성공
             studentDTO = (StudentDTO) receiveProtocol.getObject();
-            System.out.println("name : " + studentDTO.getName());
-            System.out.println("department : " + studentDTO.getDepartment());
-            System.out.println("birthDate : " + studentDTO.getBirthDate());
-            System.out.println("maxCredit : " + studentDTO.getMaxCredit());
-            System.out.println("year : " + studentDTO.getYear());
-            System.out.println("studentCode : " + studentDTO.getStudentCode());
+            System.out.println("이름 : " + studentDTO.getName());
+            System.out.println("학과 : " + studentDTO.getDepartment());
+            System.out.println("생년월일 : " + studentDTO.getBirthDate());
+            System.out.println("최대 수강 가능 학점 : " + studentDTO.getMaxCredit());
+            System.out.println("현재 수강 학점 : " + studentDTO.getCredit());
+            System.out.println("학년 : " + studentDTO.getYear());
+            System.out.println("학번 : " + studentDTO.getStudentCode());
         } else {                                    // 조회 실패
             System.out.println(Message.LOOKUP_PERSONAL_INFORMATION_FAIL);
             return;
@@ -84,7 +85,7 @@ public class StudentService implements EnrollmentService {
         // 변경 기능
         int menu = 0;
         while (true) {
-            System.out.println(Message.UPDATE_PERSONAL_INFORMATION_MENU);
+            System.out.println(Message.UPDATE_STUDENT_INFORMATION_MENU);
             menu = Integer.parseInt(scanner.nextLine());
 
             if (menu == 1) { //이름 변경
@@ -213,9 +214,9 @@ public class StudentService implements EnrollmentService {
     private void lectureLookup() throws Exception {
         int menu = 0;
         while (menu != 3) {
-        System.out.println(Message.LECTURE_LOOKUP_MENU);
-        System.out.print(Message.INPUT);
-        menu = Integer.parseInt(scanner.nextLine());
+            System.out.println(Message.LECTURE_LOOKUP_MENU);
+            System.out.print(Message.INPUT);
+            menu = Integer.parseInt(scanner.nextLine());
             if (menu == 1) {
                 ps.requestAllLectureList();  // 개설 교과목 (전체) 목록 요청
                 Protocol receiveProtocol = ps.response();
@@ -354,7 +355,7 @@ public class StudentService implements EnrollmentService {
         String[][] timeTable = new String[NUM_OF_PERIOD][NUM_OF_DAY];
         String[] days = {"MON", "TUE", "WED", "THU", "FRI"};
 
-        for(LectureTimeDTO dto : lectureTimeDTOS){
+        for (LectureTimeDTO dto : lectureTimeDTOS) {
             int day = -1;
             switch (dto.getLectureDay()) {
                 case "MON":
@@ -374,13 +375,13 @@ public class StudentService implements EnrollmentService {
                     break;
             }
 
-            for(int i=dto.getStartTime(); i<=dto.getEndTime(); i++){
-                timeTable[i-1][day] = dto.getLectureName();
+            for (int i = dto.getStartTime(); i <= dto.getEndTime(); i++) {
+                timeTable[i - 1][day] = dto.getLectureName();
             }
         }
 
-        for(int i=0; i<NUM_OF_DAY; i++){
-            if(i==0){
+        for (int i = 0; i < NUM_OF_DAY; i++) {
+            if (i == 0) {
                 System.out.printf("%10s%10s", "", " |");
             }
             System.out.printf("%10s%10s", days[i], " |");
@@ -389,18 +390,18 @@ public class StudentService implements EnrollmentService {
         System.out.println();
         System.out.println("-------------------|-------------------|-------------------|-------------------|-------------------|-------------------|");
 
-        for(int i=0; i<NUM_OF_PERIOD; i++){
-            for(int j=0; j<NUM_OF_DAY; j++){
-                if(j==0){
-                    System.out.printf("%8s%10s", (i+1)+"교시", " |");
+        for (int i = 0; i < NUM_OF_PERIOD; i++) {
+            for (int j = 0; j < NUM_OF_DAY; j++) {
+                if (j == 0) {
+                    System.out.printf("%8s%10s", (i + 1) + "교시", " |");
                 }
 
-                if(timeTable[i][j]==null){
+                if (timeTable[i][j] == null) {
                     System.out.printf("%10s%10s", "", " |");
-                }else{
+                } else {
                     System.out.printf(
-                            "%"+(10-timeTable[i][j].length()/2)+"s%"
-                                    +(10-timeTable[i][j].length()/2)+"s",
+                            "%" + (10 - timeTable[i][j].length() / 2) + "s%"
+                                    + (10 - timeTable[i][j].length() / 2) + "s",
                             timeTable[i][j], " |");
                 }
 

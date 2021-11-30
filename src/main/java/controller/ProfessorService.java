@@ -82,7 +82,7 @@ public class ProfessorService implements EnrollmentService {
         // 변경 기능
         int menu = 0;
         while (true) {
-            System.out.println(Message.UPDATE_PERSONAL_INFORMATION_MENU);
+            System.out.println(Message.UPDATE_PROFESSOR_INFORMATION_MENU);
             menu = Integer.parseInt(scanner.nextLine());
 
             if (menu == 1) { //이름 변경
