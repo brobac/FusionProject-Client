@@ -390,14 +390,25 @@ public class AdminService implements EnrollmentService {
         }
     }
 
-    private void registeringPeriodSettings() throws IllegalAccessException, IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException {
+    private void registeringPeriodSettings() throws Exception {
         int menu = 0;
         while (menu != 3) {
             System.out.println(Message.REGISTERING_PERIOD_MENU);
             System.out.print(Message.INPUT);
-            menu = scanner.nextInt();// int 파싱 오류 처리 필요
-            scanner.nextLine();
+            menu = Integer.parseInt(scanner.nextLine());
             if (menu == 1) {
+                ps.reqReadRegisteringPeriod();
+                Protocol receiveProtocol = ps.response();
+                RegisteringPeriodDTO[] registeringPeriodDTOs = (RegisteringPeriodDTO[]) receiveProtocol.getObjectArray();
+                if (registeringPeriodDTOs != null) {
+                    for (int i = 0; i < registeringPeriodDTOs.length; i++) {
+                        System.out.printf("[ %d ]", i + 1);
+                        System.out.print("학년 : " + registeringPeriodDTOs[i].getAllowedYear());
+                        System.out.print("시작일 : " + registeringPeriodDTOs[i].getPeriodDTO().getBeginTime().toString());
+                        System.out.print("종료일 : " + registeringPeriodDTOs[i].getPeriodDTO().getEndTime().toString());
+                    }
+                }
+            } else if (menu == 2) {
                 System.out.print(Message.BEGIN_PERIOD_INPUT);
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
                 LocalDateTime begin = LocalDateTime.parse(scanner.nextLine(), formatter);
@@ -413,47 +424,23 @@ public class AdminService implements EnrollmentService {
                         .period(periodDTO)
                         .allowedYear(grade)
                         .build();
-                Protocol sendProtocol = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_CREATE, Protocol.ENTITY_REGIS_PERIOD);
-                sendProtocol.setObject(registeringPeriodDTO);
-                sendProtocol.send(os);
 
-                Protocol receiveProtocol = new Protocol();
-                while (receiveProtocol.getType() == Protocol.UNDEFINED) {
-                    receiveProtocol.read(is);
-                    int result = receiveProtocol.getType();
-                    if (result == Protocol.T2_CODE_SUCCESS) {
-                        System.out.println("수강신청 기간 등록 성공");
-                    } else {
-                        System.out.println("수강신청 기간 등록 성공");
-                        return;
-                    }
+                ps.reqCreateRegisteringPeriod(registeringPeriodDTO);
+                Protocol receiveProtocol = ps.response();
+                int result = receiveProtocol.getCode();
+                if (result == Protocol.T2_CODE_SUCCESS) {
+                    System.out.println("수강신청 기간 등록 성공");
+                } else {
+                    System.out.println("수강신청 기간 등록 성공");
+                    return;
                 }
-            } else if (menu == 2) {
-                //TODO 서버에게 현재 등록되어있는 수강신청 기간 정보를 받아와서 출력한다.
-                Protocol sendProtocol = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_READ, Protocol.ENTITY_REGIS_PERIOD);
-                sendProtocol.send(os);
-                Protocol receiveProtocol = new Protocol();
-                while (receiveProtocol.getType() == Protocol.UNDEFINED) {
-                    receiveProtocol.read(is);
-                    int result = receiveProtocol.getType();
-                    if (result == Protocol.T2_CODE_SUCCESS) {
-                        RegisteringPeriodDTO[] registeringPeriodDTOS = (RegisteringPeriodDTO[]) receiveProtocol.getObjectArray();
-                        for (RegisteringPeriodDTO infra.dto:
-                        registeringPeriodDTOS){
-                            System.out.print("대상 학년 : " + infra.dto.getAllowedYear() + " ");
-                            System.out.print("시작 : " + infra.dto.getPeriodDTO().getBeginTime() + " ~ ");
-                            System.out.print("종료 : " + infra.dto.getPeriodDTO().getEndTime());
-                        }
-                    } else {
-                        System.out.println("조회 실패");
-                        return;
-                    }
-                }
-            } else if (menu == 3) {
+            } else if (menu == 3) {//삭제
+            } else if (menu == 4) {//나가기
             } else {
                 System.out.println(Message.WRONG_INPUT_NOTICE);
             }
         }
+
     }
 
     private void memberLookup() throws IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {

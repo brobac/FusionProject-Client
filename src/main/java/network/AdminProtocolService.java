@@ -99,6 +99,7 @@ public class AdminProtocolService {
         ;
     }
 
+
     // 강의계획서 입력 기간 설정 요청
     public void reqCreatePlannerPeriod(PeriodDTO periodDTO) throws IllegalAccessException, IOException {
         Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_CREATE, Protocol.ENTITY_PLANNER_PERIOD);
@@ -113,10 +114,17 @@ public class AdminProtocolService {
     }
 
 
+    //수강신청기간 조회
+    public void reqReadRegisteringPeriod() throws IOException {
+        Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_READ, Protocol.ENTITY_REGIS_PERIOD, Protocol.READ_ALL);
+        pt.send(os);
+    }
+
+
     // 학년별 수강 신청 기간 설정 요청
-    public void reqCreateRegisteringPeriod(Object data) throws IllegalAccessException, IOException {
+    public void reqCreateRegisteringPeriod(RegisteringPeriodDTO registeringPeriodDTO) throws IllegalAccessException, IOException {
         Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_CREATE, Protocol.ENTITY_REGIS_PERIOD);
-        pt.setObject(data);
+        pt.setObject(registeringPeriodDTO);
         pt.send(os);
         ;
     }
