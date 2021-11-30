@@ -288,15 +288,26 @@ public class AdminService implements EnrollmentService {
             menu = scanner.nextInt();
             scanner.nextLine();// int 파싱 오류 처리 필요
             if (menu == 1) {
-                System.out.println(Message.CREATE_LECTURE);
-                //TODO 사용자로 부터 개설 교과목 정보를 입력받고 서버에게 개설 교과목 생성을 요청한다.
-                System.out.print("courseID : ");
-                long courseId = Long.parseLong(scanner.nextLine());
+                ps.reqReadAllCourse();
+                Protocol receiveProtocol = ps.response();
+                CourseDTO[] courseDTOS = (CourseDTO[]) receiveProtocol.getObjectArray();
+                for (int i = 0; i < courseDTOS.length; i++) {
+                    System.out.printf("[ %d ]", i + 1);
+                    System.out.print("  과목명 : " + courseDTOS[i].getCourseName());
+                    System.out.print("  과목코드 : " + courseDTOS[i].getCourseCode());
+                    System.out.print("  학과 : " + courseDTOS[i].getDepartment());
+                    System.out.print("  대상학년 : " + courseDTOS[i].getTargetYear());
+                    System.out.println("  학점 : " + courseDTOS[i].getCredit());
+                }
+                System.out.println(Message.CREATE_LECTURE_INPUT);
+                System.out.print(Message.INPUT);
+                int courseNum = Integer.parseInt(scanner.nextLine());
+                CourseDTO course = courseDTOS[courseNum - 1];
                 System.out.print("LectureCode : ");
                 String lectureCode = scanner.nextLine();
                 System.out.print("제한인원 : ");
                 int limit = Integer.parseInt(scanner.nextLine());
-                System.out.print("lecturerCode : ");
+                System.out.print("담당교수코드 : ");
                 String lecturerCode = scanner.nextLine();
                 Set<LectureTimeDTO> lectureTimeDTOSet = new HashSet<>();
                 int option = 0;
@@ -304,16 +315,18 @@ public class AdminService implements EnrollmentService {
                     System.out.println("----- 강의시간 입력 -----");
                     System.out.print("요일 : ");
                     String day = scanner.nextLine();
-                    System.out.println("시작 교시 : ");
+                    System.out.print("시작 교시 : ");
                     int startTime = Integer.parseInt(scanner.nextLine());
-                    System.out.println("끝 교시 : ");
+                    System.out.print("끝 교시 : ");
                     int endTime = Integer.parseInt(scanner.nextLine());
-                    System.out.println("강의실 : ");
+                    System.out.print("강의실 : ");
                     String room = scanner.nextLine();
                     LectureTimeDTO lectureTime = LectureTimeDTO.builder()
                             .lectureDay(day)
                             .startTime(startTime)
                             .endTime(endTime)
+                            .room(room)
+                            .lectureName(course.getCourseName())
                             .build();
                     lectureTimeDTOSet.add(lectureTime);
                     System.out.println("[1] 추가입력  [2]종료");
@@ -321,14 +334,15 @@ public class AdminService implements EnrollmentService {
                     option = Integer.parseInt(scanner.nextLine());
                 }
                 LectureDTO lectureDTO = LectureDTO.builder()
-                        .course(CourseDTO.builder().id(courseId).build())
+                        .course(course)
                         .lectureCode(lectureCode)
                         .limit(limit)
                         .lectureTimes(lectureTimeDTOSet)
+                        .professor(ProfessorDTO.builder().professorCode(lecturerCode).build())
                         .build();
 
                 ps.reqCreateLecture(lectureDTO);
-                Protocol receiveProtocol = ps.response();
+                receiveProtocol = ps.response();
                 int result = receiveProtocol.getCode();
                 if (result == Protocol.T2_CODE_SUCCESS) {
                     System.out.println("개설 교과목 등록 성공");
