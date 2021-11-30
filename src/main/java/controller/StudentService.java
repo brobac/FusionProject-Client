@@ -10,6 +10,8 @@ import network.StudentProtocolService;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class StudentService implements EnrollmentService {
@@ -239,7 +241,7 @@ public class StudentService implements EnrollmentService {
                 }
 
             } else if (menu == 2) {
-                LectureOption[] options = new LectureOption[3];
+                List<LectureOption> optionList = new ArrayList<>();
                 System.out.println("-----조건설정-----");
                 int optionMenu = 0;
                 while (optionMenu != 4) {
@@ -248,17 +250,19 @@ public class StudentService implements EnrollmentService {
                     if (optionMenu == 1) {
                         System.out.print(Message.TARGET_GRADE_INPUT);
                         int year = Integer.parseInt(scanner.nextLine());
-                        options[0] = new YearOption(year);
+                        optionList.add(new YearOption(year));
                     } else if (optionMenu == 2) {
                         System.out.print(Message.DEPARTMENT_INPUT);
                         String department = scanner.nextLine();
-                        options[1] = new LectureDepartmentOption(department);
+                        optionList.add(new LectureDepartmentOption(department));
                     } else if (optionMenu == 3) {
                         System.out.print(Message.COURSE_NAME_INPUT);
                         String lectureName = scanner.nextLine();
-                        options[2] = new LectureNameOption(lectureName);
+                        optionList.add(new LectureNameOption(lectureName));
                     } else if (optionMenu == 4) {
-                        ps.requestLectureListByOption(options);
+                        ps.requestLectureListByOption(
+                                optionList.toArray(new LectureOption[optionList.size()])
+                        );
                         Protocol receiveProtocol = ps.response();
                         LectureDTO[] lectureList = (LectureDTO[]) receiveProtocol.getObjectArray();
                         printLectureList(lectureList);

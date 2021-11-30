@@ -10,6 +10,8 @@ import network.Protocol;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class ProfessorService implements EnrollmentService {
@@ -180,7 +182,7 @@ public class ProfessorService implements EnrollmentService {
                 }
 
             } else if (menu == 2) {
-                LectureOption[] options = new LectureOption[3];
+                List<LectureOption> optionList = new ArrayList<>();
                 System.out.println("-----조건설정-----");
                 int optionMenu = 0;
                 while (optionMenu != 4) {
@@ -189,17 +191,19 @@ public class ProfessorService implements EnrollmentService {
                     if (optionMenu == 1) {
                         System.out.print(Message.TARGET_GRADE_INPUT);
                         int year = Integer.parseInt(scanner.nextLine());
-                        options[0] = new YearOption(year);
+                        optionList.add(new YearOption(year));
                     } else if (optionMenu == 2) {
                         System.out.print(Message.DEPARTMENT_INPUT);
                         String department = scanner.nextLine();
-                        options[1] = new LectureDepartmentOption(department);
+                        optionList.add(new LectureDepartmentOption(department));
                     } else if (optionMenu == 3) {
                         System.out.print(Message.COURSE_NAME_INPUT);
                         String lectureName = scanner.nextLine();
-                        options[2] = new LectureNameOption(lectureName);
+                        optionList.add(new LectureNameOption(lectureName));
                     } else if (optionMenu == 4) {
-                        ps.requestLectureListByOption(options);
+                        ps.requestLectureListByOption(
+                                optionList.toArray(new LectureOption[optionList.size()])
+                        );
                         Protocol receiveProtocol = ps.response();
                         LectureDTO[] lectureList = (LectureDTO[]) receiveProtocol.getObjectArray();
                         printLectureList(lectureList);
@@ -342,197 +346,6 @@ public class ProfessorService implements EnrollmentService {
         }
     }
 
-    //
-//    private void LectureManage() {
-//        // 담당교과목 리스트 조회 후 출력
-//
-//        // 1.강의계획서 입력 2.강의계획서 수정 3. 수강신청 인원 조회 4. 나가기
-//        int manageMenu = 0;
-//        int lectureNum;
-//        while (manageMenu != 4) {
-//            System.out.println(Message.PROFESSOR_LECTURE_MANAGE_MENU);
-//            manageMenu = Integer.parseInt(scanner.nextLine());
-//            if (manageMenu == 1) {
-//                System.out.print(Message.LECTURE_PLANNER_INSERT_INPUT);
-//                lectureNum = Integer.parseInt(scanner.nextLine());
-//            } else if (manageMenu == 2) {
-//                System.out.print(Message.LECTURE_PLANNER_UPDATE_INPUT);
-//                lectureNum = Integer.parseInt(scanner.nextLine());
-//            } else if (manageMenu == 3) {
-//                System.out.print(Message.LECTURE_REGISTER_LIST_INPUT);
-//                lectureNum = Integer.parseInt(scanner.nextLine());
-//            } else if (manageMenu == 4) {
-//            } else {
-//                System.out.println(Message.WRONG_INPUT_NOTICE);
-//            }
-//        }
-//    }
-//
-//
-//    private void lecturePlannerSettings() throws Exception {
-//        int menu = 0;
-//        LectureDTO[] lectureDTO = new LectureDTO[0];
-//
-//        Protocol sendPt = new Protocol(Protocol.TYPE_REQUEST);
-//        sendPt.setCode(Protocol.T1_CODE_READ);
-//        sendPt.setEntity(Protocol.ENTITY_LECTURE);
-//        sendPt.send(os);
-//
-//        Protocol recvPt = read();
-//        if (recvPt != null) {
-//            if (recvPt.getType() == Protocol.TYPE_RESPONSE) {
-//                if (recvPt.getCode() == Protocol.T2_CODE_SUCCESS) {
-//                    lectureDTO = (LectureDTO[]) recvPt.getObjectArray();
-//                    for (int i = 0; i < lectureDTO.length; i++) {
-//                        System.out.println((i + 1) + " : ");
-//                        System.out.println(lectureDTO[i].toString());
-//                    }
-//                } else if (recvPt.getCode() == Protocol.T2_CODE_FAIL)
-//                    System.out.println(Message.LOOKUP_LECTURE_FAIL);
-//            }
-//        }
-//
-//        while (menu != 3) {
-//            System.out.print(Message.LECTURE_PLANNER_SETTINGS_MENU);
-//            menu = scanner.nextInt();// int 파싱 오류 처리 필요
-//
-//            if (menu == 1) {
-//                System.out.print(Message.LECTURE_PLANNER_INSERT_INPUT);
-//                int lectureNum = scanner.nextInt();
-//
-//                System.out.print(Message.LECTURE_PLANNER_INPUT);
-//                String key = scanner.nextLine();
-//                String value = scanner.nextLine();
-//
-//                Map<String, String> items = new HashMap<>();
-//                items.put(key, value);
-//                LecturePlannerDTO lecturePlannerDTO = LecturePlannerDTO.builder().items(items).build();
-//                lectureDTO[lectureNum - 1].setPlanner(lecturePlannerDTO);
-//
-//                sendPt.setCode(Protocol.T1_CODE_CREATE);
-//                sendPt.setEntity(Protocol.ENTITY_PLANNER);
-//                sendPt.setObject(lectureDTO);
-//                sendPt.send(os);
-//
-//                recvPt = read();
-//                if (recvPt != null) {
-//                    if (recvPt.getType() == Protocol.TYPE_RESPONSE) {
-//                        if (recvPt.getCode() == Protocol.T2_CODE_SUCCESS) {
-//                            System.out.println(Message.LECTURE_PLANNER_INPUT_SUCCESS);
-//                        } else if (recvPt.getCode() == Protocol.T2_CODE_FAIL)
-//                            System.out.println(Message.LECTURE_PLANNER_INPUT_FAIL);
-//                    }
-//                }
-//
-//            } else if (menu == 2) {
-//                System.out.print(Message.LECTURE_PLANNER_UPDATE_INPUT);
-//                int lectureNum = scanner.nextInt();
-//
-//                System.out.print(Message.LECTURE_PLANNER_INPUT);
-//                String key = scanner.nextLine();
-//                String value = scanner.nextLine();
-//
-//                Map<String, String> items = new HashMap<>();
-//                items.put(key, value);
-//                LecturePlannerDTO lecturePlannerDTO = LecturePlannerDTO.builder().items(items).build();
-//                lectureDTO[lectureNum - 1].setPlanner(lecturePlannerDTO);
-//
-//                sendPt.setCode(Protocol.T1_CODE_UPDATE);
-//                sendPt.setEntity(Protocol.ENTITY_PLANNER);
-//                sendPt.setObject(lectureDTO);
-//                sendPt.send(os);
-//
-//                recvPt = read();
-//                if (recvPt != null) {
-//                    if (recvPt.getType() == Protocol.TYPE_RESPONSE) {
-//                        if (recvPt.getCode() == Protocol.T2_CODE_SUCCESS) {
-//                            System.out.println(Message.LECTURE_PLANNER_UPDATE_SUCCESS);
-//                        } else if (recvPt.getCode() == Protocol.T2_CODE_FAIL)
-//                            System.out.println(Message.LECTURE_PLANNER_UPDATE_FAIL);
-//                    }
-//                }
-//            } else if (menu == 3) {
-//
-//            } else {
-//                System.out.println(Message.WRONG_INPUT_NOTICE);
-//            }
-//        }
-//    }
-//
-//    private void lecturePlannerLookup() throws Exception {
-//
-//        Protocol sendPt = new Protocol(Protocol.TYPE_REQUEST);
-//        sendPt.setCode(Protocol.T1_CODE_READ);
-//        sendPt.setEntity(Protocol.ENTITY_LECTURE);
-//        sendPt.send(os);
-//
-//        Protocol recvPt = read();
-//        if (recvPt != null) {
-//            if (recvPt.getType() == Protocol.TYPE_RESPONSE) {
-//                if (recvPt.getCode() == Protocol.T2_CODE_SUCCESS) {
-//                    LectureDTO[] lectureDTO = (LectureDTO[]) recvPt.getObjectArray();
-//                    for (int i = 0; i < lectureDTO.length; i++)
-//                        System.out.println(lectureDTO[i].getPlanner());
-//
-//                } else if (recvPt.getCode() == Protocol.T2_CODE_FAIL)
-//                    System.out.println(Message.LOOKUP_LECTURE_PLANNER_FAIL);
-//            }
-//        }
-//    }
-//
-//    private void studentListLookup() throws IOException, ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
-//        LectureDTO[] lectureDTO = new LectureDTO[0];
-//
-//        Protocol sendPt = new Protocol(Protocol.TYPE_REQUEST);
-//        sendPt.setCode(Protocol.T1_CODE_READ);
-//        sendPt.setEntity(Protocol.ENTITY_LECTURE);
-//        sendPt.send(os);
-//
-//        Protocol recvPt = read();
-//        if (recvPt != null) {
-//            if (recvPt.getType() == Protocol.TYPE_RESPONSE) {
-//                if (recvPt.getCode() == Protocol.T2_CODE_SUCCESS) {
-//                    lectureDTO = (LectureDTO[]) recvPt.getObjectArray();
-//                    for (int i = 0; i < lectureDTO.length; i++) {
-//                        System.out.println((i + 1) + " : ");
-//                        System.out.println(lectureDTO[i].toString());
-//                    }
-//                } else if (recvPt.getCode() == Protocol.T2_CODE_FAIL)
-//                    System.out.println(Message.LOOKUP_LECTURE_FAIL);
-//            }
-//        }
-//
-//        System.out.print(Message.STUDENT_LIST_LOOKUP_MENU);
-//        int lectureNum = scanner.nextInt();
-//
-//        sendPt = new Protocol(Protocol.TYPE_REQUEST);
-//        sendPt.setCode(Protocol.T1_CODE_READ);
-//        sendPt.setEntity(Protocol.ENTITY_LECTURE_STUD_LIST);
-//        sendPt.setObject(lectureDTO[lectureNum - 1]);
-//        sendPt.send(os);
-//
-//        recvPt = read();
-//        if (recvPt != null) {
-//            if (recvPt.getType() == Protocol.TYPE_RESPONSE) {
-//                if (recvPt.getCode() == Protocol.T2_CODE_SUCCESS) {
-//                    StudentDTO[] studentDTOS = (StudentDTO[]) recvPt.getObjectArray();
-//                    for (int i = 0; i < studentDTOS.length; i++) {
-//                        System.out.println(i + " : ");
-//                        System.out.print("id : " + studentDTOS[i].getId() + ", ");
-//                        System.out.print("name : " + studentDTOS[i].getName() + ", ");
-//                        System.out.print("department : " + studentDTOS[i].getDepartment() + ", ");
-//                        System.out.print("maxCredit : " + studentDTOS[i].getMaxCredit() + ", ");
-//                        System.out.print("year : " + studentDTOS[i].getYear() + ", ");
-//                        System.out.println("studentCode : " + studentDTOS[i].getStudentCode());
-//                    }
-//
-//                } else if (recvPt.getCode() == Protocol.T2_CODE_FAIL)
-//                    System.out.println(Message.LOOKUP_STUDENT_LIST_FAIL);
-//            }
-//        } else if (recvPt.getCode() == Protocol.T2_CODE_FAIL)
-//            System.out.println(Message.MISMATCH_LECTURE_CODE);
-//    }
-//
     private void timeTableLookup() throws Exception {
         final int NUM_OF_PERIOD = 9;
         final int NUM_OF_DAY = 5;
