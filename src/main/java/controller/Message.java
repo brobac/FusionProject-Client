@@ -41,8 +41,9 @@ public class Message {
     //Controller.AdminService > courseManage
     public static final String COURSE_MANAGE_MENU = "[1]교과목 생성  [2]교과목 수정  [3]교과목 삭제  [4]나가기";
     public static final String CREATE_COURSE = "생성할 교과목의 정보를 입력해주세요.";
-    public static final String UPDATE_COURSE_INPUT = "수정할 교과목 코드를 입력해주세요 : ";
-    public static final String DELETE_COURSE_INPUT = "삭제할 교과목 코드를 입력해주세요 : ";
+    public static final String UPDATE_COURSE_INPUT = "수정할 교과목 번호를 입력해주세요 : ";
+    public static final String DELETE_COURSE_INPUT = "삭제할 교과목 번호를 입력해주세요 : ";
+    public static final String UPDATE_COURSE_MENU = "[1] 과목코드 변경 [2] 과목명 변경 [3]학과 변경 [4]대상학년 변경 [5]학점 변경 [6]제출하기";
 
     //Controller.AdminService > lectureManage
     public static final String LECTURE_MANAGE_MENU = "[1]교과목 생성  [2]교과목 수정  [3]교과목 삭제  [4]나가기";

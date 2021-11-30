@@ -1,17 +1,15 @@
 package controller;
 
-import infra.database.option.lecture.*;
+import infra.database.option.lecture.LectureDepartmentOption;
+import infra.database.option.lecture.LectureNameOption;
+import infra.database.option.lecture.LectureOption;
+import infra.database.option.lecture.YearOption;
 import infra.dto.*;
 import network.ProfProtocolService;
 import network.Protocol;
 
-
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Scanner;
 
 public class ProfessorService implements EnrollmentService {
@@ -97,7 +95,7 @@ public class ProfessorService implements EnrollmentService {
                 } else {
                     System.out.println(Message.UPDATE_NAME_FAIL);
                 }
-            } else if(menu == 2){
+            } else if (menu == 2) {
                 System.out.print(Message.CHANGE_PHONE_NUMBER_INPUT);
                 String newPhoneNum = scanner.nextLine();
                 professorDTO.setTelePhone(newPhoneNum);
@@ -106,9 +104,9 @@ public class ProfessorService implements EnrollmentService {
 
                 receiveProtocol = ps.response();
                 if (receiveProtocol != null) {
-                    System.out.println(Message.UPDATE_NAME_SUCCESS);
+                    System.out.println(Message.UPDATE_PHONENUM_SUCCESS);
                 } else {
-                    System.out.println(Message.UPDATE_NAME_FAIL);
+                    System.out.println(Message.UPDATE_PHONENUM_FAIL);
                 }
             } else if (menu == 3) {  //비밀번호 변경
                 System.out.print(Message.CHANGE_PASSWORD_INPUT);
@@ -134,18 +132,18 @@ public class ProfessorService implements EnrollmentService {
     }
 
     private void lectureMenu() throws Exception {
-        int menu=0;
-        while(true){
+        int menu = 0;
+        while (true) {
             System.out.println(Message.PROFESSOR_SERVICE_LECTURE_MENU);
             menu = Integer.parseInt(scanner.nextLine());
 
-            if(menu == 1){ //개설 교과목 조회
+            if (menu == 1) { //개설 교과목 조회
                 lectureLookup();
-            }else if(menu == 2){ //담당 교과목 조회
+            } else if (menu == 2) { //담당 교과목 조회
                 lookupMyLecture();
-            }else if(menu == 3){ //나가기
+            } else if (menu == 3) { //나가기
                 break;
-            }else{
+            } else {
                 System.out.println(Message.WRONG_INPUT_NOTICE);
             }
         }
@@ -252,7 +250,7 @@ public class ProfessorService implements EnrollmentService {
 
     private void lookupMyLecture() throws Exception {
         int menu = 0;
-        while(true){
+        while (true) {
             ProfessorDTO professorDTO = ProfessorDTO.builder().id(account.getMemberID()).build();
             ps.requestReadPersonalInfo(professorDTO);  // 개인정보 조회 요청
             Protocol receiveProtocol = ps.response();   // 개인정보 조회 요청에 대한 응답
@@ -265,13 +263,13 @@ public class ProfessorService implements EnrollmentService {
 
             System.out.println(Message.PROFESSOR_MY_LECTURE_MENU);
             menu = Integer.parseInt(scanner.nextLine());
-            if(menu == 1){ // 교과목 수강생 조회
+            if (menu == 1) { // 교과목 수강생 조회
                 lookupRegisteringStd(lectureDTOS);
-            }else if(menu == 2){ // 강의계획서 조회
+            } else if (menu == 2) { // 강의계획서 조회
                 System.out.print(Message.PLANNER_LOOKUP_INPUT);
                 int lectureNum = Integer.parseInt(scanner.nextLine());
 
-                if(lectureNum-1>=lectureDTOS.length){
+                if (lectureNum - 1 >= lectureDTOS.length) {
                     System.out.println(Message.WRONG_INPUT_NOTICE);
                     continue;
                 }
@@ -280,11 +278,11 @@ public class ProfessorService implements EnrollmentService {
                 System.out.println("교과목명 : " + lectureDTOS[lectureNum - 1].getCourse().getCourseName());
                 System.out.println("강의 목표 : " + planner.getGoal());
                 System.out.println("강의 개요 : " + planner.getSummary());
-            }else if(menu == 3){ // 강의계획서 입력
+            } else if (menu == 3) { // 강의계획서 입력
                 updateLecturePlanner(lectureDTOS);
-            }else if(menu == 4){ // 나가기
+            } else if (menu == 4) { // 나가기
                 break;
-            }else{
+            } else {
                 System.out.println(Message.WRONG_INPUT_NOTICE);
             }
         }
@@ -294,29 +292,29 @@ public class ProfessorService implements EnrollmentService {
         System.out.println(Message.LECTURE_PLANNER_UPDATE_INPUT);
         int lectureNum = Integer.parseInt(scanner.nextLine());
 
-        if(lectureNum-1>=lectureDTOS.length){
+        if (lectureNum - 1 >= lectureDTOS.length) {
             System.out.println(Message.WRONG_INPUT_NOTICE);
             return;
         }
 
-        LectureDTO selectedLecture = lectureDTOS[lectureNum-1];
+        LectureDTO selectedLecture = lectureDTOS[lectureNum - 1];
 
-        while(true){
+        while (true) {
             System.out.println(Message.LECTURE_PLANNER_CATEGORIES);
             System.out.print(Message.LECTURE_PLANNER_CATEGORIES_INPUT);
             int select = Integer.parseInt(scanner.nextLine());
 
-            if(select == 1){
+            if (select == 1) {
                 System.out.println(Message.LECTURE_PLANNER_GOAL_INPUT);
                 String goal = scanner.nextLine();
                 selectedLecture.getPlanner().setGoal(goal);
-            }else if(select == 2){
+            } else if (select == 2) {
                 System.out.println(Message.LECTURE_PLANNER_SUMMARY_INPUT);
                 String summary = scanner.nextLine();
                 selectedLecture.getPlanner().setSummary(summary);
-            }else if(select == 3){
+            } else if (select == 3) {
                 break;
-            }else{
+            } else {
                 System.out.println(Message.WRONG_INPUT_NOTICE);
             }
         }
@@ -328,18 +326,18 @@ public class ProfessorService implements EnrollmentService {
     private void lookupRegisteringStd(LectureDTO[] lectureDTOS) throws Exception {
         System.out.println(Message.PLANNER_LOOKUP_INPUT);
         int lectureNum = Integer.parseInt(scanner.nextLine());
-        
-        if(lectureNum-1>=lectureDTOS.length){
+
+        if (lectureNum - 1 >= lectureDTOS.length) {
             System.out.println(Message.WRONG_INPUT_NOTICE);
             return;
         }
 
-        ps.requestReadRegisteringStd(lectureDTOS[lectureNum-1]);
+        ps.requestReadRegisteringStd(lectureDTOS[lectureNum - 1]);
         Protocol receiveProtocol = ps.response();   // 개인정보 조회 요청에 대한 응답
         StudentDTO[] studentDTOS = (StudentDTO[]) receiveProtocol.getObjectArray();
 
         //TODO : 출력 이쁘게
-        for(StudentDTO std : studentDTOS){
+        for (StudentDTO std : studentDTOS) {
             System.out.println("std = " + std);
         }
     }
@@ -555,7 +553,7 @@ public class ProfessorService implements EnrollmentService {
         String[][] timeTable = new String[NUM_OF_PERIOD][NUM_OF_DAY];
         String[] days = {"MON", "TUE", "WED", "THU", "FRI"};
 
-        for(LectureTimeDTO dto : lectureTimeDTOS){
+        for (LectureTimeDTO dto : lectureTimeDTOS) {
             int day = -1;
             switch (dto.getLectureDay()) {
                 case "MON":
@@ -575,13 +573,13 @@ public class ProfessorService implements EnrollmentService {
                     break;
             }
 
-            for(int i=dto.getStartTime(); i<=dto.getEndTime(); i++){
-                timeTable[i-1][day] = dto.getLectureName();
+            for (int i = dto.getStartTime(); i <= dto.getEndTime(); i++) {
+                timeTable[i - 1][day] = dto.getLectureName();
             }
         }
 
-        for(int i=0; i<NUM_OF_DAY; i++){
-            if(i==0){
+        for (int i = 0; i < NUM_OF_DAY; i++) {
+            if (i == 0) {
                 System.out.printf("%10s%10s", "", " |");
             }
             System.out.printf("%10s%10s", days[i], " |");
@@ -590,18 +588,18 @@ public class ProfessorService implements EnrollmentService {
         System.out.println();
         System.out.println("-------------------|-------------------|-------------------|-------------------|-------------------|-------------------|");
 
-        for(int i=0; i<NUM_OF_PERIOD; i++){
-            for(int j=0; j<NUM_OF_DAY; j++){
-                if(j==0){
-                    System.out.printf("%8s%10s", (i+1)+"교시", " |");
+        for (int i = 0; i < NUM_OF_PERIOD; i++) {
+            for (int j = 0; j < NUM_OF_DAY; j++) {
+                if (j == 0) {
+                    System.out.printf("%8s%10s", (i + 1) + "교시", " |");
                 }
 
-                if(timeTable[i][j]==null){
+                if (timeTable[i][j] == null) {
                     System.out.printf("%10s%10s", "", " |");
-                }else{
+                } else {
                     System.out.printf(
-                            "%"+(10-timeTable[i][j].length()/2)+"s%"
-                                    +(10-timeTable[i][j].length()/2)+"s",
+                            "%" + (10 - timeTable[i][j].length() / 2) + "s%"
+                                    + (10 - timeTable[i][j].length() / 2) + "s",
                             timeTable[i][j], " |");
                 }
 

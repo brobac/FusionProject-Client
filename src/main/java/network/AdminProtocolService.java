@@ -52,6 +52,11 @@ public class AdminProtocolService {
         ;
     }
 
+    public void reqReadAllCourse() throws IOException {
+        Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_READ, Protocol.ENTITY_COURSE, Protocol.READ_ALL);
+        pt.send(os);
+    }
+
     public void reqReadCourse(CourseDTO courseDTO) throws IllegalAccessException, IOException {
         Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_READ, Protocol.ENTITY_COURSE, Protocol.READ_BY_ID);
         pt.setObject(courseDTO);

@@ -4,10 +4,8 @@ import infra.dto.*;
 import network.AdminProtocolService;
 import network.Protocol;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
@@ -34,7 +32,7 @@ public class AdminService implements EnrollmentService {
         while (menu != 8) {
             System.out.println(Message.ADMIN_SERVICE_MENU);
             System.out.print(Message.INPUT);
-            menu = scanner.nextInt();
+            menu = Integer.parseInt(scanner.nextLine());
             switch (menu) {
                 case 1:
                     createAccount();
@@ -52,10 +50,10 @@ public class AdminService implements EnrollmentService {
                     registeringPeriodSettings();
                     break;
                 case 6:
-                    memberLookup();
+//                    memberLookup();
                     break;
                 case 7:
-                    lectureLookup();
+//                    lectureLookup();
                     break;
                 case 8:
                     break;
@@ -95,6 +93,7 @@ public class AdminService implements EnrollmentService {
                         .year(year)
                         .department(department)
                         .birthDate(birthday)
+
                         .build();
 
                 //계정생성이 필요한 학생의 정보를 서버에게 전달
@@ -174,40 +173,38 @@ public class AdminService implements EnrollmentService {
 
                 ps.reqCreateCourse(courseDTO);
                 Protocol receiveProtocol = ps.response();
-                int result = receiveProtocol.getType();
+                int result = receiveProtocol.getCode();
                 if (result == Protocol.T2_CODE_SUCCESS) {
                     System.out.println("과목 생성 성공");
                 } else {
                     System.out.println("과목 생성 실패");
                 }
             } else if (menu == 2) {
-                System.out.print(Message.UPDATE_COURSE_INPUT);
-                String courseCode = scanner.nextLine();
-                CourseDTO courseDTO = CourseDTO.builder()
-                        .courseCode(courseCode)
-                        .build();
-                ps.reqReadCourse(courseDTO);
-                //해당과목 정보조회
+                ps.reqReadAllCourse();
                 Protocol receiveProtocol = ps.response();
-                int result = receiveProtocol.getType();
-                if (result == Protocol.T2_CODE_SUCCESS) {
-                    System.out.println("조회성공");
-                    courseDTO = (CourseDTO) receiveProtocol.getObject();
-                } else {
-                    System.out.println("과목 생성 실패");
-                    return;
+                CourseDTO[] courseDTOS = (CourseDTO[]) receiveProtocol.getObjectArray();
+                for (int i = 0; i < courseDTOS.length; i++) {
+                    System.out.printf("[ %d ]", i + 1);
+                    System.out.print("  과목명 : " + courseDTOS[i].getCourseName());
+                    System.out.print("  과목코드 : " + courseDTOS[i].getCourseCode());
+                    System.out.print("  학과 : " + courseDTOS[i].getDepartment());
+                    System.out.print("  대상학년 : " + courseDTOS[i].getTargetYear());
+                    System.out.println("  학점 : " + courseDTOS[i].getCredit());
                 }
-
-                System.out.println("현재 정보");
-                System.out.println("과목코드 : " + courseDTO.getCourseCode());
+                System.out.print(Message.UPDATE_COURSE_INPUT);
+                int courseNum = Integer.parseInt(scanner.nextLine());
+                CourseDTO courseDTO = courseDTOS[courseNum - 1];
+                System.out.println("----------현재 정보----------");
                 System.out.println("과목명 : " + courseDTO.getCourseName());
+                System.out.println("과목코드 : " + courseDTO.getCourseCode());
                 System.out.println("학과 : " + courseDTO.getDepartment());
                 System.out.println("대상학년 : " + courseDTO.getTargetYear());
                 System.out.println("학점 : " + courseDTO.getCredit());
                 int updateMenu = 0;
-                while (updateMenu != 7) {
-                    System.out.println("[1] 과목코드 변경 [2] 과목명 변경 [3]학과 변경 [4]대상학년 변경 [5]학점 변경 [6]제출하기");
+                while (updateMenu != 6) {
+                    System.out.println(Message.UPDATE_COURSE_MENU);
                     System.out.print(Message.INPUT);
+                    updateMenu = Integer.parseInt(scanner.nextLine());
                     switch (updateMenu) {
                         case 1:
                             System.out.print(Message.COURSE_CODE_INPUT);
@@ -232,15 +229,19 @@ public class AdminService implements EnrollmentService {
                         case 6:
                             ps.reqUpdateCourse(courseDTO);
                             receiveProtocol = ps.response();
-                            result = receiveProtocol.getType();
+                            int result = receiveProtocol.getCode();
                             if (result == Protocol.T2_CODE_SUCCESS) {
                                 System.out.println("업데이트 되었습니다.");
+                                System.out.println("----------새로운 정보----------");
+                                System.out.println("과목명 : " + courseDTO.getCourseName());
+                                System.out.println("과목코드 : " + courseDTO.getCourseCode());
+                                System.out.println("학과 : " + courseDTO.getDepartment());
+                                System.out.println("대상학년 : " + courseDTO.getTargetYear());
+                                System.out.println("학점 : " + courseDTO.getCredit());
                             } else {
                                 System.out.println("업데이트 실패");
                                 return;
                             }
-                            break;
-                        case 7:
                             break;
                         default:
                             System.out.println(Message.WRONG_INPUT_NOTICE);
@@ -248,14 +249,23 @@ public class AdminService implements EnrollmentService {
                     }
                 }
             } else if (menu == 3) {
-                System.out.print(Message.DELETE_COURSE_INPUT);
-                String courseCode = scanner.nextLine();
-                CourseDTO courseDTO = CourseDTO.builder()
-                        .courseCode(courseCode)
-                        .build();
-                ps.reqDeleteCourse(courseDTO);
+                ps.reqReadAllCourse();
                 Protocol receiveProtocol = ps.response();
-                int result = receiveProtocol.getType();
+                CourseDTO[] courseDTOS = (CourseDTO[]) receiveProtocol.getObjectArray();
+                for (int i = 0; i < courseDTOS.length; i++) {
+                    System.out.printf("[ %d ]", i + 1);
+                    System.out.print("  과목명 : " + courseDTOS[i].getCourseName());
+                    System.out.print("  과목코드 : " + courseDTOS[i].getCourseCode());
+                    System.out.print("  학과 : " + courseDTOS[i].getDepartment());
+                    System.out.print("  대상학년 : " + courseDTOS[i].getTargetYear());
+                    System.out.println("  학점 : " + courseDTOS[i].getCredit());
+                }
+                System.out.print(Message.DELETE_COURSE_INPUT);
+                int courseNum = Integer.parseInt(scanner.nextLine());
+                CourseDTO courseDTO = courseDTOS[courseNum - 1];
+                ps.reqDeleteCourse(courseDTO);
+                receiveProtocol = ps.response();
+                int result = receiveProtocol.getCode();
                 if (result == Protocol.T2_CODE_SUCCESS) {
                     System.out.println("삭제 성공");
                 } else {
@@ -443,69 +453,69 @@ public class AdminService implements EnrollmentService {
 
     }
 
-    private void memberLookup() throws IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
-        int menu = 0;
-        while (menu != 3) {
-            System.out.println(Message.MEMBER_LOOKUP_MENU);
-            System.out.print(Message.INPUT);
-            menu = scanner.nextInt();// int 파싱 오류 처리 필요
-            scanner.nextLine();
-            if (menu == 1) {
-                //TODO 학생 조회
-                Protocol sendProtocol = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_READ, Protocol.ENTITY_STUD_LIST);
-                sendProtocol.send(os);
-                Protocol receiveProtocol = new Protocol();
-                while (receiveProtocol.getType() == Protocol.UNDEFINED) {
-                    receiveProtocol.read(is);
-                    int result = receiveProtocol.getType();
-                    if (result == Protocol.T2_CODE_SUCCESS) {
-                        StudentDTO[] studentList = (StudentDTO[]) receiveProtocol.getObjectArray();
-                        for (int i = 0; i < studentList.length; i++) {
-                            System.out.printf("[ %d ] ", i + 1);
-                            System.out.print("학과 : " + studentList[i].getDepartment());
-                            System.out.print("학년 : " + studentList[i].getYear());
-                            System.out.print("이름 : " + studentList[i].getName());
-                            System.out.print("학번 : " + studentList[i].getStudentCode());
-                            System.out.println("생년월일 : " + studentList[i].getBirthDate());
-                        }
-                    } else {
-                        System.out.println("조회 실패");
-                        return;
-                    }
-                }
-            } else if (menu == 2) {
-                //TODO 교수 조회
-                Protocol sendProtocol = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_READ, Protocol.ENTITY_PROF_LIST);
-                sendProtocol.send(os);
-                Protocol receiveProtocol = new Protocol();
-                while (receiveProtocol.getType() == Protocol.UNDEFINED) {
-                    receiveProtocol.read(is);
-                    int result = receiveProtocol.getType();
-                    if (result == Protocol.T2_CODE_SUCCESS) {
-                        ProfessorDTO[] professorList = (ProfessorDTO[]) receiveProtocol.getObjectArray();
-                        for (int i = 0; i < professorList.length; i++) {
-                            System.out.printf("[ %d ] ", i + 1);
-                            System.out.print("학과 : " + professorList[i].getDepartment());
-                            System.out.print("이름 : " + professorList[i].getName());
-                            System.out.print("학번 : " + professorList[i].getProfessorCode());
-                            System.out.print("전화번호 : " + professorList[i].getTelePhone());
-                            System.out.println("생년월일 : " + professorList[i].getBirthDate());
-                        }
-                    } else {
-                        System.out.println("조회 실패");
-                        return;
-                    }
-                }
-            } else if (menu == 3) {
-            } else {
-                System.out.println(Message.WRONG_INPUT_NOTICE);
-            }
-        }
-    }
-
-    private void lectureLookup() throws IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
-    }
-}
+//    private void memberLookup() throws IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
+//        int menu = 0;
+//        while (menu != 3) {
+//            System.out.println(Message.MEMBER_LOOKUP_MENU);
+//            System.out.print(Message.INPUT);
+//            menu = scanner.nextInt();// int 파싱 오류 처리 필요
+//            scanner.nextLine();
+//            if (menu == 1) {
+//                //TODO 학생 조회
+//                Protocol sendProtocol = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_READ, Protocol.ENTITY_STUD_LIST);
+//                sendProtocol.send(os);
+//                Protocol receiveProtocol = new Protocol();
+//                while (receiveProtocol.getType() == Protocol.UNDEFINED) {
+//                    receiveProtocol.read(is);
+//                    int result = receiveProtocol.getType();
+//                    if (result == Protocol.T2_CODE_SUCCESS) {
+//                        StudentDTO[] studentList = (StudentDTO[]) receiveProtocol.getObjectArray();
+//                        for (int i = 0; i < studentList.length; i++) {
+//                            System.out.printf("[ %d ] ", i + 1);
+//                            System.out.print("학과 : " + studentList[i].getDepartment());
+//                            System.out.print("학년 : " + studentList[i].getYear());
+//                            System.out.print("이름 : " + studentList[i].getName());
+//                            System.out.print("학번 : " + studentList[i].getStudentCode());
+//                            System.out.println("생년월일 : " + studentList[i].getBirthDate());
+//                        }
+//                    } else {
+//                        System.out.println("조회 실패");
+//                        return;
+//                    }
+//                }
+//            } else if (menu == 2) {
+//                //TODO 교수 조회
+//                Protocol sendProtocol = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_READ, Protocol.ENTITY_PROF_LIST);
+//                sendProtocol.send(os);
+//                Protocol receiveProtocol = new Protocol();
+//                while (receiveProtocol.getType() == Protocol.UNDEFINED) {
+//                    receiveProtocol.read(is);
+//                    int result = receiveProtocol.getType();
+//                    if (result == Protocol.T2_CODE_SUCCESS) {
+//                        ProfessorDTO[] professorList = (ProfessorDTO[]) receiveProtocol.getObjectArray();
+//                        for (int i = 0; i < professorList.length; i++) {
+//                            System.out.printf("[ %d ] ", i + 1);
+//                            System.out.print("학과 : " + professorList[i].getDepartment());
+//                            System.out.print("이름 : " + professorList[i].getName());
+//                            System.out.print("학번 : " + professorList[i].getProfessorCode());
+//                            System.out.print("전화번호 : " + professorList[i].getTelePhone());
+//                            System.out.println("생년월일 : " + professorList[i].getBirthDate());
+//                        }
+//                    } else {
+//                        System.out.println("조회 실패");
+//                        return;
+//                    }
+//                }
+//            } else if (menu == 3) {
+//            } else {
+//                System.out.println(Message.WRONG_INPUT_NOTICE);
+//            }
+//        }
+//    }
+//
+//    private void lectureLookup() throws IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
+//    }
+//}
 
 //    public enum Menu {
 //        CREATE_ACCOUNT(1),
@@ -519,4 +529,4 @@ public class AdminService implements EnrollmentService {
 //        Menu(int value){
 //            this.value = value;
 //        }
-//    }
+}
