@@ -181,7 +181,9 @@ public class StudentService implements EnrollmentService {
                 if (result == Protocol.T2_CODE_SUCCESS) {
                     System.out.println(Message.REGISTERING_SUCCESS);
                 } else {
+                    MessageDTO failMsg = (MessageDTO) receiveProtocol.getObject();
                     System.out.println(Message.REGISTERING_FAIL);
+                    System.out.println(failMsg);
                 }
 
             } else if (menu == 2) {    //수강 취소   //TODO 조회 하고 취소??
