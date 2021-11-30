@@ -90,7 +90,9 @@ public class EnrollmentProgram {
                     System.out.println(Message.ADMIN_CREATE_SUCCESS);
                     return;
                 } else if (recvPt.getCode() == Protocol.T2_CODE_FAIL) {
-                    System.out.println(Message.ADMIN_CREATE_SUCCESS);
+                    MessageDTO failMsg = (MessageDTO) recvPt.getObject();
+                    System.out.println(Message.ADMIN_CREATE_FAIL);
+                    System.out.println(failMsg);
                 }
             }
         }

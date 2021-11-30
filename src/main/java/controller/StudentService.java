@@ -71,13 +71,13 @@ public class StudentService implements EnrollmentService {
         Protocol receiveProtocol = ps.response();   // 개인정보 조회 요청에 대한 응답
         if (receiveProtocol != null) {   // 조회 성공
             studentDTO = (StudentDTO) receiveProtocol.getObject();
-            System.out.println("이름 : " + studentDTO.getName());
-            System.out.println("학과 : " + studentDTO.getDepartment());
-            System.out.println("생년월일 : " + studentDTO.getBirthDate());
-            System.out.println("최대 수강 가능 학점 : " + studentDTO.getMaxCredit());
-            System.out.println("현재 수강 학점 : " + studentDTO.getCredit());
-            System.out.println("학년 : " + studentDTO.getYear());
-            System.out.println("학번 : " + studentDTO.getStudentCode());
+            System.out.println("이름              | " + studentDTO.getName());
+            System.out.println("학과              | " + studentDTO.getDepartment());
+            System.out.println("생년월일          | " + studentDTO.getBirthDate());
+            System.out.println("최대수강 가능학점 | " + studentDTO.getMaxCredit());
+            System.out.println("현재 수강 학점    | " + studentDTO.getCredit());
+            System.out.println("학년              | " + studentDTO.getYear());
+            System.out.println("학번              | " + studentDTO.getStudentCode());
         } else {                                    // 조회 실패
             System.out.println(Message.LOOKUP_PERSONAL_INFORMATION_FAIL);
             return;
@@ -321,43 +321,6 @@ public class StudentService implements EnrollmentService {
             }
         }
     }
-
-    // TODO 강의계획서 조회랑 시간표 조회는 어떻게 된건지 모르겠어서 일단 놔둠
-//    private void lecturePlannerLookup() throws Exception {
-//        int menu = 0;
-//        Protocol sendPt = new Protocol(Protocol.TYPE_REQUEST);
-//
-//        while (menu != 2) {
-//            System.out.print(Message.LECTURE_PLANNER_LOOKUP_MENU);
-//            System.out.print(Message.INPUT);
-//            menu = scanner.nextInt();
-//
-//            if (menu == 1) { //선택 교과목 강의 계획서 조회
-//                System.out.print(Message.COURSE_CODE_INPUT);
-//                String lectureCode = scanner.nextLine();
-//                LectureDTO lectureDTO = LectureDTO.builder().lectureCode(lectureCode).build();
-//                sendPt.setObject(lectureDTO);
-//                sendPt.setCode(Protocol.T1_CODE_READ);
-//                sendPt.setEntity(Protocol.ENTITY_LECTURE);
-//                sendPt.send(os);
-//
-//                Protocol recvPt = read();
-//                if (recvPt != null) {
-//                    if (recvPt.getType() == Protocol.TYPE_RESPONSE) {
-//                        if (recvPt.getCode() == Protocol.T2_CODE_SUCCESS) {
-//                            lectureDTO = (LectureDTO) recvPt.getObject();
-//                            System.out.println(lectureDTO.getPlanner());
-//                        } else if (recvPt.getCode() == Protocol.T2_CODE_FAIL)
-//                            System.out.println(Message.LOOKUP_LECTURE_PLANNER_FAIL);
-//                    }
-//                }
-//            } else if (menu == 2) {
-//
-//            } else {
-//                System.out.println(Message.WRONG_INPUT_NOTICE);
-//            }
-//        }
-//    }
 
     private void timeTableLookup() throws Exception {
         final int NUM_OF_PERIOD = 9;
