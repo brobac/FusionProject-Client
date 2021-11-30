@@ -45,6 +45,8 @@ public class AdminDTO extends MemberDTO {
         return new Builder();
     }
 
+    public AdminDTO(){}
+
     private AdminDTO(Builder builder) {
         super(builder.id, builder.name, builder.department, builder.birthDate);
         adminCode = builder.adminCode;
