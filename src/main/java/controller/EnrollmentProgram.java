@@ -4,10 +4,8 @@ package controller;
 import infra.dto.*;
 import network.Protocol;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.io.*;
+import java.sql.SQLOutput;
 import java.util.Scanner;
 
 public class EnrollmentProgram {
@@ -23,23 +21,29 @@ public class EnrollmentProgram {
         Scanner sc = new Scanner(System.in);
         System.out.println("************* 수강신청 프로그램 **************");
         try {
-            AccountDTO user;
+            AccountDTO user = null;
             int menu = 0;
-            while (menu != 2) {
+            while (menu != 3) {
                 System.out.println(Message.ENROLLMENT_MENU);  // 로그인 or 종료 선택
                 menu = Integer.parseInt(sc.nextLine());
                 switch (menu) {
-                    case 1:
+                    case 1: //로그인
                         user = login();
                         if (user == null)
                             continue;
                         break;
-                    case 2:
+                    case 2: //관리자 계정 생성
+                        createAdmin();
+                        break;
+                    case 3: //종료
                     default:
                         continue;
                 }
-                EnrollmentService service = createService(user, is, os);
-                service.run();
+
+                if(user!=null){
+                    EnrollmentService service = createService(user, is, os);
+                    service.run();
+                }
             }
             System.out.println("************* 프로그램 종료 **************");
         } catch (Exception e) {
@@ -48,6 +52,49 @@ public class EnrollmentProgram {
         }
     }
 
+    private void createAdmin() throws Exception {
+        while(true){
+            Scanner sc = new Scanner(System.in);
+            System.out.println(Message.ADMIN_CREATE_MESSAGE);
+
+            System.out.print(Message.ADMIN_CODE_INPUT);
+            String adminCode = sc.nextLine();
+
+            System.out.print(Message.ADMIN_NAME_INPUT);
+            String name = sc.nextLine();
+
+            System.out.print(Message.ADMIN_DEPARTMENT_INPUT);
+            String department = sc.nextLine();
+
+            System.out.print(Message.ADMIN_BIRTHDATE_INPUT);
+            String birthDate = sc.nextLine();
+
+            AdminDTO newAdmin = AdminDTO.builder()
+                    .name(name)
+                    .adminCode(adminCode)
+                    .department(department)
+                    .birthDate(birthDate)
+                    .build();
+
+            Protocol sendPt = new Protocol(
+                    Protocol.TYPE_REQUEST, Protocol.T1_CODE_CREATE, Protocol.ENTITY_ADMIN
+            );
+            sendPt.setObject(newAdmin);
+            sendPt.send(os);
+
+            Protocol recvPt = new Protocol();
+            recvPt.read(is);
+
+            if (recvPt.getType() == Protocol.TYPE_RESPONSE) {
+                if (recvPt.getCode() == Protocol.T2_CODE_SUCCESS) {
+                    System.out.println(Message.ADMIN_CREATE_SUCCESS);
+                    return;
+                } else if (recvPt.getCode() == Protocol.T2_CODE_FAIL) {
+                    System.out.println(Message.ADMIN_CREATE_SUCCESS);
+                }
+            }
+        }
+    }
 
     private AccountDTO login() throws Exception {
         while (true) {

@@ -11,6 +11,15 @@ public class Message {
     public static final String LECTURE_LOOKUP_INNER_MENU = "[1]강의 계획서 조회  [2]나가기";
     public static final String PLANNER_LOOKUP_INPUT = "조회할 교과목 번호 : ";
 
+    //관리자 생성
+    public static final String ADMIN_CREATE_MESSAGE = "=======관리자 생성========";
+    public static final String ADMIN_CODE_INPUT = "교직원 번호 : ";
+    public static final String ADMIN_NAME_INPUT = "이름 : ";
+    public static final String ADMIN_DEPARTMENT_INPUT = "부서 : ";
+    public static final String ADMIN_BIRTHDATE_INPUT = "생년월일 : ";
+    public static final String ADMIN_CREATE_SUCCESS = "관리자 계정 생성성공";
+    public static final String ADMIN_CREATE_FAIL = "관리자 계정 생성실패";
+
     //personalInfo
     public static final String UPDATE_PERSONAL_INFORMATION_MENU = "[1] 이름 변경  [2] 전화번호 변경  [3]비밀번호 변경  [4]나기기";
     public static final String CHANGE_NAME_INPUT = "새 이름 : ";
@@ -18,7 +27,7 @@ public class Message {
     public static final String CHANGE_PASSWORD_INPUT = "새 비밀번호 : ";
 
     //Controller.EnrollmentProgram
-    public static final String ENROLLMENT_MENU = "[1] 로그인 [2] 종료";
+    public static final String ENROLLMENT_MENU = "[1] 로그인 [2] 관리자 계정생성  [3] 종료";
     public static final String ID_INPUT = "아이디 : ";
     public static final String PW_INPUT = "패스워드 : ";
 
