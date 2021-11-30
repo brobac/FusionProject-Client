@@ -23,7 +23,7 @@ public class Message {
     public static final String PW_INPUT = "패스워드 : ";
 
     //Controller.AdminService
-    public static final String ADMIN_SERVICE_MENU = "[1] 계정 생성  [2]교과목 관리  [3]개설 교과목 관리  [4]강의계획서 입력기간 설정\n[5] 수강신청 기간 설정  [6]교수 / 학생 조회  [7]개설 교과목 조회  [8] 종료";
+    public static final String ADMIN_SERVICE_MENU = "[1] 계정 생성  [2]교과목 관리  [3]개설 교과목 관리  [4]강의계획서 입력기간 설정\n[5] 수강신청 기간 설정  [6]교수 / 학생 조회  [7]개설 교과목 조회  [8] 로그아웃";
     public static final String COURSE_CODE_INPUT = "과목코드 : ";
     public static final String COURSE_NAME_INPUT = "과목명 : ";
     public static final String DEPARTMENT_INPUT = "학과 : ";

@@ -1,6 +1,5 @@
 package controller;
 
-import domain.model.Registering;
 import infra.database.option.professor.NameOption;
 import infra.database.option.professor.ProfessorOption;
 import infra.database.option.student.DepartmentOption;
@@ -10,7 +9,6 @@ import infra.dto.*;
 import network.AdminProtocolService;
 import network.Protocol;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.time.LocalDateTime;
@@ -374,9 +372,20 @@ public class AdminService implements EnrollmentService {
                         System.out.print(Message.COURSE_CODE_INPUT);
                         updateLecture.setLectureCode(scanner.nextLine());
                     } else if (updateMenu == 2) {
-                        //교수목록조회 밑 출력
+                        ps.reqReadAllProfessor();
+                        response = ps.response();
+                        ProfessorDTO[] professorDTOS = (ProfessorDTO[]) response.getObjectArray();
+                        for (int i = 0; i < professorDTOS.length; i++) {
+                            ProfessorDTO professor = professorDTOS[i];
+                            System.out.printf("[ %d ]", i + 1);
+                            System.out.print("  학과 : " + professor.getDepartment());
+                            System.out.print("  이름 : " + professor.getName());
+                            System.out.print("  교수코드 : " + professor.getProfessorCode());
+                            System.out.println("  전화번호 : " + professor.getTelePhone());
+                        }
                         System.out.print(Message.PROF_CODE_INPUT);
-                        updateLecture.setProfessor(ProfessorDTO.builder().professorCode(scanner.nextLine()).build());
+                        int profNum = Integer.parseInt(scanner.nextLine());
+                        updateLecture.setProfessor(professorDTOS[profNum - 1]);
                     } else if (updateMenu == 3) {
                         LectureTimeDTO[] times = updateLecture.getLectureTimes();
                         int option = 0;
@@ -533,12 +542,12 @@ public class AdminService implements EnrollmentService {
                 System.out.print(Message.BEGIN_PERIOD_INPUT);
                 int regPeriodNum = Integer.parseInt(scanner.nextLine());
 
-                if(regPeriodNum-1 > regPeriods.length){
+                if (regPeriodNum - 1 > regPeriods.length) {
                     System.out.println(Message.WRONG_INPUT_NOTICE);
                     break;
                 }
 
-                ps.reqDeleteRegPeriod(regPeriods[regPeriodNum-1]);
+                ps.reqDeleteRegPeriod(regPeriods[regPeriodNum - 1]);
                 Protocol receiveProtocol = ps.response();
                 int result = receiveProtocol.getCode();
                 if (result == Protocol.T2_CODE_SUCCESS) {
@@ -579,7 +588,7 @@ public class AdminService implements EnrollmentService {
         System.out.println("  수강학과 : " + lecture.getCourse().getDepartment());
         System.out.print("  강의시간(강의실) : "); // 반복문필요
         for (LectureTimeDTO lectureTime : lecture.getLectureTimes()) {
-            System.out.print(lectureTime.getLectureDay() + " " + lectureTime.getStartTime() + "~" + lectureTime.getEndTime() + "  강의실 : " + lectureTime.getRoom()  + "/");
+            System.out.print(lectureTime.getLectureDay() + " " + lectureTime.getStartTime() + "~" + lectureTime.getEndTime() + "  강의실 : " + lectureTime.getRoom() + "/");
         }
         System.out.println("  제한인원 : " + lecture.getLimit());
         System.out.println("  수강인원 : " + lecture.getApplicant());
@@ -670,9 +679,9 @@ public class AdminService implements EnrollmentService {
                 ProfessorDTO[] profArr = (ProfessorDTO[]) receiveProtocol.getObjectArray();
                 printProfessorList(profArr);
                 break;
-            } else if(menu == 4){ //나가기
+            } else if (menu == 4) { //나가기
                 break;
-            } else{
+            } else {
                 System.out.println(Message.WRONG_INPUT_NOTICE);
             }
         }
@@ -724,9 +733,9 @@ public class AdminService implements EnrollmentService {
                 StudentDTO[] stdArr = (StudentDTO[]) receiveProtocol.getObjectArray();
                 printStudentList(stdArr);
                 break;
-            } else if(menu == 4){ //나가기
+            } else if (menu == 4) { //나가기
                 break;
-            } else{
+            } else {
                 System.out.println(Message.WRONG_INPUT_NOTICE);
             }
         }
@@ -735,7 +744,7 @@ public class AdminService implements EnrollmentService {
     private void printProfessorList(ProfessorDTO[] profArr) {
         System.out.printf("%1s %14s %8s %5s %4s %2s \n", "번호", "이름", "생년월일", "학과", "교번", "전화번호");
         int num = 0;
-        for(ProfessorDTO prof : profArr){
+        for (ProfessorDTO prof : profArr) {
             num++;
             System.out.printf(
                     "%3s %17s %10s %10s %5s %4s\n",
@@ -748,7 +757,7 @@ public class AdminService implements EnrollmentService {
     private void printStudentList(StudentDTO[] stdArr) {
         System.out.printf("%1s %14s %8s %9s %4s %1s %1s\n", "번호", "이름", "생년월일", "학과", "학번", "학년", "수강학점");
         int num = 0;
-        for(StudentDTO std : stdArr){
+        for (StudentDTO std : stdArr) {
             num++;
             System.out.printf(
                     "%3s %17s %10s %10s %5s %2s %3s\n",
