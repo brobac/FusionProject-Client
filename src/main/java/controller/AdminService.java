@@ -314,8 +314,19 @@ public class AdminService implements EnrollmentService {
                 String lectureCode = scanner.nextLine();
                 System.out.print("제한인원 : ");
                 int limit = Integer.parseInt(scanner.nextLine());
-                System.out.print("담당교수코드 : ");
-                String lecturerCode = scanner.nextLine();
+                ps.reqReadAllProfessor();
+                Protocol response = ps.response();
+                ProfessorDTO[] professorDTOS = (ProfessorDTO[]) response.getObjectArray();
+                for (int i = 0; i < professorDTOS.length; i++) {
+                    ProfessorDTO professor = professorDTOS[i];
+                    System.out.printf("[ %d ]", i + 1);
+                    System.out.print("  학과 : " + professor.getDepartment());
+                    System.out.print("  이름 : " + professor.getName());
+                    System.out.print("  교수코드 : " + professor.getProfessorCode());
+                    System.out.println("  전화번호 : " + professor.getTelePhone());
+                }
+                System.out.print(Message.PROF_CODE_INPUT);
+                int profNum = Integer.parseInt(scanner.nextLine());
                 Set<LectureTimeDTO> lectureTimeDTOSet = new HashSet<>();
                 int option = 0;
                 while (option != 2) {
@@ -346,7 +357,7 @@ public class AdminService implements EnrollmentService {
                         .limit(limit)
                         .lectureTimes(lectureTimeDTOSet)
                         .planner(new LecturePlannerDTO())
-                        .professor(ProfessorDTO.builder().professorCode(lecturerCode).build())
+                        .professor(professorDTOS[profNum - 1])
                         .build();
 
                 ps.reqCreateLecture(lectureDTO);
