@@ -333,8 +333,7 @@ public class AdminService implements EnrollmentService {
                     break;
                 }
 
-                System.out.println(Message.CREATE_LECTURE_INPUT);
-                System.out.print(Message.INPUT);
+                System.out.print(Message.CREATE_LECTURE_INPUT);
                 int courseNum = Integer.parseInt(scanner.nextLine());
                 CourseDTO course = courseDTOS[courseNum - 1];
                 System.out.print("LectureCode : ");
@@ -368,7 +367,7 @@ public class AdminService implements EnrollmentService {
                 int option = 0;
                 while (option != 2) {
                     System.out.println("----- 강의시간 입력 -----");
-                    System.out.print("요일 : ");
+                    System.out.print("요일( MON,THU, WED, THU, FRI ) : ");
                     String day = scanner.nextLine();
                     System.out.print("시작 교시 : ");
                     int startTime = Integer.parseInt(scanner.nextLine());
