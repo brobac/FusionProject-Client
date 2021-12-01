@@ -65,27 +65,29 @@ public class StudentService implements EnrollmentService {
     }
 
     private void personalInformation() throws Exception {
-        StudentDTO studentDTO = StudentDTO.builder().id(account.getMemberID()).build();
-        ps.requestReadPersonalInfo(studentDTO);  // 개인정보 조회 요청
-
-        Protocol receiveProtocol = ps.response();   // 개인정보 조회 요청에 대한 응답
-        if (receiveProtocol != null) {   // 조회 성공
-            studentDTO = (StudentDTO) receiveProtocol.getObject();
-            System.out.println("이름              | " + studentDTO.getName());
-            System.out.println("학과              | " + studentDTO.getDepartment());
-            System.out.println("생년월일          | " + studentDTO.getBirthDate());
-            System.out.println("최대수강 가능학점 | " + studentDTO.getMaxCredit());
-            System.out.println("현재 수강 학점    | " + studentDTO.getCredit());
-            System.out.println("학년              | " + studentDTO.getYear());
-            System.out.println("학번              | " + studentDTO.getStudentCode());
-        } else {                                    // 조회 실패
-            System.out.println(Message.LOOKUP_PERSONAL_INFORMATION_FAIL);
-            return;
-        }
 
         // 변경 기능
         int menu = 0;
         while (true) {
+            StudentDTO studentDTO = StudentDTO.builder().id(account.getMemberID()).build();
+            ps.requestReadPersonalInfo(studentDTO);  // 개인정보 조회 요청
+
+            Protocol receiveProtocol = ps.response();   // 개인정보 조회 요청에 대한 응답
+            if (receiveProtocol != null) {   // 조회 성공
+                System.out.println("**********개인정보**********");
+                studentDTO = (StudentDTO) receiveProtocol.getObject();
+                System.out.println("이름 : " + studentDTO.getName());
+                System.out.println("학과 : " + studentDTO.getDepartment());
+                System.out.println("생년월일 : " + studentDTO.getBirthDate());
+                System.out.println("최대수강 가능학점 : " + studentDTO.getMaxCredit());
+                System.out.println("현재 수강 학점 : " + studentDTO.getCredit());
+                System.out.println("학년 : " + studentDTO.getYear());
+                System.out.println("학번 : " + studentDTO.getStudentCode());
+                System.out.println("***************************");
+            } else {                                    // 조회 실패
+                System.out.println(Message.LOOKUP_PERSONAL_INFORMATION_FAIL);
+                return;
+            }
             System.out.println(Message.UPDATE_STUDENT_INFORMATION_MENU);
             menu = Integer.parseInt(scanner.nextLine());
 
@@ -138,10 +140,10 @@ public class StudentService implements EnrollmentService {
         ps.requestRegisteringReriod();
         receiveProtocol = ps.response();
         RegisteringPeriodDTO[] registeringPeriodDTOS = (RegisteringPeriodDTO[]) receiveProtocol.getObjectArray();
-            for (RegisteringPeriodDTO registeringPeriodDTO : registeringPeriodDTOS) {
-                if (registeringPeriodDTO.getAllowedYear() == studentDTO.getYear() && registeringPeriodDTO.getPeriodDTO().getBeginTime().isBefore(LocalDateTime.now()) && registeringPeriodDTO.getPeriodDTO().getEndTime().isAfter(LocalDateTime.now())) {
-                    isRegisteringPeriod = true;
-                }
+        for (RegisteringPeriodDTO registeringPeriodDTO : registeringPeriodDTOS) {
+            if (registeringPeriodDTO.getAllowedYear() == studentDTO.getYear() && registeringPeriodDTO.getPeriodDTO().getBeginTime().isBefore(LocalDateTime.now()) && registeringPeriodDTO.getPeriodDTO().getEndTime().isAfter(LocalDateTime.now())) {
+                isRegisteringPeriod = true;
+            }
         }
 
         //수강신청기간 아닐경우 진행 불가

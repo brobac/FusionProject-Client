@@ -22,13 +22,7 @@ public class AdminProtocolService {
     public Protocol response() throws Exception {
         Protocol pt = new Protocol();
         pt.read(is);
-
-        if (pt.getType() == Protocol.TYPE_RESPONSE) {
-            if (pt.getCode() == Protocol.T2_CODE_SUCCESS) {  // 조회 성공
-                return pt;
-            }
-        }
-        return null;  // 조회 실패
+        return pt;
     }
 
     // 관리자 계정 생성 요청
@@ -80,7 +74,7 @@ public class AdminProtocolService {
         pt.setObjectArray(options);
         pt.send(os);
     }
-    
+
 
     // 교과목 생성 요청
     public void reqCreateCourse(CourseDTO courseDTO) throws IllegalAccessException, IOException {

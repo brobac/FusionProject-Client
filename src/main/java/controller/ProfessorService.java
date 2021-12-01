@@ -63,25 +63,27 @@ public class ProfessorService implements EnrollmentService {
     }
 
     private void personalInformation() throws Exception {
-        ProfessorDTO professorDTO = ProfessorDTO.builder().id(account.getMemberID()).build();
-        ps.requestReadPersonalInfo(professorDTO);  // 개인정보 조회 요청
-
-        Protocol receiveProtocol = ps.response();   // 개인정보 조회 요청에 대한 응답
-        if (receiveProtocol != null) {   // 조회 성공
-            professorDTO = (ProfessorDTO) receiveProtocol.getObject();
-            System.out.println("이름 : " + professorDTO.getName());
-            System.out.println("학과 : " + professorDTO.getDepartment());
-            System.out.println("생년월일 : " + professorDTO.getBirthDate());
-            System.out.println("전화번호 : " + professorDTO.getTelePhone());
-            System.out.println("교원번호 : " + professorDTO.getProfessorCode());
-        } else {                                    // 조회 실패
-            System.out.println(Message.LOOKUP_PERSONAL_INFORMATION_FAIL);
-            return;
-        }
-
         // 변경 기능
         int menu = 0;
         while (true) {
+            ProfessorDTO professorDTO = ProfessorDTO.builder().id(account.getMemberID()).build();
+            ps.requestReadPersonalInfo(professorDTO);  // 개인정보 조회 요청
+
+            Protocol receiveProtocol = ps.response();   // 개인정보 조회 요청에 대한 응답
+            if (receiveProtocol != null) {   // 조회 성공
+                professorDTO = (ProfessorDTO) receiveProtocol.getObject();
+                System.out.println("**********개인정보**********");
+                System.out.println("이름 : " + professorDTO.getName());
+                System.out.println("학과 : " + professorDTO.getDepartment());
+                System.out.println("생년월일 : " + professorDTO.getBirthDate());
+                System.out.println("전화번호 : " + professorDTO.getTelePhone());
+                System.out.println("교원번호 : " + professorDTO.getProfessorCode());
+                System.out.println("***************************");
+            } else {                                    // 조회 실패
+                System.out.println(Message.LOOKUP_PERSONAL_INFORMATION_FAIL);
+                return;
+            }
+
             System.out.println(Message.UPDATE_PROFESSOR_INFORMATION_MENU);
             menu = Integer.parseInt(scanner.nextLine());
 
@@ -340,9 +342,14 @@ public class ProfessorService implements EnrollmentService {
         Protocol receiveProtocol = ps.response();   // 개인정보 조회 요청에 대한 응답
         StudentDTO[] studentDTOS = (StudentDTO[]) receiveProtocol.getObjectArray();
 
-        //TODO : 출력 이쁘게
         for (StudentDTO std : studentDTOS) {
-            System.out.println("std = " + std);
+            System.out.print("학과 : " + std.getDepartment());
+            System.out.print("학년 : " + std.getYear());
+            System.out.print("이름 : " + std.getName());
+            System.out.print("학번 : " + std.getStudentCode());
+            System.out.print("생년월일 : " + std.getBirthDate());
+            System.out.print("최대수강 가능학점 : " + std.getMaxCredit());
+            System.out.print("현재 수강 학점 : " + std.getCredit());
         }
     }
 
@@ -363,31 +370,33 @@ public class ProfessorService implements EnrollmentService {
         professorDTO = (ProfessorDTO) receiveProtocol.getObject();
 
         LectureTimeDTO[] lectureTimeDTOS = professorDTO.getTimeTable();
-        String[][] timeTable = new String[NUM_OF_PERIOD][NUM_OF_DAY];
+        LectureTimeDTO[][] timeTable = new LectureTimeDTO[NUM_OF_PERIOD][NUM_OF_DAY];
         String[] days = {"MON", "TUE", "WED", "THU", "FRI"};
 
-        for (LectureTimeDTO dto : lectureTimeDTOS) {
-            int day = -1;
-            switch (dto.getLectureDay()) {
-                case "MON":
-                    day = MON;
-                    break;
-                case "TUE":
-                    day = TUE;
-                    break;
-                case "WED":
-                    day = WED;
-                    break;
-                case "THU":
-                    day = THU;
-                    break;
-                case "FRI":
-                    day = FRI;
-                    break;
-            }
+        if (lectureTimeDTOS != null) {
+            for (LectureTimeDTO dto : lectureTimeDTOS) {
+                int day = -1;
+                switch (dto.getLectureDay()) {
+                    case "MON":
+                        day = MON;
+                        break;
+                    case "TUE":
+                        day = TUE;
+                        break;
+                    case "WED":
+                        day = WED;
+                        break;
+                    case "THU":
+                        day = THU;
+                        break;
+                    case "FRI":
+                        day = FRI;
+                        break;
+                }
 
-            for (int i = dto.getStartTime(); i <= dto.getEndTime(); i++) {
-                timeTable[i - 1][day] = dto.getLectureName();
+                for (int i = dto.getStartTime(); i <= dto.getEndTime(); i++) {
+                    timeTable[i - 1][day] = dto;
+                }
             }
         }
 
@@ -411,9 +420,9 @@ public class ProfessorService implements EnrollmentService {
                     System.out.printf("%10s%10s", "", " |");
                 } else {
                     System.out.printf(
-                            "%" + (10 - timeTable[i][j].length() / 2) + "s%"
-                                    + (10 - timeTable[i][j].length() / 2) + "s",
-                            timeTable[i][j], " |");
+                            "%" + (10 - timeTable[i][j].getLectureName().length() / 2) + "s%"
+                                    + (10 - timeTable[i][j].getLectureName().length() / 2) + "s |",
+                            timeTable[i][j].getLectureName(), timeTable[i][j].getRoom());
                 }
 
             }
