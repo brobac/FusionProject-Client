@@ -189,15 +189,24 @@ public class AdminService implements EnrollmentService {
             } else if (menu == 2) {
                 ps.reqReadAllCourse();
                 Protocol receiveProtocol = ps.response();
-                CourseDTO[] courseDTOS = (CourseDTO[]) receiveProtocol.getObjectArray();
-                for (int i = 0; i < courseDTOS.length; i++) {
-                    System.out.printf("[ %d ]", i + 1);
-                    System.out.print("  과목명 : " + courseDTOS[i].getCourseName());
-                    System.out.print("  과목코드 : " + courseDTOS[i].getCourseCode());
-                    System.out.print("  학과 : " + courseDTOS[i].getDepartment());
-                    System.out.print("  대상학년 : " + courseDTOS[i].getTargetYear());
-                    System.out.println("  학점 : " + courseDTOS[i].getCredit());
+                CourseDTO[] courseDTOS = null;
+
+                if(receiveProtocol.getCode()==Protocol.T2_CODE_SUCCESS){
+                    courseDTOS = (CourseDTO[]) receiveProtocol.getObjectArray();
+                    for (int i = 0; i < courseDTOS.length; i++) {
+                        System.out.printf("[ %d ]", i + 1);
+                        System.out.print("  과목명 : " + courseDTOS[i].getCourseName());
+                        System.out.print("  과목코드 : " + courseDTOS[i].getCourseCode());
+                        System.out.print("  학과 : " + courseDTOS[i].getDepartment());
+                        System.out.print("  대상학년 : " + courseDTOS[i].getTargetYear());
+                        System.out.println("  학점 : " + courseDTOS[i].getCredit());
+                    }
+                }else {
+                    MessageDTO failMsg = (MessageDTO) receiveProtocol.getObject();
+                    System.out.println(failMsg);
+                    break;
                 }
+
                 System.out.print(Message.UPDATE_COURSE_INPUT);
                 int courseNum = Integer.parseInt(scanner.nextLine());
                 CourseDTO courseDTO = courseDTOS[courseNum - 1];
@@ -258,15 +267,24 @@ public class AdminService implements EnrollmentService {
             } else if (menu == 3) {
                 ps.reqReadAllCourse();
                 Protocol receiveProtocol = ps.response();
-                CourseDTO[] courseDTOS = (CourseDTO[]) receiveProtocol.getObjectArray();
-                for (int i = 0; i < courseDTOS.length; i++) {
-                    System.out.printf("[ %d ]", i + 1);
-                    System.out.print("  과목명 : " + courseDTOS[i].getCourseName());
-                    System.out.print("  과목코드 : " + courseDTOS[i].getCourseCode());
-                    System.out.print("  학과 : " + courseDTOS[i].getDepartment());
-                    System.out.print("  대상학년 : " + courseDTOS[i].getTargetYear());
-                    System.out.println("  학점 : " + courseDTOS[i].getCredit());
+                CourseDTO[] courseDTOS = null;
+
+                if(receiveProtocol.getCode()==Protocol.T2_CODE_SUCCESS){
+                    courseDTOS = (CourseDTO[]) receiveProtocol.getObjectArray();
+                    for (int i = 0; i < courseDTOS.length; i++) {
+                        System.out.printf("[ %d ]", i + 1);
+                        System.out.print("  과목명 : " + courseDTOS[i].getCourseName());
+                        System.out.print("  과목코드 : " + courseDTOS[i].getCourseCode());
+                        System.out.print("  학과 : " + courseDTOS[i].getDepartment());
+                        System.out.print("  대상학년 : " + courseDTOS[i].getTargetYear());
+                        System.out.println("  학점 : " + courseDTOS[i].getCredit());
+                    }
+                }else{
+                    MessageDTO failMsg = (MessageDTO) receiveProtocol.getObject();
+                    System.out.println(failMsg);
+                    break;
                 }
+
                 System.out.print(Message.DELETE_COURSE_INPUT);
                 int courseNum = Integer.parseInt(scanner.nextLine());
                 CourseDTO courseDTO = courseDTOS[courseNum - 1];
@@ -297,15 +315,24 @@ public class AdminService implements EnrollmentService {
             if (menu == 1) {
                 ps.reqReadAllCourse();
                 Protocol receiveProtocol = ps.response();
-                CourseDTO[] courseDTOS = (CourseDTO[]) receiveProtocol.getObjectArray();
-                for (int i = 0; i < courseDTOS.length; i++) {
-                    System.out.printf("[ %d ]", i + 1);
-                    System.out.print("  과목명 : " + courseDTOS[i].getCourseName());
-                    System.out.print("  과목코드 : " + courseDTOS[i].getCourseCode());
-                    System.out.print("  학과 : " + courseDTOS[i].getDepartment());
-                    System.out.print("  대상학년 : " + courseDTOS[i].getTargetYear());
-                    System.out.println("  학점 : " + courseDTOS[i].getCredit());
+                CourseDTO[] courseDTOS = null;
+                if(receiveProtocol.getCode()==Protocol.T2_CODE_SUCCESS){
+                    courseDTOS = (CourseDTO[]) receiveProtocol.getObjectArray();
+                    for (int i = 0; i < courseDTOS.length; i++) {
+                        System.out.printf("[ %d ]", i + 1);
+                        System.out.print("  과목명 : " + courseDTOS[i].getCourseName());
+                        System.out.print("  과목코드 : " + courseDTOS[i].getCourseCode());
+                        System.out.print("  학과 : " + courseDTOS[i].getDepartment());
+                        System.out.print("  대상학년 : " + courseDTOS[i].getTargetYear());
+                        System.out.println("  학점 : " + courseDTOS[i].getCredit());
+                    }
+                }else{
+                    MessageDTO failMsg = (MessageDTO) receiveProtocol.getObject();
+                    System.out.print("[교과목] : ");
+                    System.out.println(failMsg);
+                    break;
                 }
+
                 System.out.println(Message.CREATE_LECTURE_INPUT);
                 System.out.print(Message.INPUT);
                 int courseNum = Integer.parseInt(scanner.nextLine());
@@ -314,17 +341,27 @@ public class AdminService implements EnrollmentService {
                 String lectureCode = scanner.nextLine();
                 System.out.print("제한인원 : ");
                 int limit = Integer.parseInt(scanner.nextLine());
+
                 ps.reqReadAllProfessor();
                 Protocol response = ps.response();
-                ProfessorDTO[] professorDTOS = (ProfessorDTO[]) response.getObjectArray();
-                for (int i = 0; i < professorDTOS.length; i++) {
-                    ProfessorDTO professor = professorDTOS[i];
-                    System.out.printf("[ %d ]", i + 1);
-                    System.out.print("  학과 : " + professor.getDepartment());
-                    System.out.print("  이름 : " + professor.getName());
-                    System.out.print("  교수코드 : " + professor.getProfessorCode());
-                    System.out.println("  전화번호 : " + professor.getTelePhone());
+                ProfessorDTO[] professorDTOS = null;
+                if(receiveProtocol.getCode()==Protocol.T2_CODE_SUCCESS){
+                    professorDTOS = (ProfessorDTO[]) response.getObjectArray();
+                    for (int i = 0; i < professorDTOS.length; i++) {
+                        ProfessorDTO professor = professorDTOS[i];
+                        System.out.printf("[ %d ]", i + 1);
+                        System.out.print("  학과 : " + professor.getDepartment());
+                        System.out.print("  이름 : " + professor.getName());
+                        System.out.print("  교수코드 : " + professor.getProfessorCode());
+                        System.out.println("  전화번호 : " + professor.getTelePhone());
+                    }
+                }else{
+                    MessageDTO failMsg = (MessageDTO) receiveProtocol.getObject();
+                    System.out.print("[교수] : ");
+                    System.out.println(failMsg);
+                    break;
                 }
+
                 System.out.print(Message.PROF_CODE_INPUT);
                 int profNum = Integer.parseInt(scanner.nextLine());
                 Set<LectureTimeDTO> lectureTimeDTOSet = new HashSet<>();
@@ -372,8 +409,18 @@ public class AdminService implements EnrollmentService {
             } else if (menu == 2) {
                 ps.reqAllLectureList();
                 Protocol response = ps.response();
-                LectureDTO[] lectureList = (LectureDTO[]) response.getObjectArray();
-                printLectureList(lectureList);
+                LectureDTO[] lectureList = null;
+                if(response.getCode()==Protocol.T2_CODE_SUCCESS){
+                    lectureList = (LectureDTO[]) response.getObjectArray();
+                    printLectureList(lectureList);
+                }else{
+                    MessageDTO failMsg = (MessageDTO) response.getObject();
+                    System.out.print("[개설교과목] : ");
+                    System.out.println(failMsg);
+                    break;
+                }
+
+
                 System.out.print(Message.UPDATE_LECTURE_INPUT);
                 int lectureNum = Integer.parseInt(scanner.nextLine());
                 LectureDTO updateLecture = lectureList[lectureNum - 1];
@@ -448,8 +495,17 @@ public class AdminService implements EnrollmentService {
             } else if (menu == 3) {
                 ps.reqAllLectureList();
                 Protocol response = ps.response();
-                LectureDTO[] lectureList = (LectureDTO[]) response.getObjectArray();
-                printLectureList(lectureList);
+                LectureDTO[] lectureList = null;
+                if(response.getCode()==Protocol.T2_CODE_SUCCESS){
+                    lectureList = (LectureDTO[]) response.getObjectArray();
+                    printLectureList(lectureList);
+                }else{
+                    MessageDTO failMsg = (MessageDTO) response.getObject();
+                    System.out.print("[개설교과목] : ");
+                    System.out.println(failMsg);
+                    break;
+                }
+
                 System.out.print(Message.DELETE_LECTURE_INPUT);
                 int lectureNum = Integer.parseInt(scanner.nextLine());
 
@@ -507,7 +563,9 @@ public class AdminService implements EnrollmentService {
                     System.out.println("시작 : " + periodDTO.getBeginTime() + " ~ ");
                     System.out.println("종료 : " + periodDTO.getEndTime());
                 } else {
-                    System.out.println("조회 실패");
+                    MessageDTO failMsg = (MessageDTO) receiveProtocol.getObject();
+                    System.out.print("[강의계획서 입력기간] : ");
+                    System.out.println(failMsg);
                     return;
                 }
             } else if (menu == 3) {
@@ -554,6 +612,10 @@ public class AdminService implements EnrollmentService {
                 }
             } else if (menu == 3) {//삭제
                 RegisteringPeriodDTO[] regPeriods = readRegisteringPeriods();
+                if(regPeriods==null){
+                    break;
+                }
+
                 System.out.print(Message.BEGIN_PERIOD_INPUT);
                 int regPeriodNum = Integer.parseInt(scanner.nextLine());
 
@@ -582,15 +644,23 @@ public class AdminService implements EnrollmentService {
     private RegisteringPeriodDTO[] readRegisteringPeriods() throws Exception {
         ps.reqReadRegisteringPeriod();
         Protocol receiveProtocol = ps.response();
-        RegisteringPeriodDTO[] registeringPeriodDTOs = (RegisteringPeriodDTO[]) receiveProtocol.getObjectArray();
-        if (registeringPeriodDTOs != null) {
-            for (int i = 0; i < registeringPeriodDTOs.length; i++) {
-                System.out.printf("[ %d ]", i + 1);
-                System.out.print("학년 : " + registeringPeriodDTOs[i].getAllowedYear());
-                System.out.print("시작일 : " + registeringPeriodDTOs[i].getPeriodDTO().getBeginTime().toString());
-                System.out.print("종료일 : " + registeringPeriodDTOs[i].getPeriodDTO().getEndTime().toString());
-                System.out.println();
+        RegisteringPeriodDTO[] registeringPeriodDTOs = null;
+        if(receiveProtocol.getCode()==Protocol.T2_CODE_SUCCESS){
+            registeringPeriodDTOs = (RegisteringPeriodDTO[]) receiveProtocol.getObjectArray();
+            if (registeringPeriodDTOs != null) {
+                for (int i = 0; i < registeringPeriodDTOs.length; i++) {
+                    System.out.printf("[ %d ]", i + 1);
+                    System.out.print("학년 : " + registeringPeriodDTOs[i].getAllowedYear());
+                    System.out.print("시작일 : " + registeringPeriodDTOs[i].getPeriodDTO().getBeginTime().toString());
+                    System.out.print("종료일 : " + registeringPeriodDTOs[i].getPeriodDTO().getEndTime().toString());
+                    System.out.println();
+                }
             }
+        }else{
+            MessageDTO failMsg = (MessageDTO)receiveProtocol.getObject();
+            System.out.print("[수강신청기간] : ");
+            System.out.println(failMsg);
+            return null;
         }
         return registeringPeriodDTOs;
     }
@@ -791,8 +861,16 @@ public class AdminService implements EnrollmentService {
             if (menu == 1) {
                 ps.reqAllLectureList();  // 개설 교과목 (전체) 목록 요청
                 Protocol receiveProtocol = ps.response();
-                LectureDTO[] lectureList = (LectureDTO[]) receiveProtocol.getObjectArray();
-                printLectureList(lectureList);
+                LectureDTO[] lectureList = null;
+                if(receiveProtocol.getCode()==Protocol.T2_CODE_SUCCESS){
+                    lectureList = (LectureDTO[]) receiveProtocol.getObjectArray();
+                    printLectureList(lectureList);
+                }else{
+                    MessageDTO failMsg = (MessageDTO) receiveProtocol.getObject();
+                    System.out.print("[개설교과목] : ");
+                    System.out.println(failMsg);
+                    break;
+                }
 
                 int innerMenu = 0;
                 while (innerMenu != 2) {

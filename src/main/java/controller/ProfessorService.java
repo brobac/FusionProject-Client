@@ -162,8 +162,16 @@ public class ProfessorService implements EnrollmentService {
             if (menu == 1) {
                 ps.requestAllLectureList();  // 개설 교과목 (전체) 목록 요청
                 Protocol receiveProtocol = ps.response();
-                LectureDTO[] lectureList = (LectureDTO[]) receiveProtocol.getObjectArray();
-                printLectureList(lectureList);
+                LectureDTO[] lectureList = null;
+                if(receiveProtocol.getCode()==Protocol.T2_CODE_SUCCESS){
+                    lectureList = (LectureDTO[]) receiveProtocol.getObjectArray();
+                    printLectureList(lectureList);
+                }else{
+                    MessageDTO failMsg = (MessageDTO) receiveProtocol.getObject();
+                    System.out.print("[개설교과목] : ");
+                    System.out.println(failMsg);
+                    break;
+                }
 
                 int innerMenu = 0;
                 while (innerMenu != 2) {
@@ -372,6 +380,7 @@ public class ProfessorService implements EnrollmentService {
         LectureTimeDTO[] lectureTimeDTOS = professorDTO.getTimeTable();
         LectureTimeDTO[][] timeTable = new LectureTimeDTO[NUM_OF_PERIOD][NUM_OF_DAY];
         String[] days = {"MON", "TUE", "WED", "THU", "FRI"};
+
 
         if (lectureTimeDTOS != null) {
             for (LectureTimeDTO dto : lectureTimeDTOS) {

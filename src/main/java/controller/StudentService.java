@@ -139,11 +139,17 @@ public class StudentService implements EnrollmentService {
         //수강신청기간 확인
         ps.requestRegisteringReriod();
         receiveProtocol = ps.response();
-        RegisteringPeriodDTO[] registeringPeriodDTOS = (RegisteringPeriodDTO[]) receiveProtocol.getObjectArray();
-        for (RegisteringPeriodDTO registeringPeriodDTO : registeringPeriodDTOS) {
-            if (registeringPeriodDTO.getAllowedYear() == studentDTO.getYear() && registeringPeriodDTO.getPeriodDTO().getBeginTime().isBefore(LocalDateTime.now()) && registeringPeriodDTO.getPeriodDTO().getEndTime().isAfter(LocalDateTime.now())) {
-                isRegisteringPeriod = true;
+        RegisteringPeriodDTO[] registeringPeriodDTOs = null;
+        if(receiveProtocol.getCode()==Protocol.T2_CODE_SUCCESS){
+            RegisteringPeriodDTO[] registeringPeriodDTOS = (RegisteringPeriodDTO[]) receiveProtocol.getObjectArray();
+            for (RegisteringPeriodDTO registeringPeriodDTO : registeringPeriodDTOS) {
+                if (registeringPeriodDTO.getAllowedYear() == studentDTO.getYear() && registeringPeriodDTO.getPeriodDTO().getBeginTime().isBefore(LocalDateTime.now()) && registeringPeriodDTO.getPeriodDTO().getEndTime().isAfter(LocalDateTime.now())) {
+                    isRegisteringPeriod = true;
+                }
             }
+        }else{
+            System.out.println(Message.NOT_REGISTERING_PERIOD);
+            return;
         }
 
         //수강신청기간 아닐경우 진행 불가
@@ -246,8 +252,15 @@ public class StudentService implements EnrollmentService {
             if (menu == 1) {
                 ps.requestAllLectureList();  // 개설 교과목 (전체) 목록 요청
                 Protocol receiveProtocol = ps.response();
-                LectureDTO[] lectureList = (LectureDTO[]) receiveProtocol.getObjectArray();
-                printLectureList(lectureList);
+                LectureDTO[] lectureList = null;
+                if(receiveProtocol.getCode()==Protocol.T2_CODE_SUCCESS){
+                    lectureList = (LectureDTO[]) receiveProtocol.getObjectArray();
+                    printLectureList(lectureList);
+                }else{
+                    MessageDTO failMsg = (MessageDTO) receiveProtocol.getObject();
+                    System.out.print("[개설교과목] : ");
+                    System.out.println(failMsg);
+                }
 
                 int innerMenu = 0;
                 while (innerMenu != 2) {
@@ -343,6 +356,13 @@ public class StudentService implements EnrollmentService {
         LectureTimeDTO[] lectureTimeDTOS = studentDTO.getTimeTable();
         String[][] timeTable = new String[NUM_OF_PERIOD][NUM_OF_DAY];
         String[] days = {"MON", "TUE", "WED", "THU", "FRI"};
+
+
+        if(lectureTimeDTOS==null){
+            System.out.println("등록된 강의가 없습니다.");
+            return;
+        }
+
         for (LectureTimeDTO dto : lectureTimeDTOS) {
             int day = -1;
             switch (dto.getLectureDay()) {

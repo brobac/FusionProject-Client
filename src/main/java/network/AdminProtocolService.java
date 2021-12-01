@@ -22,6 +22,7 @@ public class AdminProtocolService {
     public Protocol response() throws Exception {
         Protocol pt = new Protocol();
         pt.read(is);
+
         return pt;
     }
 
