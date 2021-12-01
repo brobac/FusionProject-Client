@@ -32,7 +32,7 @@ public class Protocol {
     public static final int ENTITY_ADMIN = 9;
     // header : READ_OPTION
     public static final int READ_ALL = 1;   // 전체 조회 
-    public static final int READ_BY_ID = 2; // 개인정보 조회 시 id로 조회
+    public static final int READ_BY_ID = 2; // id로 조회
     public static final int READ_BY_OPTION = 3; // 옵션으로 조회
 
     // LENGTH
