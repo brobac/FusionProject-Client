@@ -260,6 +260,7 @@ public class StudentService implements EnrollmentService {
                     MessageDTO failMsg = (MessageDTO) receiveProtocol.getObject();
                     System.out.print("[개설교과목] : ");
                     System.out.println(failMsg);
+                    break;
                 }
 
                 int innerMenu = 0;

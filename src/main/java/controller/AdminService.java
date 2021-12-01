@@ -728,8 +728,15 @@ public class AdminService implements EnrollmentService {
             if (menu == 1) { //전체조회
                 ps.reqReadAllProfessor();
                 Protocol receiveProtocol = ps.response();
-                ProfessorDTO[] profArr = (ProfessorDTO[]) receiveProtocol.getObjectArray();
-                printProfessorList(profArr);
+                if(receiveProtocol.getCode()==Protocol.T2_CODE_SUCCESS){
+                    ProfessorDTO[] profArr = (ProfessorDTO[]) receiveProtocol.getObjectArray();
+                    printProfessorList(profArr);
+                }else{
+                    MessageDTO failMsg = (MessageDTO) receiveProtocol.getObject();
+                    System.out.print("[교수] : ");
+                    System.out.println(failMsg);
+                    break;
+                }
             } else if (menu == 2) { //조건조회
                 lookupProfessorByOption();
             } else if (menu == 3) {//나가기
@@ -782,8 +789,15 @@ public class AdminService implements EnrollmentService {
             if (menu == 1) { //전체조회
                 ps.reqReadAllStudent();
                 Protocol receiveProtocol = ps.response();
-                StudentDTO[] stdArr = (StudentDTO[]) receiveProtocol.getObjectArray();
-                printStudentList(stdArr);
+                if(receiveProtocol.getCode()== Protocol.T2_CODE_SUCCESS){
+                    StudentDTO[] stdArr = (StudentDTO[]) receiveProtocol.getObjectArray();
+                    printStudentList(stdArr);
+                }else{
+                    MessageDTO failMsg = (MessageDTO) receiveProtocol.getObject();
+                    System.out.print("[학생] : ");
+                    System.out.println(failMsg);
+                    break;
+                }
             } else if (menu == 2) { //조건조회
                 lookupStudentByOption();
             } else if (menu == 3) {//나가기
