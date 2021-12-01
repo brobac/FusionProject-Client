@@ -24,12 +24,8 @@ public class ProfProtocolService {
         Protocol pt = new Protocol();
         pt.read(is);
 
-        if (pt.getType() == Protocol.TYPE_RESPONSE) {
-            if (pt.getCode() == Protocol.T2_CODE_SUCCESS) {  // 조회 성공
-                return pt;
-            }
-        }
-        return null;  // 조회 실패
+
+        return pt;
     }
 
     // 개인 정보 조회 요청
