@@ -139,7 +139,7 @@ public class Message {
     public static final String UPDATE_PASSWORD_FAIL = "비밀번호 수정을 실패하였습니다.";
 
     //Controller.StudentService > registeringManage
-    public static final String REGISTERING_MENU = "[1]수강 신청  [2]수강 취소  [3]나가기";  //TODO 수강신청 현황 조회 꼭 있어야함?
+    public static final String REGISTERING_MENU = "[1]수강 신청  [2]수강 취소  [3]나가기";
     public static final String REGISTERING_SUCCESS = "수강신청을 성공하였습니다.";
     public static final String REGISTERING_FAIL = "수강신청을 실패하였습니다.";
     public static final String REGISTERING_CANCEL_SUCCESS = "수강신청 취소를 성공하였습니다.";

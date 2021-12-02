@@ -688,7 +688,7 @@ public class AdminService implements EnrollmentService {
                     break;
                 }
 
-                System.out.print(Message.BEGIN_PERIOD_INPUT);   //TODO : 시간기간을 왜 입력받음??
+                System.out.print(Message.BEGIN_PERIOD_INPUT);
                 int regPeriodNum = Integer.parseInt(scanner.nextLine());
 
                 if (regPeriodNum - 1 > regPeriods.length) {

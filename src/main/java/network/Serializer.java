@@ -113,7 +113,6 @@ public class Serializer {
             typeName = "array";
         }
 
-        //TODO : primitive 타입 추가필요
         switch(typeName){
             case "byte":
                 return new byte[]{f.getByte(obj)};

@@ -22,7 +22,6 @@ public class Deserializer {
 
         className = className.replace("[L","");
         Class clazz = Class.forName(className);
-//        Constructor constructor = clazz.getDeclaredConstructor(); //TODO : 각객체는 빈생성자 가져야함
         Object objectArr = Array.newInstance(clazz, count);
 
         int cursor = LEN_MAX_CLASSNAME+LEN_COUNT_FIELD;
@@ -48,7 +47,6 @@ public class Deserializer {
         return objectArr;
     }
 
-    //TODO : 예외처리필요
     public static Object bytesToObject(byte[] bytes) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         String className = new String(
                 bytes, 0, LEN_MAX_CLASSNAME
@@ -56,7 +54,7 @@ public class Deserializer {
 
 
         Class clazz = Class.forName(className);
-        Constructor constructor = clazz.getDeclaredConstructor(); //TODO : 각객체는 빈생성자 가져야함
+        Constructor constructor = clazz.getDeclaredConstructor();
 
         int cursor = LEN_MAX_CLASSNAME;
         Object obj = constructor.newInstance();
@@ -96,7 +94,6 @@ public class Deserializer {
             typeName = "array";
         }
 
-        //TODO : primitive 타입 추가필요
         switch(typeName){
             case "byte":
                 f.setByte(obj, bytes[cursor]);

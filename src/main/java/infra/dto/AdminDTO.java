@@ -56,16 +56,4 @@ public class AdminDTO extends MemberDTO {
         return adminCode;
     }
 
-    //TODO : 테스트용
-
-    @Override
-    public String toString() {
-        return "AdminDTO{" +
-                "adminCode='" + adminCode + '\'' +
-                ", id=" + id +
-                ", name='" + name + '\'' +
-                ", department='" + department + '\'' +
-                ", birthDate='" + birthDate + '\'' +
-                '}';
-    }
 }

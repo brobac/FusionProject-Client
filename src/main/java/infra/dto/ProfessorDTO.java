@@ -82,21 +82,5 @@ public class ProfessorDTO extends MemberDTO {
         return telePhone;
     }
 
-    //TODO : 테스트용
-
-
-
-    @Override
-    public String toString() {
-        return "ProfessorDTO{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", department='" + department + '\'' +
-                ", birthDate='" + birthDate + '\'' +
-                ", professorCode='" + professorCode + '\'' +
-                ", telePhone='" + telePhone + '\'' +
-                ", timeTable=" + Arrays.toString(timeTable) +
-                '}';
-    }
 }
 
