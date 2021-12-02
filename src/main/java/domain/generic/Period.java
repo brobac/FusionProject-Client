@@ -3,7 +3,6 @@ package domain.generic;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-//TODO : 강의 시간과 합칠수있나?
 public class Period {
     private LocalDateTime beginTime;
     private LocalDateTime endTime;
@@ -13,6 +12,7 @@ public class Period {
         setEndTime(endTime);
     }
 
+    //validation
     public boolean isInPeriod(LocalDateTime time) {
         return beginTime.isBefore(time) && endTime.isAfter(time);
     }

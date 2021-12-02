@@ -7,22 +7,20 @@ import java.nio.ByteBuffer;
 public class Protocol {
 
     public static final int UNDEFINED  = 0;
-    // TYPE
+    // header : TYPE
     public static final int TYPE_REQUEST = 1;
     public static final int TYPE_RESPONSE = 2;
-    // TYPE_REQUEST_CODE
+    // header : TYPE_REQUEST_CODE (타입_요청에 대한 code)
     public static final int T1_CODE_CREATE = 1;
     public static final int T1_CODE_READ = 2;
     public static final int T1_CODE_UPDATE = 3;
     public static final int T1_CODE_DELETE = 4;
     public static final int T1_CODE_LOGIN = 5;
     public static final int T1_CODE_LOGOUT = 6;
-    public static final int T1_CODE_EXIT = 7;
-    // TYPE_RESPONSE_CODE
+    // header : TYPE_RESPONSE_CODE (타입_응답에 대한 code)
     public static final int T2_CODE_SUCCESS = 1;
     public static final int T2_CODE_FAIL = 2;
-
-    // ENTITY
+    // header : ENTITY
     public static final int ENTITY_ACCOUNT = 1;
     public static final int ENTITY_COURSE = 2;
     public static final int ENTITY_LECTURE = 3;
@@ -32,12 +30,10 @@ public class Protocol {
     public static final int ENTITY_STUDENT = 7;
     public static final int ENTITY_PROFESSOR = 8;
     public static final int ENTITY_ADMIN = 9;
-    public static final int ENTITY_LECTURE_STUD_LIST = 10;
-
-    //READ_OPTION
-    public static final int READ_ALL = 1;
-    public static final int READ_BY_ID = 2;
-    public static final int READ_BY_OPTION = 3;
+    // header : READ_OPTION
+    public static final int READ_ALL = 1;   // 전체 조회 
+    public static final int READ_BY_ID = 2; // id로 조회
+    public static final int READ_BY_OPTION = 3; // 옵션으로 조회
 
     // LENGTH
     public static final int LEN_HEADER = 8;
@@ -154,7 +150,7 @@ public class Protocol {
         entity = packet[LEN_TYPE + LEN_CODE];
         readOption = packet[LEN_TYPE+LEN_CODE+LEN_ENTITY];
         byte[] temp = new byte[LEN_BODYLENGTH];
-        System.arraycopy(packet, LEN_TYPE + LEN_CODE + LEN_ENTITY+LEN_READ_OPTION,
+        System.arraycopy(packet, LEN_TYPE + LEN_CODE + LEN_ENTITY + LEN_READ_OPTION,
                 temp, 0, LEN_BODYLENGTH);
         setBodyLength(byteToInt(temp));
     }
@@ -193,9 +189,6 @@ public class Protocol {
 
     public Protocol read(InputStream is) throws Exception {
         byte[] header = new byte[Protocol.LEN_HEADER];
-        int totalReceived = 0;
-        int readSize;
-
         try {
             is.read(header);
             setHeader(header);
@@ -205,13 +198,6 @@ public class Protocol {
 
             byte[] buf = new byte[getBodyLength()];
             is.read(buf);
-//            while (totalReceived < getBodyLength()) {
-//                readSize = is.read(buf, totalReceived, getBodyLength() - totalReceived);
-//                totalReceived += readSize;
-//                if (readSize == -1) {
-//                    throw new Exception("통신 오류 > 연결 끊김");
-//                }
-//            }
             setBody(buf);
             return this;
         }
