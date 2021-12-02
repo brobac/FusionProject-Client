@@ -54,7 +54,7 @@ public class StudentService implements EnrollmentService {
                     logout();
                     return;
                 default:
-                    System.out.println(Message.WRONG_INPUT_NOTICE);
+                    System.out.println(Message.WRONG_INPUT_NOTICE);   //잘못된 입력 알림
             }
         }
     }
@@ -126,7 +126,7 @@ public class StudentService implements EnrollmentService {
             } else if (menu == 3) {   // 나가기
                 break;
             } else {
-                System.out.println(Message.WRONG_INPUT_NOTICE);
+                System.out.println(Message.WRONG_INPUT_NOTICE);   //잘못된 입력 알림
             }
         }
     }
@@ -153,6 +153,7 @@ public class StudentService implements EnrollmentService {
                 }
             }
         }else{
+            //수강신청 기간 아닐 시
             System.out.println(Message.NOT_REGISTERING_PERIOD);
             return;
         }
@@ -289,7 +290,7 @@ public class StudentService implements EnrollmentService {
                         
                     } else if (innerMenu == 2) {    // 나가기
                     } else {
-                        System.out.println(Message.WRONG_INPUT_NOTICE);
+                        System.out.println(Message.WRONG_INPUT_NOTICE);   //잘못된 입력 알림
                     }
                 }
 
@@ -337,18 +338,18 @@ public class StudentService implements EnrollmentService {
                                 System.out.println("강의 개요 : " + planner.getSummary());
                             } else if (innerMenu == 2) {    // 나가기
                             } else {
-                                System.out.println(Message.WRONG_INPUT_NOTICE);
+                                System.out.println(Message.WRONG_INPUT_NOTICE);   //잘못된 입력 알림
                             }
                         }
                     } else {
-                        System.out.println(Message.WRONG_INPUT_NOTICE);
+                        System.out.println(Message.WRONG_INPUT_NOTICE);   //잘못된 입력 알림
                     }
                 }
 
             } else if (menu == 3) { // 나가기
 
             } else {
-                System.out.println(Message.WRONG_INPUT_NOTICE);
+                System.out.println(Message.WRONG_INPUT_NOTICE);   //잘못된 입력 알림
             }
         }
     }
@@ -375,11 +376,13 @@ public class StudentService implements EnrollmentService {
         String[] days = {"MON", "TUE", "WED", "THU", "FRI"};
 
 
+        //등록된 강의 없을 경우
         if(lectureTimeDTOS==null){
             System.out.println("등록된 강의가 없습니다.");
             return;
         }
 
+        //시간표 채우기
         for (LectureTimeDTO dto : lectureTimeDTOS) {
             int day = -1;
             switch (dto.getLectureDay()) {
@@ -405,6 +408,7 @@ public class StudentService implements EnrollmentService {
             }
         }
 
+        //시간표 해더 채우기
         for (int i = 0; i < NUM_OF_DAY; i++) {
             if (i == 0) {
                 System.out.printf("%10s%10s", "", " |");
@@ -412,6 +416,7 @@ public class StudentService implements EnrollmentService {
             System.out.printf("%10s%10s", days[i], " |");
         }
 
+        //시간표 출력
         System.out.println();
         System.out.println("-------------------|-------------------|-------------------|-------------------|-------------------|-------------------|");
 

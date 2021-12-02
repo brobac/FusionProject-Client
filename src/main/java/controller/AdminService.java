@@ -66,7 +66,7 @@ public class AdminService implements EnrollmentService {
                     logout();           // 로그아웃
                     break;
                 default:
-                    System.out.println(Message.WRONG_INPUT_NOTICE);
+                    System.out.println(Message.WRONG_INPUT_NOTICE);  //잘못된 입력 알림
                     break;
             }
         }
@@ -83,19 +83,19 @@ public class AdminService implements EnrollmentService {
             if (menu == 1) {               // 학생 계정 생성
 
                 System.out.print(Message.STUDENT_CODE_INPUT);
-                String studentCode = scanner.nextLine();
+                String studentCode = scanner.nextLine(); //학번입력
 
                 System.out.print(Message.NAME_INPUT);
-                String name = scanner.nextLine();
+                String name = scanner.nextLine();  //이름입력
 
                 System.out.print(Message.STUDENT_YEAR_INPUT);
-                int year = Integer.parseInt(scanner.nextLine());
+                int year = Integer.parseInt(scanner.nextLine());  //학년입력
 
                 System.out.print(Message.DEPARTMENT_INPUT);
-                String department = scanner.nextLine();
+                String department = scanner.nextLine();  //학과입력
 
                 System.out.print(Message.BIRTHDAY_INPUT);
-                String birthday = scanner.nextLine();
+                String birthday = scanner.nextLine();  //생년월일입력
 
                 //관리자가 입력한 학생정보로 studentDTO 생성
                 StudentDTO studentDTO = StudentDTO.builder()
@@ -119,19 +119,19 @@ public class AdminService implements EnrollmentService {
             } else if (menu == 2) {             // 교수 계정 생성
                 
                 System.out.print(Message.PROFESSOR_CODE_INPUT);
-                String professorCode = scanner.nextLine();
+                String professorCode = scanner.nextLine();  //교원번호입력
 
                 System.out.print(Message.NAME_INPUT);
-                String name = scanner.nextLine();
+                String name = scanner.nextLine();  //이름입력
 
                 System.out.print(Message.DEPARTMENT_INPUT);
-                String department = scanner.nextLine();
+                String department = scanner.nextLine();  //학과입력
 
                 System.out.print(Message.BIRTHDAY_INPUT);
-                String birthday = scanner.nextLine();
+                String birthday = scanner.nextLine();  //생년월일 입력
 
                 System.out.print(Message.PHONE_NUMBER_INPUT);
-                String phoneNumber = scanner.nextLine();
+                String phoneNumber = scanner.nextLine();  //전화번호 입력
 
                 //관리자가 입력한 교수정보로 professorDTO 생성
                 ProfessorDTO professorDTO = ProfessorDTO.builder()
@@ -153,7 +153,7 @@ public class AdminService implements EnrollmentService {
                 }
             } else if (menu == 3) {   // 나가기
             } else {
-                System.out.println(Message.WRONG_INPUT_NOTICE);
+                System.out.println(Message.WRONG_INPUT_NOTICE); //잘못된 입력 알림
             }
         }
 
@@ -164,12 +164,11 @@ public class AdminService implements EnrollmentService {
         int menu = 0;
         while (menu != 4) {
             System.out.println(Message.COURSE_MANAGE_MENU);
+
             System.out.print(Message.INPUT);
-            menu = scanner.nextInt();// int 파싱 오류 처리 필요
-            scanner.nextLine();
+            menu = Integer.parseInt(scanner.nextLine());
 
             if (menu == 1) {            // 교과목 생성
-                
                 System.out.println(Message.CREATE_COURSE);
                 System.out.println(Message.COURSE_CODE_INPUT);
                 String courseCode = scanner.nextLine(); // 교과목 코드 입력
@@ -290,7 +289,7 @@ public class AdminService implements EnrollmentService {
                             }
                             break;
                         default:
-                            System.out.println(Message.WRONG_INPUT_NOTICE);
+                            System.out.println(Message.WRONG_INPUT_NOTICE);   //잘못된 입력 알림
                             break;
                     }
                 }
@@ -312,7 +311,7 @@ public class AdminService implements EnrollmentService {
                         System.out.print("  대상학년 : " + courseDTOS[i].getTargetYear());
                         System.out.println("  학점 : " + courseDTOS[i].getCredit());
                     }
-                }else{
+                }else{ //실패한 원인을 출력한다.
                     MessageDTO failMsg = (MessageDTO) receiveProtocol.getObject();
                     System.out.println(failMsg);
                     break;
@@ -335,7 +334,7 @@ public class AdminService implements EnrollmentService {
                 }
             } else if (menu == 4) { // 나가기
             } else {
-                System.out.println(Message.WRONG_INPUT_NOTICE);
+                System.out.println(Message.WRONG_INPUT_NOTICE);  //잘못된 입력 알림
             }
         }
 
@@ -415,13 +414,13 @@ public class AdminService implements EnrollmentService {
                     // 강의시간 및 강의실 정보 입력
                     System.out.println("----- 강의시간 입력 -----");
                     System.out.print("요일( MON,THU, WED, THU, FRI ) : ");
-                    String day = scanner.nextLine();
+                    String day = scanner.nextLine(); //강의 요일 입력
                     System.out.print("시작 교시 : ");
-                    int startTime = Integer.parseInt(scanner.nextLine());
+                    int startTime = Integer.parseInt(scanner.nextLine()); //강의 시작 교시 입력
                     System.out.print("끝 교시 : ");
-                    int endTime = Integer.parseInt(scanner.nextLine());
+                    int endTime = Integer.parseInt(scanner.nextLine());  //강의 끝 교시 입력
                     System.out.print("강의실 : ");
-                    String room = scanner.nextLine();
+                    String room = scanner.nextLine();  //강의실 입력
                     LectureTimeDTO lectureTime = LectureTimeDTO.builder()
                             .lectureDay(day)
                             .startTime(startTime)
@@ -460,7 +459,7 @@ public class AdminService implements EnrollmentService {
                 ps.reqAllLectureList();
                 Protocol response = ps.response();
                 LectureDTO[] lectureList = null;
-                if(response.getCode()==Protocol.T2_CODE_SUCCESS){
+                if(response.getCode()==Protocol.T2_CODE_SUCCESS){  //개설교과목 조회에 성공한 경우
                     lectureList = (LectureDTO[]) response.getObjectArray();
                     printLectureList(lectureList);
                 }else{
@@ -548,7 +547,7 @@ public class AdminService implements EnrollmentService {
                             System.out.println("개설 교과목 수정에 실패했습니다.");
                         }
                     } else {
-                        System.out.println(Message.WRONG_INPUT_NOTICE);
+                        System.out.println(Message.WRONG_INPUT_NOTICE);  //잘못된 입력 알림
                     }
                 }
 
@@ -637,7 +636,7 @@ public class AdminService implements EnrollmentService {
                 }
             } else if (menu == 3) {     // 나가기
             } else {
-                System.out.println(Message.WRONG_INPUT_NOTICE);
+                System.out.println(Message.WRONG_INPUT_NOTICE);  //잘못된 입력 알림
             }
         }
 
@@ -720,8 +719,8 @@ public class AdminService implements EnrollmentService {
         ps.reqReadRegisteringPeriod();
         Protocol receiveProtocol = ps.response();
         RegisteringPeriodDTO[] registeringPeriodDTOs = null;
-        
-        if(receiveProtocol.getCode()==Protocol.T2_CODE_SUCCESS){
+
+        if(receiveProtocol.getCode()==Protocol.T2_CODE_SUCCESS){  //조회 요청 성공 시
             registeringPeriodDTOs = (RegisteringPeriodDTO[]) receiveProtocol.getObjectArray();
             if (registeringPeriodDTOs != null) {
                 for (int i = 0; i < registeringPeriodDTOs.length; i++) {
@@ -749,7 +748,7 @@ public class AdminService implements EnrollmentService {
         System.out.println("  과목코드 : " + lecture.getLectureCode());
         System.out.println("  담당교수 : " + lecture.getProfessor().getName());
         System.out.println("  수강학과 : " + lecture.getCourse().getDepartment());
-        System.out.print("  강의시간(강의실) : "); // 반복문필요
+        System.out.print("  강의시간(강의실) : ");
         for (LectureTimeDTO lectureTime : lecture.getLectureTimes()) {
             System.out.print(lectureTime.getLectureDay() + " " + lectureTime.getStartTime() + "~" + lectureTime.getEndTime() + "  강의실 : " + lectureTime.getRoom() + "/");
         }
@@ -783,16 +782,16 @@ public class AdminService implements EnrollmentService {
         while (true) {
             System.out.println(Message.MEMBER_LOOKUP_MENU);
             System.out.print(Message.INPUT);
-            menu = Integer.parseInt(scanner.nextLine());// int 파싱 오류 처리 필요
+            menu = Integer.parseInt(scanner.nextLine());
 
             if (menu == 1) { //학생조회
                 lookupStudent();
             } else if (menu == 2) { //교수조회
                 lookupProfessor();
-            } else if (menu == 3) {
+            } else if (menu == 3) { // 나가기
                 break;
             } else {
-                System.out.println(Message.WRONG_INPUT_NOTICE);
+                System.out.println(Message.WRONG_INPUT_NOTICE);  //잘못된 입력 알림
             }
         }
     }
@@ -802,7 +801,7 @@ public class AdminService implements EnrollmentService {
         while (true) {
             System.out.println(Message.MEMBER_LOOKUP_MENU_CATEGORIES);
             System.out.print(Message.INPUT);
-            menu = Integer.parseInt(scanner.nextLine());// int 파싱 오류 처리 필요
+            menu = Integer.parseInt(scanner.nextLine());
 
             if (menu == 1) { //전체조회
                 ps.reqReadAllProfessor();
@@ -811,6 +810,7 @@ public class AdminService implements EnrollmentService {
                     ProfessorDTO[] profArr = (ProfessorDTO[]) receiveProtocol.getObjectArray();
                     printProfessorList(profArr);
                 }else{
+                    //조회 실패 이유 출력
                     MessageDTO failMsg = (MessageDTO) receiveProtocol.getObject();
                     System.out.print("[교수] : ");
                     System.out.println(failMsg);
@@ -821,18 +821,19 @@ public class AdminService implements EnrollmentService {
             } else if (menu == 3) {//나가기
                 break;
             } else {
-                System.out.println(Message.WRONG_INPUT_NOTICE);
+                System.out.println(Message.WRONG_INPUT_NOTICE);  //잘못된 입력 알림
             }
         }
     }
 
+    // 교수 조건부 조회
     private void lookupProfessorByOption() throws Exception {
         List<ProfessorOption> optionList = new ArrayList();
         int menu = 0;
         while (true) {
             System.out.println(Message.PROFESSOR_LOOKUP_OPTION_CATEGORIES);
             System.out.print(Message.INPUT);
-            menu = Integer.parseInt(scanner.nextLine());// int 파싱 오류 처리 필요
+            menu = Integer.parseInt(scanner.nextLine());
 
             if (menu == 1) { // 학과조건
                 System.out.print(Message.INPUT);
@@ -853,17 +854,18 @@ public class AdminService implements EnrollmentService {
             } else if (menu == 4) { //나가기
                 break;
             } else {
-                System.out.println(Message.WRONG_INPUT_NOTICE);
+                System.out.println(Message.WRONG_INPUT_NOTICE);  //잘못된 입력 알림
             }
         }
     }
 
+    //학생리스트 조회
     private void lookupStudent() throws Exception {
         int menu = 0;
         while (true) {
             System.out.println(Message.MEMBER_LOOKUP_MENU_CATEGORIES);
             System.out.print(Message.INPUT);
-            menu = Integer.parseInt(scanner.nextLine());// int 파싱 오류 처리 필요
+            menu = Integer.parseInt(scanner.nextLine());
 
             if (menu == 1) { //전체조회
                 ps.reqReadAllStudent();
@@ -872,6 +874,7 @@ public class AdminService implements EnrollmentService {
                     StudentDTO[] stdArr = (StudentDTO[]) receiveProtocol.getObjectArray();
                     printStudentList(stdArr);
                 }else{
+                    //조회 실패 시 이유 출력
                     MessageDTO failMsg = (MessageDTO) receiveProtocol.getObject();
                     System.out.print("[학생] : ");
                     System.out.println(failMsg);
@@ -882,18 +885,19 @@ public class AdminService implements EnrollmentService {
             } else if (menu == 3) {//나가기
                 break;
             } else {
-                System.out.println(Message.WRONG_INPUT_NOTICE);
+                System.out.println(Message.WRONG_INPUT_NOTICE);  //잘못된 입력 알림
             }
         }
     }
 
+    //학생 조건부 조회
     private void lookupStudentByOption() throws Exception {
         List<StudentOption> optionList = new ArrayList();
         int menu = 0;
         while (true) {
             System.out.println(Message.STUDENT_LOOKUP_OPTION_CATEGORIES);
             System.out.print(Message.INPUT);
-            menu = Integer.parseInt(scanner.nextLine());// int 파싱 오류 처리 필요
+            menu = Integer.parseInt(scanner.nextLine());
 
             if (menu == 1) { // 학과조건
                 System.out.print(Message.INPUT);
@@ -914,11 +918,13 @@ public class AdminService implements EnrollmentService {
             } else if (menu == 4) { //나가기
                 break;
             } else {
-                System.out.println(Message.WRONG_INPUT_NOTICE);
+                System.out.println(Message.WRONG_INPUT_NOTICE);  //잘못된 입력 알림
             }
         }
     }
 
+
+    //교수 리스트 출력
     private void printProfessorList(ProfessorDTO[] profArr) {
         System.out.printf("%1s %14s %8s %5s %4s %2s \n", "번호", "이름", "생년월일", "학과", "교번", "전화번호");
         int num = 0;
@@ -932,6 +938,7 @@ public class AdminService implements EnrollmentService {
         }
     }
 
+    //학생 리스트 출력
     private void printStudentList(StudentDTO[] stdArr) {
         System.out.printf("%1s %14s %8s %9s %4s %1s %1s\n", "번호", "이름", "생년월일", "학과", "학번", "학년", "수강학점");
         int num = 0;
@@ -945,6 +952,7 @@ public class AdminService implements EnrollmentService {
         }
     }
 
+    //개설 교과목 조회
     private void lectureLookup() throws Exception {
         int menu = 0;
         while (menu != 3) {
@@ -952,13 +960,14 @@ public class AdminService implements EnrollmentService {
             System.out.print(Message.INPUT);
             menu = Integer.parseInt(scanner.nextLine());
             if (menu == 1) {
-                ps.reqAllLectureList();  // 개설 교과목 (전체) 목록 요청
+                ps.reqAllLectureList();    // 개설 교과목 (전체) 목록 요청
                 Protocol receiveProtocol = ps.response();
                 LectureDTO[] lectureList = null;
                 if(receiveProtocol.getCode()==Protocol.T2_CODE_SUCCESS){
                     lectureList = (LectureDTO[]) receiveProtocol.getObjectArray();
                     printLectureList(lectureList);
                 }else{
+                    //조회 실패 시 , 이유 출력
                     MessageDTO failMsg = (MessageDTO) receiveProtocol.getObject();
                     System.out.print("[개설교과목] : ");
                     System.out.println(failMsg);
@@ -970,16 +979,16 @@ public class AdminService implements EnrollmentService {
                     System.out.println(Message.LECTURE_LOOKUP_INNER_MENU);
                     System.out.print(Message.INPUT);
                     innerMenu = Integer.parseInt(scanner.nextLine());
-                    if (innerMenu == 1) {
+                    if (innerMenu == 1) { //강의 계획서 조회
                         System.out.print(Message.PLANNER_LOOKUP_INPUT);
                         int lectureNum = Integer.parseInt(scanner.nextLine());
                         LecturePlannerDTO planner = lectureList[lectureNum - 1].getPlanner();
                         System.out.println("교과목명 : " + lectureList[lectureNum - 1].getCourse().getCourseName());
                         System.out.println("강의 목표 : " + planner.getGoal());
                         System.out.println("강의 개요 : " + planner.getSummary());
-                    } else if (innerMenu == 2) {
+                    } else if (innerMenu == 2) { //나가기
                     } else {
-                        System.out.println(Message.WRONG_INPUT_NOTICE);
+                        System.out.println(Message.WRONG_INPUT_NOTICE);  //잘못된 입력 알림
                     }
                 }
 
@@ -990,22 +999,23 @@ public class AdminService implements EnrollmentService {
                 while (optionMenu != 4) {
                     System.out.println("[1]대상학년  [2]학과  [3]과목명  [4]조회하기");
                     optionMenu = Integer.parseInt(scanner.nextLine());
-                    if (optionMenu == 1) {
+                    if (optionMenu == 1) {  //학년 조건
                         System.out.print(Message.TARGET_GRADE_INPUT);
                         int year = Integer.parseInt(scanner.nextLine());
                         optionList.add(new YearOption(year));
-                    } else if (optionMenu == 2) {
+                    } else if (optionMenu == 2) {  //학과 조건
                         System.out.print(Message.DEPARTMENT_INPUT);
                         String department = scanner.nextLine();
                         optionList.add(new LectureDepartmentOption(department));
-                    } else if (optionMenu == 3) {
+                    } else if (optionMenu == 3) {  //과목명 조건
                         System.out.print(Message.COURSE_NAME_INPUT);
                         String lectureName = scanner.nextLine();
                         optionList.add(new LectureNameOption(lectureName));
-                    } else if (optionMenu == 4) {
+                    } else if (optionMenu == 4) { // 조회하기
                         ps.requestLectureListByOption(
                                 optionList.toArray(new LectureOption[optionList.size()])
                         );
+                        //조건에 맞는 개설 교과목 출력
                         Protocol receiveProtocol = ps.response();
                         LectureDTO[] lectureList = (LectureDTO[]) receiveProtocol.getObjectArray();
                         printLectureList(lectureList);
@@ -1015,31 +1025,32 @@ public class AdminService implements EnrollmentService {
                             System.out.println(Message.LECTURE_LOOKUP_INNER_MENU);
                             System.out.print(Message.INPUT);
                             innerMenu = Integer.parseInt(scanner.nextLine());
-                            if (innerMenu == 1) {
+                            if (innerMenu == 1) {  //강의 계획서 조회
                                 System.out.print(Message.PLANNER_LOOKUP_INPUT);
                                 int lectureNum = Integer.parseInt(scanner.nextLine());
                                 LecturePlannerDTO planner = lectureList[lectureNum - 1].getPlanner();
                                 System.out.println("교과목명 : " + lectureList[lectureNum - 1].getCourse().getCourseName());
                                 System.out.println("강의 목표 : " + planner.getGoal());
                                 System.out.println("강의 개요 : " + planner.getSummary());
-                            } else if (innerMenu == 2) {
+                            } else if (innerMenu == 2) { // 나가기
                             } else {
-                                System.out.println(Message.WRONG_INPUT_NOTICE);
+                                System.out.println(Message.WRONG_INPUT_NOTICE);  //잘못된 입력 출력
                             }
                         }
                     } else {
-                        System.out.println(Message.WRONG_INPUT_NOTICE);
+                        System.out.println(Message.WRONG_INPUT_NOTICE);  // 잘못된 입력 출력
                     }
                 }
 
-            } else if (menu == 3) {
+            } else if (menu == 3) {  //나가기
 
             } else {
-                System.out.println(Message.WRONG_INPUT_NOTICE);
+                System.out.println(Message.WRONG_INPUT_NOTICE); // 잘못된 입력 출력
             }
         }
     }
 
+    //로그아웃
     private void logout() throws Exception {
         ps.requestLogout();
         Protocol receiveProtocol = ps.response();

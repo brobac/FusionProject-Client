@@ -17,6 +17,7 @@ public class EnrollmentProgram {
         this.os = os;
     }
 
+
     public void run() {
         Scanner sc = new Scanner(System.in);
         System.out.println("************* 수강신청 프로그램 **************");
@@ -40,7 +41,7 @@ public class EnrollmentProgram {
                         continue;
                 }
 
-                // 사용자가 종류가 지정된 경우 - 만약 교수라면 교수 전용 서비스 실행
+                // 사용자 직책에 맞는 서비스 실행
                 if(user!=null){
                     EnrollmentService service = createService(user, is, os);
                     service.run();
@@ -59,16 +60,16 @@ public class EnrollmentProgram {
             Scanner sc = new Scanner(System.in);
             System.out.println(Message.ADMIN_CREATE_MESSAGE);
 
-            System.out.print(Message.ADMIN_CODE_INPUT);
+            System.out.print(Message.ADMIN_CODE_INPUT);  //교원번호 입력
             String adminCode = sc.nextLine();
 
-            System.out.print(Message.ADMIN_NAME_INPUT);
+            System.out.print(Message.ADMIN_NAME_INPUT);  //이름 입력
             String name = sc.nextLine();
 
-            System.out.print(Message.ADMIN_DEPARTMENT_INPUT);
+            System.out.print(Message.ADMIN_DEPARTMENT_INPUT);  //학과입력
             String department = sc.nextLine();
 
-            System.out.print(Message.ADMIN_BIRTHDATE_INPUT);
+            System.out.print(Message.ADMIN_BIRTHDATE_INPUT); //생년월일 입력
             String birthDate = sc.nextLine();
 
             // 사용자가 입력한 관리자 정보로 AdminDTO 생성
@@ -102,7 +103,7 @@ public class EnrollmentProgram {
         }
     }
 
-    // 로그인  //TODO while문 빼고 로그인 실패한 경우 return null로 수정함
+    // 로그인
     private AccountDTO login() throws Exception {
         BufferedReader userIn = new BufferedReader(new InputStreamReader(System.in));
         System.out.print(Message.ID_INPUT);
@@ -134,12 +135,14 @@ public class EnrollmentProgram {
         return null;
     }
 
+
+    //서비스 생성
     private static EnrollmentService createService(AccountDTO account, InputStream is, OutputStream os) {
-        if (account.getPosition().equals("ADMIN")) {
+        if (account.getPosition().equals("ADMIN")) {  //관리자 서비스 생성
             return new AdminService(account, is, os);
-        } else if (account.getPosition().equals("PROF")) {
+        } else if (account.getPosition().equals("PROF")) { //교수 서비스 생성
             return new ProfessorService(account, is, os);
-        } else if (account.getPosition().equals("STUD")) {
+        } else if (account.getPosition().equals("STUD")) {  // 학생 서비스 생성
             return new StudentService(account, is, os);
         }
         return null;

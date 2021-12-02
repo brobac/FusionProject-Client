@@ -115,7 +115,7 @@ public class ProfessorService implements EnrollmentService {
                 receiveProtocol = ps.response();
                 if (receiveProtocol != null) {
                     System.out.println(Message.UPDATE_PHONENUM_SUCCESS);
-                } else {
+                } else { // 변경 실패 시
                     System.out.println(Message.UPDATE_PHONENUM_FAIL);
                 }
 
@@ -131,13 +131,13 @@ public class ProfessorService implements EnrollmentService {
                 receiveProtocol = ps.response();
                 if (receiveProtocol != null)
                     System.out.println(Message.UPDATE_PASSWORD_SUCCESS);
-                else
+                else // 변경 실패 시
                     System.out.println(Message.UPDATE_PASSWORD_FAIL);
 
             } else if (menu == 4) {   // 나가기
                 break;
             } else {
-                System.out.println(Message.WRONG_INPUT_NOTICE);
+                System.out.println(Message.WRONG_INPUT_NOTICE);  //잘못된 입력 알림
             }
         }
     }
@@ -156,7 +156,7 @@ public class ProfessorService implements EnrollmentService {
             } else if (menu == 3) {      //나가기
                 break;
             } else {
-                System.out.println(Message.WRONG_INPUT_NOTICE);
+                System.out.println(Message.WRONG_INPUT_NOTICE);   //잘못된 입력 알림
             }
         }
     }
@@ -204,7 +204,7 @@ public class ProfessorService implements EnrollmentService {
                         System.out.println("강의 개요 : " + planner.getSummary());
                     } else if (innerMenu == 2) {
                     } else {
-                        System.out.println(Message.WRONG_INPUT_NOTICE);
+                        System.out.println(Message.WRONG_INPUT_NOTICE);   //잘못된 입력 알림
                     }
                 }
 
@@ -254,18 +254,18 @@ public class ProfessorService implements EnrollmentService {
                                 System.out.println("강의 개요 : " + planner.getSummary());
                             } else if (innerMenu == 2) {
                             } else {
-                                System.out.println(Message.WRONG_INPUT_NOTICE);
+                                System.out.println(Message.WRONG_INPUT_NOTICE);   //잘못된 입력 알림
                             }
                         }
                     } else {
-                        System.out.println(Message.WRONG_INPUT_NOTICE);
+                        System.out.println(Message.WRONG_INPUT_NOTICE);   //잘못된 입력 알림
                     }
                 }
                 
                 // 나가기
             } else if (menu == 3) {
             } else {
-                System.out.println(Message.WRONG_INPUT_NOTICE);
+                System.out.println(Message.WRONG_INPUT_NOTICE);   //잘못된 입력 알림
             }
         }
     }
@@ -314,7 +314,7 @@ public class ProfessorService implements EnrollmentService {
                 int lectureNum = Integer.parseInt(scanner.nextLine());
 
                 if (lectureNum - 1 >= lectureDTOS.length) {
-                    System.out.println(Message.WRONG_INPUT_NOTICE);
+                    System.out.println(Message.WRONG_INPUT_NOTICE);   //잘못된 입력 알림
                     continue;
                 }
 
@@ -329,7 +329,7 @@ public class ProfessorService implements EnrollmentService {
             } else if (menu == 4) { // 나가기
                 break;
             } else {
-                System.out.println(Message.WRONG_INPUT_NOTICE);
+                System.out.println(Message.WRONG_INPUT_NOTICE);   //잘못된 입력 알림
             }
         }
     }
@@ -340,7 +340,7 @@ public class ProfessorService implements EnrollmentService {
         int lectureNum = Integer.parseInt(scanner.nextLine());  // 강의게획서를 수정할 교과목 번호 입력
 
         if (lectureNum - 1 >= lectureDTOS.length) {
-            System.out.println(Message.WRONG_INPUT_NOTICE);
+            System.out.println(Message.WRONG_INPUT_NOTICE);   //잘못된 입력 알림
             return;
         }
 
@@ -362,7 +362,7 @@ public class ProfessorService implements EnrollmentService {
                 } else if (select == 3) {       // 완료
                     break;
             } else {
-                System.out.println(Message.WRONG_INPUT_NOTICE);
+                System.out.println(Message.WRONG_INPUT_NOTICE);   //잘못된 입력 알림
             }
         }
         // 개설교과목(강의계획서를 담은) 수정 요청
@@ -376,7 +376,7 @@ public class ProfessorService implements EnrollmentService {
         int lectureNum = Integer.parseInt(scanner.nextLine());  // 조회할 교과목 선택
 
         if (lectureNum - 1 >= lectureDTOS.length) {
-            System.out.println(Message.WRONG_INPUT_NOTICE);
+            System.out.println(Message.WRONG_INPUT_NOTICE);   //잘못된 입력 알림
             return;
         }
 
@@ -415,7 +415,8 @@ public class ProfessorService implements EnrollmentService {
         LectureTimeDTO[] lectureTimeDTOS = professorDTO.getTimeTable();
         LectureTimeDTO[][] timeTable = new LectureTimeDTO[NUM_OF_PERIOD][NUM_OF_DAY];
         String[] days = {"MON", "TUE", "WED", "THU", "FRI"};
-        
+
+        //시간표 채우기
         if (lectureTimeDTOS != null) {
             for (LectureTimeDTO dto : lectureTimeDTOS) {
                 int day = -1;
@@ -443,6 +444,7 @@ public class ProfessorService implements EnrollmentService {
             }
         }
 
+        //시간표 헤더 채우기
         for (int i = 0; i < NUM_OF_DAY; i++) {
             if (i == 0) {
                 System.out.printf("%10s%10s", "", " |");
@@ -450,6 +452,8 @@ public class ProfessorService implements EnrollmentService {
             System.out.printf("%10s%10s", days[i], " |");
         }
 
+
+        //시간표 출력
         System.out.println();
         System.out.println("-------------------|-------------------|-------------------|-------------------|-------------------|-------------------|");
 
