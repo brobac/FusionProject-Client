@@ -23,8 +23,6 @@ public class ProfProtocolService {
     public Protocol response() throws Exception {
         Protocol pt = new Protocol();
         pt.read(is);
-
-
         return pt;
     }
 
@@ -49,21 +47,20 @@ public class ProfProtocolService {
         pt.send(os);
     }
 
-    public void requestMyLectureList(){
-        Protocol pt  = new Protocol(Protocol.TYPE_REQUEST,Protocol.T1_CODE_READ,Protocol.ENTITY_LECTURE);
-    }
-
+    // 전체 개설교과목 조회 요청
     public void requestAllLectureList() throws IOException {
         Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_READ, Protocol.ENTITY_LECTURE, Protocol.READ_ALL);
         pt.send(os);
     }
 
+    // 옵션으로 개설교과목 조회 요청
     public void requestLectureListByOption(LectureOption[] options) throws IllegalAccessException, IOException {
         Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_READ, Protocol.ENTITY_LECTURE, Protocol.READ_BY_OPTION);
         pt.setObjectArray(options);
         pt.send(os);
     }
 
+    //  내 담당 교과목 조회 요청
     public void requestMyLecture(ProfessorDTO profDTO) throws IllegalAccessException, IOException {
         Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_READ, Protocol.ENTITY_LECTURE, Protocol.READ_BY_OPTION);
         LectureOption[] options = new LectureOption[]{
@@ -73,34 +70,23 @@ public class ProfProtocolService {
         pt.send(os);
     }
 
+    // 교과목 수강신청한 학생 조회 요청
     public void requestReadRegisteringStd(LectureDTO lectureDTO) throws IOException, IllegalAccessException {
         Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_READ, Protocol.ENTITY_REGISTRATION);
         pt.setObject(lectureDTO);
         pt.send(os);
     }
 
-    public void requestUpdateLectrue(LectureDTO selectedLecture) throws IllegalAccessException, IOException {
+    // 개설교과목 수정 요청 (강의계획서)
+    public void requestUpdateLecture(LectureDTO selectedLecture) throws IllegalAccessException, IOException {
         Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_UPDATE, Protocol.ENTITY_LECTURE);
         pt.setObject(selectedLecture);
         pt.send(os);
     }
 
+    // 로그아웃 요청
     public void requestLogout() throws IOException {
         Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_LOGOUT);
         pt.send(os);
     }
-
-
-    // 개설 교과목 목록 조회 요청(옵션)
-
-    // 강의 계획서 조회 요청
-
-    // (본인) 강의 계획서 입력
-
-    // (본인) 강의 계획서 수정
-
-    // (본인) 수강 신청 학생 목록 조회
-
-    // (본인) 시간표 조회
-
 }

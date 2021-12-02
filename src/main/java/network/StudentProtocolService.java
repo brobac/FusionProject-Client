@@ -21,13 +21,6 @@ public class StudentProtocolService {
     public Protocol response() throws Exception {
         Protocol pt = new Protocol();
         pt.read(is);
-
-//        if (pt.getType() == Protocol.TYPE_RESPONSE) {
-//            if (pt.getCode() == Protocol.T2_CODE_SUCCESS) {  // 조회 성공
-//                return pt;
-//            }
-//        }
-//        return null;  // 조회 실패
         return pt;
     }
 
@@ -73,27 +66,27 @@ public class StudentProtocolService {
         pt.send(os);
     }
 
-    // 수강신청 목록 요청 (내꺼)
+    // 내 수강신청 현황 조회
     public void requestReadRegistering(StudentDTO studentDTO) throws IOException, IllegalAccessException {
         Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_READ, Protocol.ENTITY_REGISTRATION);
         pt.setObject(studentDTO);
         pt.send(os);
     }
 
-    // 개설 교과목 조회 요청 (전학년)
+    // 전체 개설교과목 조회 요청
     public void requestAllLectureList() throws IOException {
         Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_READ, Protocol.ENTITY_LECTURE, Protocol.READ_ALL);
         pt.send(os);
     }
 
-    //개설 교과목 조건 조회 요청
+    // 옵션으로 개설교과목 조회 요청
     public void requestLectureListByOption(LectureOption[] options) throws IOException, IllegalAccessException {
         Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_READ, Protocol.ENTITY_LECTURE, Protocol.READ_BY_OPTION);
         pt.setObjectArray(options);
         pt.send(os);
     }
 
-    //로그아웃 요청
+    // 로그아웃 요청
     public void requestLogout() throws IOException {
         Protocol pt = new Protocol(Protocol.TYPE_REQUEST, Protocol.T1_CODE_LOGOUT);
         pt.send(os);

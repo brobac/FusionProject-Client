@@ -36,6 +36,7 @@ public class StudentService implements EnrollmentService {
             System.out.println(Message.STUDENT_SERVICE_MENU);
             System.out.print(Message.INPUT);
             menu = Integer.parseInt(scanner.nextLine());
+            
             switch (menu) {
                 case 1:
                     personalInformation();  // 개인정보 관리
@@ -58,17 +59,20 @@ public class StudentService implements EnrollmentService {
         }
     }
 
+    // 로그아웃 요청
     private void logout() throws Exception {
         ps.requestLogout();
         Protocol receiveProtocol = ps.response();
         System.out.println(Message.LOGOUT_NOTICE);
     }
 
+    // 개인정보 조회 요청
     private void personalInformation() throws Exception {
 
         // 변경 기능
         int menu = 0;
         while (true) {
+            // accountDTO의 memberID로 StudentDTO 생성
             StudentDTO studentDTO = StudentDTO.builder().id(account.getMemberID()).build();
             ps.requestReadPersonalInfo(studentDTO);  // 개인정보 조회 요청
 
@@ -91,7 +95,7 @@ public class StudentService implements EnrollmentService {
             System.out.println(Message.UPDATE_STUDENT_INFORMATION_MENU);
             menu = Integer.parseInt(scanner.nextLine());
 
-            if (menu == 1) { //이름 변경
+            if (menu == 1) {         //이름 변경
                 System.out.print(Message.CHANGE_NAME_INPUT);
                 String name = scanner.nextLine();
                 studentDTO.setName(name);
@@ -103,6 +107,7 @@ public class StudentService implements EnrollmentService {
                 } else {
                     System.out.println(Message.UPDATE_NAME_FAIL);
                 }
+
             } else if (menu == 2) {  //비밀번호 변경
                 System.out.print(Message.CHANGE_PASSWORD_INPUT);
                 String newPassword = scanner.nextLine();
@@ -126,7 +131,7 @@ public class StudentService implements EnrollmentService {
         }
     }
 
-
+    // 수강신청
     private void registering() throws Exception {
         boolean isRegisteringPeriod = false;
         StudentDTO studentDTO = StudentDTO.builder().id(account.getMemberID()).build();
@@ -136,7 +141,7 @@ public class StudentService implements EnrollmentService {
             studentDTO = (StudentDTO) receiveProtocol.getObject();
         }
 
-        //수강신청기간 확인
+        // 수강신청기간 확인
         ps.requestRegisteringReriod();
         receiveProtocol = ps.response();
         RegisteringPeriodDTO[] registeringPeriodDTOs = null;
@@ -164,37 +169,40 @@ public class StudentService implements EnrollmentService {
             System.out.print(Message.INPUT);
             menu = Integer.parseInt(scanner.nextLine());
 
-            if (menu == 1) {       //수강 신청
-                ps.requestAllLectureList();  // 개설 교과목 (전체) 목록 요청
+            if (menu == 1) {         //수강 신청
+                ps.requestAllLectureList();  // 개설 교과목 전체 조회 요청
                 receiveProtocol = ps.response();
 
                 LectureDTO[] lectureList;
                 lectureList = (LectureDTO[]) receiveProtocol.getObjectArray();
-                printLectureList(lectureList);
+                printLectureList(lectureList);  // 개설교과목 목록 출력
 
                 System.out.print(Message.REGISTERING_INPUT);
+                // 수강신청할 교과목 번호 선택
                 int lectureNum = Integer.parseInt(scanner.nextLine());
                 if (lectureNum < 0 || lectureList.length < lectureNum) {
                     System.out.println(Message.WRONG_INPUT_NOTICE);
                     return;
                 }
+                // registeringDTO 생성
                 RegisteringDTO registeringDTO = RegisteringDTO.builder()
                         .lectureID(lectureList[lectureNum - 1].getId())
                         .studentCode(studentDTO.getStudentCode())
                         .build();
+                // 서버에게 수강신청 요청
                 ps.requestRegistering(registeringDTO);
 
                 receiveProtocol = ps.response();
                 int result = receiveProtocol.getCode();
-                if (result == Protocol.T2_CODE_SUCCESS) {
+                if (result == Protocol.T2_CODE_SUCCESS) {     // 수강신청 성공
                     System.out.println(Message.REGISTERING_SUCCESS);
-                } else {
+                } else {    // 수강신청 실패
                     MessageDTO failMsg = (MessageDTO) receiveProtocol.getObject();
                     System.out.println(Message.REGISTERING_FAIL);
                     System.out.println(failMsg);
                 }
 
-            } else if (menu == 2) {    //수강 취소   //TODO 조회 하고 취소??
+            } else if (menu == 2) {    //수강 취소
                 studentDTO = StudentDTO.builder().id(account.getMemberID()).build();
                 ps.requestReadPersonalInfo(studentDTO);  // 개인정보 조회 요청
                 receiveProtocol = ps.response();   // 개인정보 조회 요청에 대한 응답
@@ -209,17 +217,16 @@ public class StudentService implements EnrollmentService {
                 if (registeringList != null) {
                     printLectureList(registeringList);
                     System.out.print(Message.REGISTERING_CANCEL_INPUT);
-                    int cancelNum = Integer.parseInt(scanner.nextLine());
+                    int cancelNum = Integer.parseInt(scanner.nextLine());   //취소할 교과목 선택
                     for (RegisteringDTO registeringDTO : studentDTO.getMyRegisterings()) {
                         if (registeringDTO.getLectureID() == registeringList[cancelNum - 1].getId()) {
-                            ps.requestDeleteRegistering(registeringDTO);
+                            ps.requestDeleteRegistering(registeringDTO);    // 수강취소 요청
                         }
                     }
-                } else {
+                } else {    // 수강신청한 교과목이 없는 경우
                     System.out.println(Message.REGISTERING_EMPTY);
                 }
-
-                ps.response();
+                ps.response();  // 서버에게 응답받음
             } else if (menu == 3)
                 break;
             else
@@ -227,6 +234,7 @@ public class StudentService implements EnrollmentService {
         }
     }
 
+    // 개설교과목 목록 출력
     private void printLectureList(LectureDTO[] lectureList) {
         for (int i = 0; i < lectureList.length; i++) {
             LectureDTO curLecture = lectureList[i];
@@ -243,20 +251,21 @@ public class StudentService implements EnrollmentService {
         }
     }
 
+    // 개설교과목 조회
     private void lectureLookup() throws Exception {
         int menu = 0;
         while (menu != 3) {
             System.out.println(Message.LECTURE_LOOKUP_MENU);
             System.out.print(Message.INPUT);
             menu = Integer.parseInt(scanner.nextLine());
-            if (menu == 1) {
-                ps.requestAllLectureList();  // 개설 교과목 (전체) 목록 요청
+            if (menu == 1) {        // 전체 조회
+                ps.requestAllLectureList();  // 개설 교과목 전체 조회 요청
                 Protocol receiveProtocol = ps.response();
                 LectureDTO[] lectureList = null;
-                if(receiveProtocol.getCode()==Protocol.T2_CODE_SUCCESS){
+                if(receiveProtocol.getCode()==Protocol.T2_CODE_SUCCESS){    // 조회 성공
                     lectureList = (LectureDTO[]) receiveProtocol.getObjectArray();
                     printLectureList(lectureList);
-                }else{
+                }else{              // 개설교과목이 존재하지 않는경우
                     MessageDTO failMsg = (MessageDTO) receiveProtocol.getObject();
                     System.out.print("[개설교과목] : ");
                     System.out.println(failMsg);
@@ -268,59 +277,65 @@ public class StudentService implements EnrollmentService {
                     System.out.println(Message.LECTURE_LOOKUP_INNER_MENU);
                     System.out.print(Message.INPUT);
                     innerMenu = Integer.parseInt(scanner.nextLine());
-                    if (innerMenu == 1) {
+
+                    if (innerMenu == 1) {       // 강의계획서 조회
                         System.out.print(Message.PLANNER_LOOKUP_INPUT);
+                        // 강의계획서 조회할 교과목 선택
                         int lectureNum = Integer.parseInt(scanner.nextLine());
                         LecturePlannerDTO planner = lectureList[lectureNum - 1].getPlanner();
                         System.out.println("교과목명 : " + lectureList[lectureNum - 1].getCourse().getCourseName());
                         System.out.println("강의 목표 : " + planner.getGoal());
                         System.out.println("강의 개요 : " + planner.getSummary());
-                    } else if (innerMenu == 2) {
+                        
+                    } else if (innerMenu == 2) {    // 나가기
                     } else {
                         System.out.println(Message.WRONG_INPUT_NOTICE);
                     }
                 }
 
-            } else if (menu == 2) {
+            } else if (menu == 2) {         // 조건부 조회
                 List<LectureOption> optionList = new ArrayList<>();
                 System.out.println("-----조건설정-----");
                 int optionMenu = 0;
                 while (optionMenu != 4) {
                     System.out.println("[1]대상학년  [2]학과  [3]과목명  [4]조회하기");
                     optionMenu = Integer.parseInt(scanner.nextLine());
-                    if (optionMenu == 1) {
+                    if (optionMenu == 1) {          // 대상학년 옵션 설정
                         System.out.print(Message.TARGET_GRADE_INPUT);
                         int year = Integer.parseInt(scanner.nextLine());
                         optionList.add(new YearOption(year));
-                    } else if (optionMenu == 2) {
+                    } else if (optionMenu == 2) {      // 학과 옵션 설정
                         System.out.print(Message.DEPARTMENT_INPUT);
                         String department = scanner.nextLine();
                         optionList.add(new LectureDepartmentOption(department));
-                    } else if (optionMenu == 3) {
+                    } else if (optionMenu == 3) {       // 과목명 옵션 설정
                         System.out.print(Message.COURSE_NAME_INPUT);
                         String lectureName = scanner.nextLine();
                         optionList.add(new LectureNameOption(lectureName));
-                    } else if (optionMenu == 4) {
+                    } else if (optionMenu == 4) {   // 설정한 옵션으로 조회
+                        // 옵션으로 개설교과목 목록 조회 요청
                         ps.requestLectureListByOption(
                                 optionList.toArray(new LectureOption[optionList.size()])
                         );
                         Protocol receiveProtocol = ps.response();
                         LectureDTO[] lectureList = (LectureDTO[]) receiveProtocol.getObjectArray();
-                        printLectureList(lectureList);
+                        printLectureList(lectureList);  // 개설교과목 정보 목록 출력
 
                         int innerMenu = 0;
                         while (innerMenu != 2) {
                             System.out.println(Message.LECTURE_LOOKUP_INNER_MENU);
                             System.out.print(Message.INPUT);
                             innerMenu = Integer.parseInt(scanner.nextLine());
-                            if (innerMenu == 1) {
+                            
+                            if (innerMenu == 1) {       // 강의계획서 조회       
                                 System.out.print(Message.PLANNER_LOOKUP_INPUT);
-                                int lectureNum = Integer.parseInt(scanner.nextLine());
+                                //  조회할 개설교과목 선택
+                                int lectureNum = Integer.parseInt(scanner.nextLine());  
                                 LecturePlannerDTO planner = lectureList[lectureNum - 1].getPlanner();
                                 System.out.println("교과목명 : " + lectureList[lectureNum - 1].getCourse().getCourseName());
                                 System.out.println("강의 목표 : " + planner.getGoal());
                                 System.out.println("강의 개요 : " + planner.getSummary());
-                            } else if (innerMenu == 2) {
+                            } else if (innerMenu == 2) {    // 나가기
                             } else {
                                 System.out.println(Message.WRONG_INPUT_NOTICE);
                             }
@@ -330,7 +345,7 @@ public class StudentService implements EnrollmentService {
                     }
                 }
 
-            } else if (menu == 3) {
+            } else if (menu == 3) { // 나가기
 
             } else {
                 System.out.println(Message.WRONG_INPUT_NOTICE);
@@ -338,6 +353,7 @@ public class StudentService implements EnrollmentService {
         }
     }
 
+    // 본인 시간표 조회
     private void timeTableLookup() throws Exception {
         final int NUM_OF_PERIOD = 9;
         final int NUM_OF_DAY = 5;
@@ -347,13 +363,13 @@ public class StudentService implements EnrollmentService {
         final int THU = 3;
         final int FRI = 4;
 
-        //시간표 출력
+        // accountDTO의 memberID로 StudentDTO 생성
         StudentDTO studentDTO = StudentDTO.builder().id(account.getMemberID()).build();
+        // 개인정보 조회 요청
         ps.requestReadPersonalInfo(studentDTO);
-
         Protocol receiveProtocol = ps.response();
         studentDTO = (StudentDTO) receiveProtocol.getObject();
-
+        // studentDTO의 timetable을 lectureTimeDTO 배열에 담음
         LectureTimeDTO[] lectureTimeDTOS = studentDTO.getTimeTable();
         String[][] timeTable = new String[NUM_OF_PERIOD][NUM_OF_DAY];
         String[] days = {"MON", "TUE", "WED", "THU", "FRI"};
